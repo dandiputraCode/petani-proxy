@@ -266,7 +266,7 @@ def show_interactive_menu():
 │  {Fore.GREEN}[9]{Fore.WHITE} 🔌 Sync to 9Router    {Fore.LIGHTBLACK_EX}Setor proxy tervalidasi ke database 9Router  {Fore.CYAN}│
 │  {Fore.GREEN}[S]{Fore.WHITE} 📂 Saved Output       {Fore.LIGHTBLACK_EX}Cek hasil panen yang sudah tersimpan di disk {Fore.CYAN}│
 │  {Fore.CYAN}[L]{Fore.WHITE} 🌐 Switch Language    {Fore.LIGHTBLACK_EX}Ganti bahasa ke English                      {Fore.CYAN}│
-│  {Fore.RED}[0]{Fore.WHITE} 💀 Exit Program       {Fore.LIGHTBLACK_EX}Keluar dari sistem — pelayanan selesai       {Fore.CYAN}│
+│  {Fore.RED}[0]{Fore.WHITE} 💀 Cabut Dulu         {Fore.LIGHTBLACK_EX}Capek panen, saatnya sentuh rumput & rebahan {Fore.CYAN}│
 ├────────────────────────────────────────────────────────────────────────┤
 │  {Fore.LIGHTBLACK_EX}Maintainer: {Fore.YELLOW}@itzluthfi{Fore.LIGHTBLACK_EX}          Repository: {Fore.WHITE}github.com/itzluthfi{Fore.CYAN}       │
 └────────────────────────────────────────────────────────────────────────┘{Style.RESET_ALL}"""
@@ -288,7 +288,7 @@ def show_interactive_menu():
 │  {Fore.GREEN}[9]{Fore.WHITE} 🔌 Sync to 9Router    {Fore.LIGHTBLACK_EX}Feed live proxies into 9Router SQLite pool   {Fore.CYAN}│
 │  {Fore.GREEN}[S]{Fore.WHITE} 📂 Saved Output       {Fore.LIGHTBLACK_EX}Inspect the goodies you just harvested       {Fore.CYAN}│
 │  {Fore.CYAN}[L]{Fore.WHITE} 🌐 Switch Language    {Fore.LIGHTBLACK_EX}Ganti bahasa ke Bahasa Indonesia             {Fore.CYAN}│
-│  {Fore.RED}[0]{Fore.WHITE} 💀 Exit Program       {Fore.LIGHTBLACK_EX}Aight imma head out — session terminated     {Fore.CYAN}│
+│  {Fore.RED}[0]{Fore.WHITE} 💀 Rage Quit          {Fore.LIGHTBLACK_EX}Aight imma head out — go touch some grass    {Fore.CYAN}│
 ├────────────────────────────────────────────────────────────────────────┤
 │  {Fore.LIGHTBLACK_EX}Maintainer: {Fore.YELLOW}@itzluthfi{Fore.LIGHTBLACK_EX}          Repository: {Fore.WHITE}github.com/itzluthfi{Fore.CYAN}       │
 └────────────────────────────────────────────────────────────────────────┘{Style.RESET_ALL}"""
@@ -389,7 +389,7 @@ def show_interactive_menu():
         elif choice.lower() in ("s", "saved"):
             view_saved_results()
         elif choice == "0" or choice.lower() == "q":
-            goodbye_msg = "💀 Pelayanan selesai. Terima kasih sudah mampir! 👋" if CURRENT_LANG == "ID" else "💀 Aight imma head out — session terminated. Goodbye! 👋"
+            goodbye_msg = "💀 Capek panen, cabut dulu ah... Jangan lupa sentuh rumput bos! 👋" if CURRENT_LANG == "ID" else "💀 Aight imma head out — session terminated, go touch some grass! 👋"
             print(f"\n{Fore.YELLOW}{goodbye_msg}{Style.RESET_ALL}\n")
             break
         else:

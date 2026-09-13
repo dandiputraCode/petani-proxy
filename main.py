@@ -30,14 +30,14 @@ from core.exporter import export_all_formats
 from core.server import start_proxy_server
 
 BANNER = f"""{Fore.CYAN}{Style.BRIGHT}
-  ██████╗ ███╗   ███╗███╗   ██╗██╗██████╗ ██████╗  ██████╗ ██╗  ██╗██╗   ██╗
- ██╔═══██╗████╗ ████║████╗  ██║██║██╔══██╗██╔══██╗██╔═══██╗╚██╗██╔╝╚██╗ ██╔╝
- ██║   ██║██╔████╔██║██╔██╗ ██║██║██████╔╝██████╔╝██║   ██║ ╚███╔╝  ╚████╔╝ 
- ██║   ██║██║╚██╔╝██║██║╚██╗██║██║██╔═══╝ ██╔══██╗██║   ██║ ██╔██╗   ╚██╔╝  
- ╚██████╔╝██║ ╚═╝ ██║██║ ╚████║██║██║     ██║  ██║╚██████╔╝██╔╝ ██╗   ██║   
-  ╚═════╝ ╚═╝     ╚═╝╚═╝  ╚═══╝╚═╝╚═╝     ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝   
-{Fore.WHITE}      High-Speed Multi-Protocol Open-Source Proxy Harvester & Validator
-{Fore.YELLOW}                  [HTTP • HTTPS • SOCKS4 • SOCKS5 • GeoIP]
+    ____       __              _ ____                      
+   / __ \___  / /_____ _____  (_) __ \_________  _  ____  __
+  / /_/ / _ \/ __/ __ `/ __ \/ / /_/ / ___/ __ \| |/_/ / / /
+ / ____/  __/ /_/ /_/ / / / / / ____/ /  / /_/ />  </ /_/ / 
+/_/    \___/\__/\__,_/_/ /_/_/_/   /_/   \____/_/|_|\__, /  
+                                                   /____/   
+{Fore.YELLOW}          🌾 PetaniProxy: Panen Proxy Cepat, Segar & Bergizi 🚜
+{Fore.WHITE}      High-Speed Multi-Protocol Scraper, Validator & Local Gateway
 {Fore.LIGHTBLACK_EX}             Created & Maintained by {Fore.CYAN}@itzluthfi{Fore.LIGHTBLACK_EX} (github.com/itzluthfi)
 {Style.RESET_ALL}"""
 
@@ -251,8 +251,8 @@ def show_interactive_menu():
         print(BANNER)
         if CURRENT_LANG == "ID":
             menu_box = f"""{Fore.CYAN}┌────────────────────────────────────────────────────────────────────────┐
-│                    {Fore.WHITE}{Style.BRIGHT}OMNIPROXY HARVESTER MENU (INDONESIA){Fore.CYAN}                │
-│                 {Fore.LIGHTBLACK_EX}High-Speed Multi-Protocol Scraper & Validator{Fore.CYAN}          │
+│                 {Fore.WHITE}{Style.BRIGHT}PETANIPROXY HARVESTER MENU (INDONESIA){Fore.CYAN}                 │
+│                 {Fore.LIGHTBLACK_EX}Panen Proxy Cepat, Segar & Bergizi (Port 8888){Fore.CYAN}         │
 ├────────────────────────────────────────────────────────────────────────┤
 │  {Fore.MAGENTA}[P]{Fore.WHITE} 🎯 Preset Mode         {Fore.LIGHTBLACK_EX}Mode siap pakai: AI Bot, Scraper & Privacy   {Fore.CYAN}│
 │  {Fore.GREEN}[1]{Fore.WHITE} ⚡ Quick Harvest       {Fore.LIGHTBLACK_EX}Cari 15 proxy tercepat dari semua protokol   {Fore.CYAN}│
@@ -273,8 +273,8 @@ def show_interactive_menu():
             prompt_str = f"{Fore.YELLOW}Pilih opsi [P, 0-9, S, L] (Default: 1): {Style.RESET_ALL}"
         else:
             menu_box = f"""{Fore.CYAN}┌────────────────────────────────────────────────────────────────────────┐
-│                     {Fore.WHITE}{Style.BRIGHT}OMNIPROXY HARVESTER MENU (ENGLISH){Fore.CYAN}                 │
-│                 {Fore.LIGHTBLACK_EX}High-Speed Multi-Protocol Scraper & Validator{Fore.CYAN}          │
+│                  {Fore.WHITE}{Style.BRIGHT}PETANIPROXY HARVESTER MENU (ENGLISH){Fore.CYAN}                  │
+│              {Fore.LIGHTBLACK_EX}Fresh & High-Speed Multi-Protocol Proxy Harvester{Fore.CYAN}         │
 ├────────────────────────────────────────────────────────────────────────┤
 │  {Fore.MAGENTA}[P]{Fore.WHITE} 🎯 Preset Modes       {Fore.LIGHTBLACK_EX}Pre-tuned battle setups for scrapers & bots  {Fore.CYAN}│
 │  {Fore.GREEN}[1]{Fore.WHITE} ⚡ Quick Harvest       {Fore.LIGHTBLACK_EX}Find fastest proxies before coffee gets cold {Fore.CYAN}│
@@ -407,7 +407,7 @@ def main():
         show_interactive_menu()
         return
 
-    parser = argparse.ArgumentParser(description="OmniProxy Harvester - High-Speed Multi-Protocol Proxy Harvester")
+    parser = argparse.ArgumentParser(description="PetaniProxy - High-Speed Multi-Protocol Proxy Harvester & Rotating Gateway")
     parser.add_argument("--protocol", "-p", choices=["all", "http", "socks4", "socks5"], default="all", help="Target proxy protocol (default: all)")
     parser.add_argument("--max", "-m", type=int, default=250, help="Maximum candidate proxies to validate (default: 250)")
     parser.add_argument("--target", "-t", type=int, default=15, help="Target number of alive proxies to collect (default: 15)")

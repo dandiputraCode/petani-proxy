@@ -121,9 +121,9 @@ class RotatingProxyRequestHandler(BaseHTTPRequestHandler):
         elif path in ("/api/status", "/api/status/", "/", "/api"):
             stats = self.pool_manager.get_stats()
             self.send_json_response({
-                "service": "OmniProxy Harvester Gateway & REST API",
+                "service": "PetaniProxy Gateway & REST API",
                 "version": "2.0.0",
-                "maintainer": "@itzluthfi (github.com/itzluthfi)",
+                "maintainer": "@itzluthfi",
                 "stats": stats,
                 "endpoints": {
                     "random": "/api/random",

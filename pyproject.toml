@@ -1,14 +1,14 @@
-﻿[build-system]
+[build-system]
 requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "omni-proxy-harvester"
+name = "petani-proxy"
 version = "1.0.0"
 authors = [
   { name="Luthfi", email="contact@itzluthfi.dev" },
 ]
-description = "High-speed multi-protocol proxy scraper, validator, rotating gateway & REST API"
+description = "PetaniProxy - High-speed multi-protocol proxy scraper, validator, rotating gateway & REST API"
 readme = "README.md"
 requires-python = ">=3.8"
 classifiers = [
@@ -30,8 +30,10 @@ fast = [
 ]
 
 [project.scripts]
+petani-proxy = "main:main"
+petaniproxy = "main:main"
 omni-proxy = "main:main"
 
 [project.urls]
-"Homepage" = "https://github.com/itzluthfi/omni-proxy-harvester"
-"Bug Tracker" = "https://github.com/itzluthfi/omni-proxy-harvester/issues"
+"Homepage" = "https://github.com/itzluthfi/petani-proxy"
+"Bug Tracker" = "https://github.com/itzluthfi/petani-proxy/issues"

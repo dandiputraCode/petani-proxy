@@ -1,10 +1,10 @@
-﻿@echo off
+@echo off
 chcp 65001 >nul
-title OmniProxy Harvester - by @itzluthfi
+title PetaniProxy - Panen Proxy Segar by @itzluthfi
 cd /d "%~dp0"
 
 echo ========================================================
-echo  🚀 Starting OmniProxy Harvester...
+echo  🌾 Starting PetaniProxy: Panen Proxy Cepat & Segar 🚜
 echo ========================================================
 
 :: Check Python installation

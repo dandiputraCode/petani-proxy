@@ -1,16 +1,16 @@
 <div align="center">
 
-# OmniProxy Harvester
+# 🌾 PetaniProxy
 
-**High-speed multi-protocol proxy scraper, validator, and GeoIP enricher.**
+**Panen Proxy Cepat, Segar & Bergizi — High-Speed Multi-Protocol Scraper, Validator & Local Rotating Gateway.**
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Python Version](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/)
+[![Python Version](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/)
 [![Maintainer](https://img.shields.io/badge/maintainer-itzluthfi-blueviolet.svg)](https://github.com/itzluthfi)
 [![Protocols](https://img.shields.io/badge/protocols-HTTP%20%7C%20HTTPS%20%7C%20SOCKS4%20%7C%20SOCKS5-green.svg)](#supported-protocols)
 [![GitHub Actions](https://img.shields.io/badge/actions-automated%20harvest-brightgreen.svg)](.github/workflows/auto_harvest.yml)
 
-OmniProxy Harvester concurrently extracts, deduplicates, and benchmarks public proxy lists from 30+ open-source upstream feeds. It tests real-world handshake latency against live endpoints, resolves country codes and ISP information, and outputs verified lists in TXT, JSON, and CSV.
+**PetaniProxy** secara simultan memanen, menyaring deduplikasi, dan memvalidasi ribuan proxy publik dari 30+ sumber upstream terbuka. Menguji latensi koneksi real-time, mendeteksi tingkat anonimitas (Elite/Anonymous/Transparent), memperkaya data GeoIP negara & ISP, serta menyediakan Local Rotating Gateway di port `8888` layaknya proxy komersial.
 
 Created and maintained by [@itzluthfi](https://github.com/itzluthfi).
 
@@ -19,12 +19,12 @@ Created and maintained by [@itzluthfi](https://github.com/itzluthfi).
 ---
 
 ```
-  ██████╗ ███╗   ███╗███╗   ██╗██╗██████╗ ██████╗  ██████╗ ██╗  ██╗██╗   ██╗
- ██╔═══██╗████╗ ████║████╗  ██║██║██╔══██╗██╔══██╗██╔═══██╗╚██╗██╔╝╚██╗ ██╔╝
- ██║   ██║██╔████╔██║██╔██╗ ██║██║██████╔╝██████╔╝██║   ██║ ╚███╔╝  ╚████╔╝ 
- ██║   ██║██║╚██╔╝██║██║╚██╗██║██║██╔═══╝ ██╔══██╗██║   ██║ ██╔██╗   ╚██╔╝  
- ╚██████╔╝██║ ╚═╝ ██║██║ ╚████║██║██║     ██║  ██║╚██████╔╝██╔╝ ██╗   ██║   
-  ╚═════╝ ╚═╝     ╚═╝╚═╝  ╚═══╝╚═╝╚═╝     ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝   
+    ____       __              _ ____                      
+   / __ \___  / /_____ _____  (_) __ \_________  _  ____  __
+  / /_/ / _ \/ __/ __ `/ __ \/ / /_/ / ___/ __ \| |/_/ / / /
+ / ____/  __/ /_/ /_/ / / / / / ____/ /  / /_/ />  </ /_/ / 
+/_/    \___/\__/\__,_/_/ /_/_/_/   /_/   \____/_/|_|\__, /  
+                                                   /____/   
 ```
 
 ---
@@ -49,7 +49,7 @@ Created and maintained by [@itzluthfi](https://github.com/itzluthfi).
 
 ## Real-World Use Cases
 
-Why do developers, AI builders, and data teams rely on OmniProxy Harvester?
+Why do developers, AI builders, and data teams rely on PetaniProxy?
 
 1. **Large-Scale Web Scraping & Crawling**: Prevent `HTTP 429 Too Many Requests` and IP-bans on e-commerce, news, and directories by distributing traffic across rotating live nodes.
 2. **AI & LLM API Load Balancing**: Route outbound AI requests across multiple upstream nodes to bypass per-IP rate limits on LLM reverse-proxies (e.g. Grok, Claude, Gemini, ChatGPT via 9Router).
@@ -73,7 +73,7 @@ Why do developers, AI builders, and data teams rely on OmniProxy Harvester?
 
 ## Supported Countries
 
-OmniProxy Harvester detects and filters proxies across 150+ ISO country codes. You can target specific regions using the `--country` flag:
+PetaniProxy detects and filters proxies across 150+ ISO country codes. You can target specific regions using the `--country` flag:
 
 | Region | ISO Code | Country |
 | :--- | :--- | :--- |
@@ -100,7 +100,7 @@ OmniProxy Harvester detects and filters proxies across 150+ ISO country codes. Y
 
 ## Upstream Feed Sources
 
-OmniProxy Harvester aggregates public open-source proxy lists. All endpoints are configured in [`config/sources.json`](config/sources.json):
+PetaniProxy aggregates public open-source proxy lists. All endpoints are configured in [`config/sources.json`](config/sources.json):
 
 | Feed Provider | Upstream Source / Repo | Protocols | Type |
 | :--- | :--- | :--- | :--- |
@@ -145,7 +145,7 @@ Start a local proxy gateway and REST API on port `8888`:
 ```bash
 python main.py --serve 8888 --target 20
 ```
-- **Forward Traffic**: Send your scraper or browser traffic to `http://127.0.0.1:8888`. OmniProxy automatically rotates requests across verified live proxies.
+- **Forward Traffic**: Send your scraper or browser traffic to `http://127.0.0.1:8888`. PetaniProxy automatically rotates requests across verified live proxies.
   ```bash
   curl -x http://127.0.0.1:8888 https://api.ipify.org
   ```

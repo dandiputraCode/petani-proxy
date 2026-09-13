@@ -1,6 +1,6 @@
-# OmniProxy Harvester — Panduan Lengkap Penggunaan (Usage Guide)
+# 🌾 PetaniProxy — Panduan Lengkap Penggunaan (Usage Guide)
 
-Panduan praktis cara menggunakan **OmniProxy Harvester**, cara kustomisasi jumlah panen (> 15, misal 50 atau 100 proxy), filter negara, penggunaan Local Rotating Gateway, dan integrasi ke bot/scraper.
+Panduan praktis cara menggunakan **PetaniProxy (Panen Proxy Cepat, Segar & Bergizi)**, cara kustomisasi jumlah panen (> 15, misal 50 atau 100 proxy), filter negara, penggunaan Local Rotating Gateway, dan integrasi ke bot/scraper.
 
 ---
 
@@ -85,7 +85,7 @@ Gunakan flag `--target` (jumlah proxy hidup yang diinginkan) dan `--max` (maksim
 
 ## 3. Cara Menjalankan Local Rotating Proxy & REST API (Port 8888)
 
-Fitur ini membuat komputer Anda menjadi **Proxy Gateway Lokal & Server API**. Anda tidak perlu repot gonta-ganti IP di bot Anda. Cukup arahkan bot ke `127.0.0.1:8888`, dan OmniProxy yang akan merotasi request ke proxy-proxy hidup secara otomatis!
+Fitur ini membuat komputer Anda menjadi **Proxy Gateway Lokal & Server API**. Anda tidak perlu repot gonta-ganti IP di bot Anda. Cukup arahkan bot ke `127.0.0.1:8888`, dan PetaniProxy yang akan merotasi request ke proxy-proxy hidup secara otomatis!
 
 ### A. Menjalankan Server:
 ```powershell
@@ -108,7 +108,7 @@ Server running at 127.0.0.1:8888. Press Ctrl+C to stop.
 Jika Anda membuka link tersebut di browser (Chrome / Edge / Firefox), akan muncul data status server dalam format JSON:
 ```json
 {
-  "service": "OmniProxy Harvester Gateway & REST API",
+  "service": "PetaniProxy Gateway & REST API",
   "version": "2.0.0",
   "maintainer": "@itzluthfi (github.com/itzluthfi)",
   "stats": {
@@ -214,7 +214,7 @@ for i in range(5):
 ```python
 import requests
 
-# Ambil 1 proxy acak dari OmniProxy API
+# Ambil 1 proxy acak dari PetaniProxy API
 api_resp = requests.get("http://127.0.0.1:8888/api/random").json()
 proxy_url = api_resp["url"]
 print(f"Menggunakan proxy: {proxy_url} ({api_resp['country']} - {api_resp['anonymity']})")

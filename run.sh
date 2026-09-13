@@ -1,11 +1,11 @@
-﻿#!/usr/bin/env bash
+#!/usr/bin/env bash
 set -e
 
 # Change directory to script location
 cd "$(dirname "$0")"
 
 echo "========================================================"
-echo " 🚀 Starting OmniProxy Harvester...                     "
+echo " 🌾 Starting PetaniProxy: Panen Proxy Cepat & Segar 🚜  "
 echo "========================================================"
 
 if ! command -v python3 &>/dev/null && ! command -v python &>/dev/null; then

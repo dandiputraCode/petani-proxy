@@ -112,7 +112,7 @@ def sync_to_9router(live_proxies: List[Dict[str, Any]], db_path: str, replace: b
     cur = conn.cursor()
     
     if replace:
-        cur.execute("DELETE FROM proxyPools WHERE data LIKE '%OmniProxy%' OR testStatus = 'unknown'")
+        cur.execute("DELETE FROM proxyPools WHERE data LIKE '%PetaniProxy%' OR data LIKE '%OmniProxy%' OR testStatus = 'unknown'")
         conn.commit()
 
     now_iso = datetime.datetime.now(datetime.timezone.utc).isoformat()
@@ -120,7 +120,7 @@ def sync_to_9router(live_proxies: List[Dict[str, Any]], db_path: str, replace: b
 
     for p in live_proxies:
         pid = str(uuid.uuid4())
-        name = f"OmniProxy [{p.get('country_code', '??')}] {p['proxy']} ({p.get('protocol', 'http')})"
+        name = f"PetaniProxy [{p.get('country_code', '??')}] {p['proxy']} ({p.get('protocol', 'http')})"
         proxy_url = f"{p.get('protocol', 'http')}://{p['proxy']}"
         payload = {
             "name": name,

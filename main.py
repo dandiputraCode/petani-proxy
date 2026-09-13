@@ -15,8 +15,14 @@ if sys.platform == "win32" and hasattr(sys.stdout, "reconfigure"):
     except Exception:
         pass
 
-from colorama import init, Fore, Style
-init(autoreset=True)
+try:
+    from colorama import init, Fore, Style
+    init(autoreset=True)
+except ImportError:
+    class DummyColor:
+        def __getattr__(self, name):
+            return ""
+    Fore = Style = DummyColor()
 
 from core.fetcher import fetch_proxies_sync
 from core.checker import check_proxies_pool

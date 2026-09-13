@@ -184,17 +184,17 @@ def show_interactive_menu():
 │                        {Fore.WHITE}{Style.BRIGHT}OMNIPROXY HARVESTER MENU{Fore.CYAN}                        │
 │                 {Fore.LIGHTBLACK_EX}High-Speed Multi-Protocol Scraper & Validator{Fore.CYAN}          │
 ├────────────────────────────────────────────────────────────────────────┤
-│  {Fore.GREEN}[1]{Fore.WHITE} ⚡ Quick Harvest         {Fore.LIGHTBLACK_EX}Find 15 fastest proxies (All Protocols){Fore.CYAN}   │
-│  {Fore.GREEN}[2]{Fore.WHITE} 🔒 SOCKS5 Only           {Fore.LIGHTBLACK_EX}Harvest high-speed SOCKS5 proxies{Fore.CYAN}         │
-│  {Fore.GREEN}[3]{Fore.WHITE} 🌐 HTTP / HTTPS Only     {Fore.LIGHTBLACK_EX}Harvest web-browsing HTTP nodes{Fore.CYAN}           │
-│  {Fore.GREEN}[4]{Fore.WHITE} 🌍 Target by Country     {Fore.LIGHTBLACK_EX}Filter by ISO Code (ID, SG, US, DE, JP){Fore.CYAN}  │
-│  {Fore.GREEN}[5]{Fore.WHITE} 🛡️ Elite Proxies Only    {Fore.LIGHTBLACK_EX}Strict High-Anonymity nodes (No IP leaks){Fore.CYAN}│
-│  {Fore.GREEN}[6]{Fore.WHITE} 🎯 Target-Specific Test  {Fore.LIGHTBLACK_EX}Test against custom URL (Google/Shop/API){Fore.CYAN}│
-│  {Fore.GREEN}[7]{Fore.WHITE} 🚀 Local Rotating Server {Fore.LIGHTBLACK_EX}Start localhost:8888 Proxy & REST API   {Fore.CYAN}│
-│  {Fore.GREEN}[8]{Fore.WHITE} 🔄 Auto-Refresh Daemon   {Fore.LIGHTBLACK_EX}Loop run continuously every N minutes{Fore.CYAN}     │
-│  {Fore.GREEN}[9]{Fore.WHITE} 🔌 Sync to 9Router       {Fore.LIGHTBLACK_EX}Inject live proxies into 9Router SQLite{Fore.CYAN}   │
+│  {Fore.GREEN}[1]{Fore.WHITE} ⚡ Quick Harvest         {Fore.LIGHTBLACK_EX}Find fast proxies (Customizable Target)  {Fore.CYAN}│
+│  {Fore.GREEN}[2]{Fore.WHITE} 🔒 SOCKS5 Only           {Fore.LIGHTBLACK_EX}Harvest high-speed SOCKS5 proxies        {Fore.CYAN}│
+│  {Fore.GREEN}[3]{Fore.WHITE} 🌐 HTTP / HTTPS Only     {Fore.LIGHTBLACK_EX}Harvest web-browsing HTTP nodes          {Fore.CYAN}│
+│  {Fore.GREEN}[4]{Fore.WHITE} 🌍 Target by Country     {Fore.LIGHTBLACK_EX}Filter by ISO Code (ID, SG, US, DE, JP) {Fore.CYAN}│
+│  {Fore.GREEN}[5]{Fore.WHITE} 🛡 Elite Proxies Only    {Fore.LIGHTBLACK_EX}Strict High-Anonymity nodes (No Leaks)   {Fore.CYAN}│
+│  {Fore.GREEN}[6]{Fore.WHITE} 🎯 Target-Specific Test  {Fore.LIGHTBLACK_EX}Test against custom URL (Google/Shop)    {Fore.CYAN}│
+│  {Fore.GREEN}[7]{Fore.WHITE} 🚀 Local Rotating Server {Fore.LIGHTBLACK_EX}Start localhost:8888 Proxy & REST API    {Fore.CYAN}│
+│  {Fore.GREEN}[8]{Fore.WHITE} 🔄 Auto-Refresh Daemon   {Fore.LIGHTBLACK_EX}Loop run continuously every N minutes    {Fore.CYAN}│
+│  {Fore.GREEN}[9]{Fore.WHITE} 🔌 Sync to 9Router       {Fore.LIGHTBLACK_EX}Inject live proxies into 9Router SQLite  {Fore.CYAN}│
 │  {Fore.GREEN}[S]{Fore.WHITE} 📂 View Saved Output     {Fore.LIGHTBLACK_EX}Inspect last results in output/ directory{Fore.CYAN}│
-│  {Fore.RED}[0]{Fore.WHITE} ❌ Exit Program          {Fore.LIGHTBLACK_EX}Close terminal session{Fore.CYAN}                    │
+│  {Fore.RED}[0]{Fore.WHITE} ❌ Exit Program          {Fore.LIGHTBLACK_EX}Close terminal session                   {Fore.CYAN}│
 ├────────────────────────────────────────────────────────────────────────┤
 │  {Fore.LIGHTBLACK_EX}Maintainer: {Fore.YELLOW}@itzluthfi{Fore.LIGHTBLACK_EX}          Repository: {Fore.WHITE}github.com/itzluthfi{Fore.CYAN}       │
 └────────────────────────────────────────────────────────────────────────┘{Style.RESET_ALL}"""
@@ -206,35 +206,55 @@ def show_interactive_menu():
             break
 
         if choice == "" or choice == "1":
-            run_harvester(protocols=["http", "socks4", "socks5"], max_check=250, target_alive=15, timeout=3.0)
+            t_input = input(f"{Fore.CYAN}Target alive proxies count [default: 15]: {Style.RESET_ALL}").strip()
+            target_val = int(t_input) if t_input.isdigit() and int(t_input) > 0 else 15
+            max_c = max(250, target_val * 15)
+            run_harvester(protocols=["http", "socks4", "socks5"], max_check=max_c, target_alive=target_val, timeout=3.0)
         elif choice == "2":
-            run_harvester(protocols=["socks5"], max_check=250, target_alive=15, timeout=3.0)
+            t_input = input(f"{Fore.CYAN}Target alive SOCKS5 proxies count [default: 15]: {Style.RESET_ALL}").strip()
+            target_val = int(t_input) if t_input.isdigit() and int(t_input) > 0 else 15
+            max_c = max(250, target_val * 15)
+            run_harvester(protocols=["socks5"], max_check=max_c, target_alive=target_val, timeout=3.0)
         elif choice == "3":
-            run_harvester(protocols=["http"], max_check=250, target_alive=15, timeout=3.0)
+            t_input = input(f"{Fore.CYAN}Target alive HTTP proxies count [default: 15]: {Style.RESET_ALL}").strip()
+            target_val = int(t_input) if t_input.isdigit() and int(t_input) > 0 else 15
+            max_c = max(250, target_val * 15)
+            run_harvester(protocols=["http"], max_check=max_c, target_alive=target_val, timeout=3.0)
         elif choice == "4":
             cc = input(f"{Fore.CYAN}Enter 2-letter Country Code (e.g. ID, SG, US, DE, JP) [default: ID]: {Style.RESET_ALL}").strip() or "ID"
             t_input = input(f"{Fore.CYAN}Target alive count [default: 5]: {Style.RESET_ALL}").strip()
-            target_val = int(t_input) if t_input.isdigit() else 5
-            run_harvester(protocols=["http", "socks4", "socks5"], max_check=350, target_alive=target_val, country=cc, timeout=3.5)
+            target_val = int(t_input) if t_input.isdigit() and int(t_input) > 0 else 5
+            max_c = max(350, target_val * 35)
+            run_harvester(protocols=["http", "socks4", "socks5"], max_check=max_c, target_alive=target_val, country=cc, timeout=3.5)
         elif choice == "5":
+            t_input = input(f"{Fore.CYAN}Target alive Elite proxies count [default: 15]: {Style.RESET_ALL}").strip()
+            target_val = int(t_input) if t_input.isdigit() and int(t_input) > 0 else 15
+            max_c = max(350, target_val * 20)
             print(f"\n{Fore.CYAN}🛡️ Filtering for Elite (High Anonymous) proxies only...{Style.RESET_ALL}")
-            run_harvester(protocols=["http", "socks4", "socks5"], max_check=350, target_alive=15, anonymity="elite", timeout=3.0)
+            run_harvester(protocols=["http", "socks4", "socks5"], max_check=max_c, target_alive=target_val, anonymity="elite", timeout=3.0)
         elif choice == "6":
             t_url = input(f"{Fore.CYAN}Enter target URL to test against [default: https://google.com]: {Style.RESET_ALL}").strip() or "https://google.com"
             t_input = input(f"{Fore.CYAN}Target alive count [default: 10]: {Style.RESET_ALL}").strip()
-            target_val = int(t_input) if t_input.isdigit() else 10
-            run_harvester(protocols=["http", "socks4", "socks5"], max_check=400, target_alive=target_val, target_url=t_url, timeout=3.5)
+            target_val = int(t_input) if t_input.isdigit() and int(t_input) > 0 else 10
+            max_c = max(400, target_val * 25)
+            run_harvester(protocols=["http", "socks4", "socks5"], max_check=max_c, target_alive=target_val, target_url=t_url, timeout=3.5)
         elif choice == "7":
             port_input = input(f"{Fore.CYAN}Enter local port for Rotating Gateway & API [default: 8888]: {Style.RESET_ALL}").strip()
             port_val = int(port_input) if port_input.isdigit() else 8888
-            run_harvester(protocols=["http", "socks4", "socks5"], max_check=300, target_alive=15, timeout=3.0, serve_port=port_val)
+            t_input = input(f"{Fore.CYAN}Target alive proxies pool size [default: 15]: {Style.RESET_ALL}").strip()
+            target_val = int(t_input) if t_input.isdigit() and int(t_input) > 0 else 15
+            max_c = max(300, target_val * 15)
+            run_harvester(protocols=["http", "socks4", "socks5"], max_check=max_c, target_alive=target_val, timeout=3.0, serve_port=port_val)
         elif choice == "8":
+            t_input = input(f"{Fore.CYAN}Target alive proxies count per sweep [default: 20]: {Style.RESET_ALL}").strip()
+            target_val = int(t_input) if t_input.isdigit() and int(t_input) > 0 else 20
             loop_str = input(f"{Fore.CYAN}Enter refresh interval in minutes [default: 20]: {Style.RESET_ALL}").strip()
-            loop_min = int(loop_str) if loop_str.isdigit() else 20
-            print(f"\n{Fore.MAGENTA}🔄 Auto-refresh active every {loop_min} minutes. Press Ctrl+C to return to menu.{Style.RESET_ALL}")
+            loop_min = int(loop_str) if loop_str.isdigit() and int(loop_str) > 0 else 20
+            max_c = max(300, target_val * 15)
+            print(f"\n{Fore.MAGENTA}🔄 Auto-refresh active: Target {target_val} proxies every {loop_min} minutes. Press Ctrl+C to return to menu.{Style.RESET_ALL}")
             while True:
                 try:
-                    run_harvester(protocols=["http", "socks4", "socks5"], max_check=300, target_alive=20, timeout=3.0)
+                    run_harvester(protocols=["http", "socks4", "socks5"], max_check=max_c, target_alive=target_val, timeout=3.0)
                     print(f"{Fore.LIGHTBLACK_EX}Sleeping for {loop_min} minutes before next cycle...{Style.RESET_ALL}")
                     time.sleep(loop_min * 60)
                 except KeyboardInterrupt:

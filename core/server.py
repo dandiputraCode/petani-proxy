@@ -144,91 +144,96 @@ class RotatingProxyRequestHandler(BaseHTTPRequestHandler):
         self.end_headers()
         self.wfile.write(body)
 
-    # --- HTTPS CONNECT Tunneling ---
+    # --- HTTPS CONNECT Tunneling with Auto-Failover ---
     def do_CONNECT(self):
         """
         Handle HTTPS CONNECT method to create a TCP tunnel to the target host.
+        Includes automatic retry failover across up to 3 live proxies.
         """
         target_host, target_port = self.path.split(":")
         target_port = int(target_port)
 
-        upstream_proxy = self.pool_manager.get_next()
-        if not upstream_proxy:
-            self.send_error(503, "No alive proxies available in pool")
-            return
+        max_retries = min(3, len(self.pool_manager.proxies) or 1)
+        
+        for attempt in range(max_retries):
+            upstream_proxy = self.pool_manager.get_next()
+            if not upstream_proxy:
+                break
 
-        u_ip = upstream_proxy["ip"]
-        u_port = int(upstream_proxy["port"])
+            u_ip = upstream_proxy["ip"]
+            u_port = int(upstream_proxy["port"])
 
-        try:
-            # Connect to upstream proxy
-            upstream_sock = socket.create_connection((u_ip, u_port), timeout=5.0)
+            try:
+                upstream_sock = socket.create_connection((u_ip, u_port), timeout=4.0)
 
-            # Send CONNECT command to upstream proxy
-            connect_req = f"CONNECT {target_host}:{target_port} HTTP/1.1\r\nHost: {target_host}:{target_port}\r\n\r\n"
-            upstream_sock.sendall(connect_req.encode("utf-8"))
+                # Send CONNECT command to upstream proxy
+                connect_req = f"CONNECT {target_host}:{target_port} HTTP/1.1\r\nHost: {target_host}:{target_port}\r\n\r\n"
+                upstream_sock.sendall(connect_req.encode("utf-8"))
 
-            # Read upstream response
-            upstream_resp = upstream_sock.recv(4096).decode("utf-8", errors="ignore")
-            if "200" not in upstream_resp:
-                upstream_sock.close()
-                self.pool_manager.mark_result(False)
-                self.send_error(502, "Bad Gateway from upstream proxy")
+                # Read upstream response
+                upstream_resp = upstream_sock.recv(4096).decode("utf-8", errors="ignore")
+                if "200" not in upstream_resp:
+                    upstream_sock.close()
+                    self.pool_manager.mark_result(False)
+                    continue
+
+                # Tell client tunnel is established
+                self.send_response(200, "Connection Established")
+                self.end_headers()
+
+                # Pipe bi-directional data between client and upstream
+                self.pipe_sockets(self.connection, upstream_sock)
+                self.pool_manager.mark_result(True)
                 return
 
-            # Tell client tunnel is established
-            self.send_response(200, "Connection Established")
-            self.end_headers()
-
-            # Pipe bi-directional data between client and upstream
-            self.pipe_sockets(self.connection, upstream_sock)
-            self.pool_manager.mark_result(True)
-
-        except Exception:
-            self.pool_manager.mark_result(False)
-            try:
-                self.send_error(504, "Gateway Timeout")
             except Exception:
-                pass
+                self.pool_manager.mark_result(False)
+                continue
+
+        try:
+            self.send_error(504, "Gateway Timeout: All tested upstream proxies failed")
+        except Exception:
+            pass
 
     def handle_http_forward(self):
         """
-        Forward standard HTTP requests through upstream proxy.
+        Forward standard HTTP requests through upstream proxy with auto-retry.
         """
-        upstream_proxy = self.pool_manager.get_next()
-        if not upstream_proxy:
-            self.send_error(503, "No alive proxies available in pool")
-            return
+        max_retries = min(3, len(self.pool_manager.proxies) or 1)
 
-        u_ip = upstream_proxy["ip"]
-        u_port = int(upstream_proxy["port"])
+        # Read body once if present so we can reuse across retries
+        content_len = int(self.headers.get("Content-Length", 0))
+        body = self.rfile.read(content_len) if content_len > 0 else b""
+
+        req_line = f"{self.command} {self.path} {self.request_version}\r\n"
+        headers_str = "".join([f"{k}: {v}\r\n" for k, v in self.headers.items()])
+        full_req = f"{req_line}{headers_str}\r\n".encode("utf-8") + body
+
+        for attempt in range(max_retries):
+            upstream_proxy = self.pool_manager.get_next()
+            if not upstream_proxy:
+                break
+
+            u_ip = upstream_proxy["ip"]
+            u_port = int(upstream_proxy["port"])
+
+            try:
+                upstream_sock = socket.create_connection((u_ip, u_port), timeout=4.0)
+                upstream_sock.sendall(full_req)
+
+                # Pipe response back to client
+                self.pipe_sockets(self.connection, upstream_sock)
+                self.pool_manager.mark_result(True)
+                return
+
+            except Exception:
+                self.pool_manager.mark_result(False)
+                continue
 
         try:
-            upstream_sock = socket.create_connection((u_ip, u_port), timeout=5.0)
-
-            # Reconstruct HTTP request line and headers
-            req_line = f"{self.command} {self.path} {self.request_version}\r\n"
-            headers_str = "".join([f"{k}: {v}\r\n" for k, v in self.headers.items()])
-            full_req = f"{req_line}{headers_str}\r\n".encode("utf-8")
-
-            # Forward body if present
-            content_len = int(self.headers.get("Content-Length", 0))
-            if content_len > 0:
-                body = self.rfile.read(content_len)
-                full_req += body
-
-            upstream_sock.sendall(full_req)
-
-            # Pipe response back to client
-            self.pipe_sockets(self.connection, upstream_sock)
-            self.pool_manager.mark_result(True)
-
+            self.send_error(502, "Bad Gateway: All tested upstream proxies failed")
         except Exception:
-            self.pool_manager.mark_result(False)
-            try:
-                self.send_error(502, "Bad Gateway")
-            except Exception:
-                pass
+            pass
 
     def pipe_sockets(self, sock1: socket.socket, sock2: socket.socket, buffer_size: int = 8192, timeout: float = 30.0):
         """Pipes data bidirectionally between two sockets until closed."""

@@ -177,6 +177,57 @@ def view_saved_results(output_dir: str = None):
         proto = p.get('protocol', 'http').upper()
         print(f"  {idx:>2}. {Fore.GREEN}{proto:<6}{Style.RESET_ALL} {Fore.WHITE}{p['proxy']:<21}{Style.RESET_ALL} | {Fore.YELLOW}{p['latency_ms']:>4}ms{Style.RESET_ALL} | [{p['country_code']}] {p['country']} ({p.get('isp', '-')[:22]})")
 
+def show_presets_menu():
+    while True:
+        print(BANNER)
+        p_box = f"""{Fore.CYAN}┌────────────────────────────────────────────────────────────────────────┐
+│                   {Fore.WHITE}{Style.BRIGHT}🎯 ONE-CLICK USE-CASE PRESETS MENU{Fore.CYAN}                   │
+│         {Fore.LIGHTBLACK_EX}Pre-tuned production pipelines for common dev tasks{Fore.CYAN}            │
+├────────────────────────────────────────────────────────────────────────┤
+│  {Fore.GREEN}[1]{Fore.WHITE} 🤖 AI & LLM Bot Rotator  {Fore.LIGHTBLACK_EX}Ultra-low latency (<1.5s), runs on 8888  {Fore.CYAN}│
+│                               {Fore.LIGHTBLACK_EX}& auto-syncs to 9Router SQLite pool      {Fore.CYAN}│
+│  {Fore.GREEN}[2]{Fore.WHITE} 🕷 Mass Web Scraper      {Fore.LIGHTBLACK_EX}Harvests 30+ strict Elite nodes & starts {Fore.CYAN}│
+│                               {Fore.LIGHTBLACK_EX}failover proxy server for Scrapy/Selenium{Fore.CYAN}│
+│  {Fore.GREEN}[3]{Fore.WHITE} 🌍 SEO & Geo-Target      {Fore.LIGHTBLACK_EX}Verifies region proxies against Google   {Fore.CYAN}│
+│                               {Fore.LIGHTBLACK_EX}for accurate SERP & ad auditing          {Fore.CYAN}│
+│  {Fore.GREEN}[4]{Fore.WHITE} 🛡 Privacy & Unblocker   {Fore.LIGHTBLACK_EX}Fast regional nodes for unblocking       {Fore.CYAN}│
+│                               {Fore.LIGHTBLACK_EX}foreign developer sites without paid VPN {Fore.CYAN}│
+│  {Fore.RED}[0]{Fore.WHITE} 🔙 Back to Main Menu     {Fore.LIGHTBLACK_EX}Return to primary selection              {Fore.CYAN}│
+├────────────────────────────────────────────────────────────────────────┤
+│  {Fore.LIGHTBLACK_EX}Maintainer: {Fore.YELLOW}@itzluthfi{Fore.LIGHTBLACK_EX}          Repository: {Fore.WHITE}github.com/itzluthfi{Fore.CYAN}       │
+└────────────────────────────────────────────────────────────────────────┘{Style.RESET_ALL}"""
+        print(p_box)
+        try:
+            choice = input(f"{Fore.YELLOW}Select preset [1-4, 0=Back]: {Style.RESET_ALL}").strip()
+        except (KeyboardInterrupt, EOFError):
+            break
+
+        if choice == "1":
+            print(f"\n{Fore.GREEN}🤖 Launching AI & LLM Bot Rotator Preset...{Style.RESET_ALL}")
+            possible_path = "D:/FREELANCE/9router-mibp-version/data/db/data.sqlite"
+            db = possible_path if os.path.exists(possible_path) else None
+            run_harvester(protocols=["http", "socks5"], max_check=350, target_alive=20, timeout=2.5, serve_port=8888, sync_9router=db)
+        elif choice == "2":
+            print(f"\n{Fore.GREEN}🕷️ Launching Mass Web Scraper Preset...{Style.RESET_ALL}")
+            run_harvester(protocols=["http", "socks4", "socks5"], max_check=500, target_alive=30, anonymity="elite", timeout=3.0, serve_port=8888)
+        elif choice == "3":
+            cc = input(f"{Fore.CYAN}Enter target country for SEO audit [default: US]: {Style.RESET_ALL}").strip() or "US"
+            print(f"\n{Fore.GREEN}🌍 Launching SEO & Geo-Target Preset for [{cc}]...{Style.RESET_ALL}")
+            run_harvester(protocols=["http", "socks5"], max_check=400, target_alive=10, country=cc, target_url="https://google.com", timeout=3.5)
+        elif choice == "4":
+            print(f"\n{Fore.GREEN}🛡️ Launching Browser Privacy & Unblocker Preset...{Style.RESET_ALL}")
+            print(f"{Fore.YELLOW}💡 Tip: After server starts, configure your browser proxy to 127.0.0.1:8888!{Style.RESET_ALL}")
+            run_harvester(protocols=["http", "socks5"], max_check=300, target_alive=10, country="SG", timeout=2.5, serve_port=8888)
+        elif choice in ("0", "b", "back", "q"):
+            break
+        else:
+            print(f"{Fore.RED}Pilihan preset tidak valid.{Style.RESET_ALL}")
+
+        try:
+            input(f"\n{Fore.LIGHTBLACK_EX}[Press Enter to return to Presets menu...]{Style.RESET_ALL}")
+        except (KeyboardInterrupt, EOFError):
+            break
+
 def show_interactive_menu():
     while True:
         print(BANNER)
@@ -184,6 +235,7 @@ def show_interactive_menu():
 │                        {Fore.WHITE}{Style.BRIGHT}OMNIPROXY HARVESTER MENU{Fore.CYAN}                        │
 │                 {Fore.LIGHTBLACK_EX}High-Speed Multi-Protocol Scraper & Validator{Fore.CYAN}          │
 ├────────────────────────────────────────────────────────────────────────┤
+│  {Fore.MAGENTA}[P]{Fore.WHITE} 🎯 Use-Case Presets   {Fore.LIGHTBLACK_EX}One-Click Presets for AI, Scraper, SEO, etc {Fore.CYAN}│
 │  {Fore.GREEN}[1]{Fore.WHITE} ⚡ Quick Harvest         {Fore.LIGHTBLACK_EX}Find fast proxies (Customizable Target)  {Fore.CYAN}│
 │  {Fore.GREEN}[2]{Fore.WHITE} 🔒 SOCKS5 Only           {Fore.LIGHTBLACK_EX}Harvest high-speed SOCKS5 proxies        {Fore.CYAN}│
 │  {Fore.GREEN}[3]{Fore.WHITE} 🌐 HTTP / HTTPS Only     {Fore.LIGHTBLACK_EX}Harvest web-browsing HTTP nodes          {Fore.CYAN}│
@@ -200,10 +252,14 @@ def show_interactive_menu():
 └────────────────────────────────────────────────────────────────────────┘{Style.RESET_ALL}"""
         print(menu_box)
         try:
-            choice = input(f"{Fore.YELLOW}Select option [0-9, S] (Default: 1): {Style.RESET_ALL}").strip()
+            choice = input(f"{Fore.YELLOW}Select option [P, 0-9, S] (Default: 1): {Style.RESET_ALL}").strip()
         except (KeyboardInterrupt, EOFError):
             print(f"\n{Fore.YELLOW}Goodbye!{Style.RESET_ALL}")
             break
+
+        if choice.lower() == "p":
+            show_presets_menu()
+            continue
 
         if choice == "" or choice == "1":
             t_input = input(f"{Fore.CYAN}Target alive proxies count [default: 15]: {Style.RESET_ALL}").strip()

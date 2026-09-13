@@ -47,6 +47,19 @@ Created and maintained by [@itzluthfi](https://github.com/itzluthfi).
 
 ---
 
+## Real-World Use Cases
+
+Why do developers, AI builders, and data teams rely on OmniProxy Harvester?
+
+1. **Large-Scale Web Scraping & Crawling**: Prevent `HTTP 429 Too Many Requests` and IP-bans on e-commerce, news, and directories by distributing traffic across rotating live nodes.
+2. **AI & LLM API Load Balancing**: Route outbound AI requests across multiple upstream nodes to bypass per-IP rate limits on LLM reverse-proxies (e.g. Grok, Claude, Gemini, ChatGPT via 9Router).
+3. **Multi-Account Automation & Botting**: Prevent account registration throttling and checkpoint bans by assigning isolated clean IPs to headless browser instances (Puppeteer, Playwright, Selenium).
+4. **Geo-Targeted SEO & SERP Auditing**: Inspect localized Google search rankings and regional content as viewed from 150+ countries (`--country US`, `--country SG`, `--country ID`).
+5. **Bypass Regional Throttling & Censorship**: Route browser traffic through clean regional nodes without needing heavy, expensive VPN subscriptions.
+6. **Security Research & Pentesting**: Distribute directory fuzzing and API endpoint benchmarking across multiple egress nodes.
+
+---
+
 ## Supported Protocols
 
 | Protocol | Prefix | Best For | Status |

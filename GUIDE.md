@@ -5,15 +5,29 @@ Panduan praktis cara menggunakan **OmniProxy Harvester**, cara kustomisasi jumla
 ---
 
 ## Daftar Isi
-1. [Cara Menjalankan Menu Interaktif](#1-cara-menjalankan-menu-interaktif)
-2. [Cara Panen Lebih dari 15 Proxy (Kustom Jumlah)](#2-cara-panen-lebih-dari-15-proxy-kustom-jumlah)
-3. [Cara Menjalankan Local Rotating Proxy & REST API (Port 8888)](#3-cara-menjalankan-local-rotating-proxy--rest-api-port-8888)
-4. [Cara Panen Khusus Proxy Tertentu](#4-cara-panen-khusus-proxy-tertentu)
+1. [Untuk Apa Saja Tool Ini Digunakan? (Real-World Use Cases)](#1-untuk-apa-saja-tool-ini-digunakan-real-world-use-cases)
+2. [Cara Menjalankan Menu Interaktif & Preset Khusus](#2-cara-menjalankan-menu-interaktif--preset-khusus)
+3. [Cara Panen Lebih dari 15 Proxy (Kustom Jumlah)](#3-cara-panen-lebih-dari-15-proxy-kustom-jumlah)
+4. [Cara Menjalankan Local Rotating Proxy & REST API (Port 8888)](#4-cara-menjalankan-local-rotating-proxy--rest-api-port-8888)
+5. [Cara Panen Khusus Proxy Tertentu](#5-cara-panen-khusus-proxy-tertentu)
    - [Khusus Proxy Elite (High Anonymous)](#a-khusus-proxy-elite-high-anonymous)
    - [Khusus Negara Tertentu (ID, SG, US, dll)](#b-khusus-negara-tertentu-id-sg-us-dll)
    - [Khusus Tembus Website Tertentu (Google, Shopee, dll)](#c-khusus-tembus-website-tertentu-google-shopee-dll)
-5. [Cara Integrasi ke Script Python / Scraper / Bot](#5-cara-integrasi-ke-script-python--scraper--bot)
-6. [Tabel Semua Perintah CLI Lengkap](#6-tabel-semua-perintah-cli-lengkap)
+6. [Cara Integrasi ke Script Python / Scraper / Bot](#6-cara-integrasi-ke-script-python--scraper--bot)
+7. [Tabel Semua Perintah CLI Lengkap](#7-tabel-semua-perintah-cli-lengkap)
+
+---
+
+## 1. Untuk Apa Saja Tool Ini Digunakan? (Real-World Use Cases)
+
+Fungsi mendasar tool ini adalah menyediakan pasokan **IP proxy gratis tanpa batas** yang terus dirotasi. Berikut adalah skenario pemanfaatan terbesarnya:
+
+1. **🕷️ Web Scraping Skala Besar**: Menghindari pemblokiran IP (*HTTP 429 Too Many Requests*) saat menyedot ribuan data marketplace (Shopee/Tokopedia), portal berita, atau media sosial.
+2. **🤖 AI & LLM Load Balancing**: Membagi request bot AI (seperti bot WhatsApp Wakupi / Grok / ChatGPT / Gemini) ke puluhan IP agar tidak terkena limit rate API.
+3. **👥 Otomasi Bot & Multi-Akun**: Mencegah bot kena banned atau deteksi checkpoint massal (Puppeteer, Playwright, Selenium) karena tiap instance browser memegang IP terisolasi.
+4. **🌍 Audit SEO & Peringkat Google Regional**: Melihat hasil pencarian SERP dan tayangan iklan Google murni dari sudut pandang negara lain (misal: `--country US` atau `--country SG`).
+5. **🛡️ Akses Bebas Sensor / Blokir ISP**: Membuka API publik atau forum developer global yang terblokir ISP lokal tanpa perlu bayar biaya VPN bulanan.
+6. **🔒 Security Testing / Bug Bounty**: Mendistribusikan lalu lintas pengujian penetrasi endpoint agar tidak langsung memicu filter fail2ban server target.
 
 ---
 

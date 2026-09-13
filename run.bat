@@ -7,8 +7,18 @@ echo ========================================================
 echo  🌾 Starting PetaniProxy: Panen Proxy Cepat & Segar 🚜
 echo ========================================================
 
-:: Check Python installation
-python --version >nul 2>&1
+:: Smart Python Detection (Local venv -> Global python)
+set "PY_CMD=python"
+if exist "d:\FREELANCE\grok-register\venv\Scripts\python.exe" (
+    set "PY_CMD=d:\FREELANCE\grok-register\venv\Scripts\python.exe"
+) else if exist "%~dp0venv\Scripts\python.exe" (
+    set "PY_CMD=%~dp0venv\Scripts\python.exe"
+) else if exist "%~dp0..\grok-register\venv\Scripts\python.exe" (
+    set "PY_CMD=%~dp0..\grok-register\venv\Scripts\python.exe"
+)
+
+:: Check Python availability
+%PY_CMD% --version >nul 2>&1
 if %errorlevel% neq 0 (
     echo [ERROR] Python tidak ditemukan di sistem Anda!
     echo Silakan install Python 3.8+ dari https://www.python.org/
@@ -16,13 +26,6 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
-:: Install dependencies if colorama is missing
-python -c "import colorama, httpx, requests" >nul 2>&1
-if %errorlevel% neq 0 (
-    echo [INFO] Menginstall dependensi yang dibutuhkan...
-    pip install -r requirements.txt
-)
-
 :: Run Harvester Interactive Menu
-python main.py
+%PY_CMD% main.py
 pause

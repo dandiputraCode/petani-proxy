@@ -1,31 +1,68 @@
 <div align="center">
 
-# 🌾 PetaniProxy
+# 🌾 PetaniProxy v2.0
 
-**Panen Proxy Cepat, Segar & Bergizi — High-Speed Multi-Protocol Scraper, Validator & Local Rotating Gateway.**
+**Pusat Amunisi Proxy Bersih, Segar & Berputar Otomatis (Local Rotating Gateway).**  
+*High-Speed Multi-Protocol Scraper, Validator, Self-Healing Pool & REST API.*
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Python Version](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/)
 [![Maintainer](https://img.shields.io/badge/maintainer-itzluthfi-blueviolet.svg)](https://github.com/itzluthfi)
 [![Protocols](https://img.shields.io/badge/protocols-HTTP%20%7C%20HTTPS%20%7C%20SOCKS4%20%7C%20SOCKS5-green.svg)](#supported-protocols)
-[![GitHub Actions](https://img.shields.io/badge/actions-automated%20harvest-brightgreen.svg)](.github/workflows/auto_harvest.yml)
+[![Rotating Gateway](https://img.shields.io/badge/gateway-127.0.0.1%3A8888-brightgreen.svg)](#local-rotating-proxy-server--rest-api-gateway)
+[![BansosRouter Ready](https://img.shields.io/badge/sync-BansosRouter%20%2F%209Router-orange.svg)](#bansosrouter--9router-integration)
 
-**PetaniProxy** secara simultan memanen, menyaring deduplikasi, dan memvalidasi ribuan proxy publik dari 30+ sumber upstream terbuka. Menguji latensi koneksi real-time, mendeteksi tingkat anonimitas (Elite/Anonymous/Transparent), memperkaya data GeoIP negara & ISP, serta menyediakan Local Rotating Gateway di port `8888` layaknya proxy komersial.
+**PetaniProxy** secara otomatis memanen, menyaring deduplikasi, dan memvalidasi ribuan proxy publik dari 30+ sumber upstream global dalam hitungan detik. Mengubah ribuan IP mentah yang cepat mati menjadi satu pintu gerbang forward proxy lokal yang stabil di `http://127.0.0.1:8888` layaknya layanan proxy komersial ratusan dollar.
 
-Created and maintained by [@itzluthfi](https://github.com/itzluthfi).
+Created and maintained with ❤️ by [@itzluthfi](https://github.com/itzluthfi).
 
 </div>
 
 ---
 
 ```
-    ____       __              _ ____                      
-   / __ \___  / /_____ _____  (_) __ \_________  _  ____  __
-  / /_/ / _ \/ __/ __ `/ __ \/ / /_/ / ___/ __ \| |/_/ / / /
- / ____/  __/ /_/ /_/ / / / / / ____/ /  / /_/ />  </ /_/ / 
-/_/    \___/\__/\__,_/_/ /_/_/_/   /_/   \____/_/|_|\__, /  
-                                                   /____/   
+  ██████╗ ███╗   ███╗███╗   ██╗██╗██████╗ ██████╗  ██████╗ ██╗  ██╗██╗   ██╗
+ ██╔═══██╗████╗ ████║████╗  ██║██║██╔══██╗██╔══██╗██╔═══██╗╚██╗██╔╝╚██╗ ██╔╝
+ ██║   ██║██╔████╔██║██╔██╗ ██║██║██████╔╝██████╔╝██║   ██║ ╚███╔╝  ╚████╔╝ 
+ ██║   ██║██║╚██╔╝██║██║╚██╗██║██║██╔═══╝ ██╔══██╗██║   ██║ ██╔██╗   ╚██╔╝  
+ ╚██████╔╝██║ ╚═╝ ██║██║ ╚████║██║██║     ██║  ██║╚██████╔╝██╔╝ ██╗   ██║   
+  ╚═════╝ ╚═╝     ╚═╝╚═╝  ╚═══╝╚═╝╚═╝     ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝   
 ```
+
+---
+
+## 🥊 Mengapa PetaniProxy? (Comparison Matrix)
+
+| Fitur / Kemampuan | Proxy Gratisan Biasa | Layanan Komersial ($500/bln) | **🌾 PetaniProxy v2.0** |
+| :--- | :---: | :---: | :---: |
+| **Biaya** | Gratis (manual & ribet) | Rp 1,5 Juta – 7 Juta/bulan | **100% Gratis & Bebas Batas** |
+| **Bentuk Akses** | File teks `ip:port` mentah | Forward Gateway & REST API | **Local Rotating Gateway (Port 8888)** |
+| **Rotasi IP Otomatis** | ❌ Manual ganti IP | ✅ Otomatis | ✅ **Auto-Rotate Setiap Request** |
+| **Uji Anonimitas (Zero Leak)**| ❌ Jarang ada | ✅ Ada | ✅ **Built-in Elite L1 Detection** |
+| **Live Proof Masking [T]** | ❌ Tidak ada | ❌ Tidak ada | ✅ **1-Click Test Perbandingan IP Asli** |
+| **Integrasi AI Router** | ❌ Bikin script sendiri | ❌ Tidak ada | ✅ **Auto-Inject BansosRouter & 9Router** |
+
+---
+
+## 🎯 3 Pilar Arsitektur & Racikan Spesial
+
+### [Pilar 1] 🚀 Instant Rotating Gateway (`127.0.0.1:8888`)
+* `[1]` 🐔 **Racikan Ternak Akun**: Khusus bot registrasi AI (Grok, Qoder, Sosmed). Filter ketat Elite L1, latency rendah (<2.5s), dan otomatis menyuntikkan IP ke database BansosRouter.
+* `[2]` 🕷️ **Racikan Scraper Brutal**: Pool 30+ IP aktif, rotasi IP tiap request, cocok untuk scraping marketplace & anti-block.
+* `[3]` ⚡ **Racikan Turbo Surfing**: Filter khusus node SG/ID/US dengan ping terendah (<350ms) untuk bypass blokir & streaming.
+* `[4]` 🚜 **Mode Petani 24 Jam**: Berjalan di latar belakang, otomatis memanen dan menyegarkan pool setiap 15 menit.
+* `[W]` 🏢 **Webshare Residential Hunter**: Panen otomatis 10-30 IP perumahan (Residential IP) gratis dengan AI Audio Captcha Solver untuk menembus Cloudflare Turnstile & registrasi high-security.
+
+### [Pilar 2] 📥 Ekspor File Mentah
+Ekspor instan ke berbagai format untuk software pihak ketiga:
+* `output/live_all.txt` (IP:Port)
+* `output/live_urls.txt` (URL Scheme)
+* `output/live_elite.txt` (Hanya High Anonymity)
+* `output/proxies.json` & `output/proxies.csv`
+
+### [Pilar 3] 🛠️ Bengkel Oprek Manual & Uji Tembus [T]
+* `[T]` **Live Identity Test**: Pembuktian langsung apakah IP asli tertutup sempurna lewat Gateway 8888.
+* `[M]` **Bengkel Oprek**: Bebas memilih protokol SOCKS5/HTTP, menyaring negara tertentu (ISO ID, US, SG, dll), atau menembak URL target tertentu.
 
 ---
 
@@ -39,11 +76,7 @@ Created and maintained by [@itzluthfi](https://github.com/itzluthfi).
 - **Target-Specific Validation**: Tests proxies directly against custom endpoints (e.g. `--target-url https://google.com` or e-commerce sites).
 - **Real-Time Handshake Benchmarking**: Measures round-trip latency in milliseconds against live endpoints.
 - **GeoIP & ASN Resolution**: Resolves country code, country name, city, and ISP for alive proxies.
-- **Target-Driven Early Stop**: Halts validation immediately once your desired quota of alive proxies is reached.
-- **Multi-Format Export**: Generates `live_all.txt`, `live_urls.txt`, `live_elite.txt`, `proxies.json`, and `proxies.csv`.
-- **Zero External Dependencies**: Works out-of-the-box on standard Python with optional acceleration via `curl_cffi` and `requests`.
-- **Automation Ready**: Pre-configured GitHub Actions workflow runs every 6 hours.
-- **9Router Integration**: Direct database injection into 9Router SQLite proxy pools via `--sync-9router`.
+- **BansosRouter & 9Router Auto-Discovery**: Smart auto-detection for local SQLite proxy pools (`--sync-9router auto`).
 
 ---
 

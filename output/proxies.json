@@ -1,24 +1,37 @@
 {
-  "generated_at": "2026-09-13T15:11:58.595802+00:00",
-  "total_alive": 1,
+  "generated_at": "2026-09-13T15:27:34.038066+00:00",
+  "total_alive": 2,
   "protocols": {
-    "http": 1,
+    "http": 2,
     "socks4": 0,
     "socks5": 0
   },
   "proxies": [
     {
-      "ip": "107.167.18.122",
-      "port": 443,
-      "proxy": "107.167.18.122:443",
+      "ip": "8.215.25.3",
+      "port": 2080,
+      "proxy": "8.215.25.3:2080",
       "protocol": "http",
-      "latency_sec": 2.202,
-      "latency_ms": 2202,
-      "egress_ip": "107.167.18.99",
-      "country": "United States",
-      "country_code": "US",
-      "city": "Los Angeles",
-      "isp": "Sharktech"
+      "latency_sec": 0.849,
+      "latency_ms": 849,
+      "egress_ip": "8.215.25.3",
+      "country": "Indonesia",
+      "country_code": "ID",
+      "city": "Jakarta",
+      "isp": "Alibaba (US) Technology Co., Ltd."
+    },
+    {
+      "ip": "202.169.250.148",
+      "port": 8111,
+      "proxy": "202.169.250.148:8111",
+      "protocol": "http",
+      "latency_sec": 2.431,
+      "latency_ms": 2431,
+      "egress_ip": "202.169.250.146",
+      "country": "Indonesia",
+      "country_code": "ID",
+      "city": "Jakarta",
+      "isp": "PT. Rabik Bangun Pertiwi"
     }
   ]
 }

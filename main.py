@@ -120,7 +120,105 @@ def run_harvester(
         print(f"  {idx}. {Fore.GREEN}{proto}://{p['proxy']}{Style.RESET_ALL} ({p['latency_ms']}ms) - [{p['country_code']}] {p['country']}")
     print(f"{Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Style.RESET_ALL}\n")
 
+def view_saved_results(output_dir: str = None):
+    if not output_dir:
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        output_dir = os.path.join(base_dir, "output")
+    json_file = os.path.join(output_dir, "proxies.json")
+    if not os.path.exists(json_file):
+        print(f"\n{Fore.YELLOW}Belum ada riwayat hasil proxy tersimpan di {output_dir}. Jalankan harvest dulu!{Style.RESET_ALL}")
+        return
+
+    import json
+    with open(json_file, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    print(f"\n{Fore.CYAN}📁 HASIL PROXY TERAKHIR DARI {json_file}:{Style.RESET_ALL}")
+    print(f"  • Terakhir diperbarui: {Fore.WHITE}{data.get('generated_at', '-')}{Style.RESET_ALL}")
+    print(f"  • Total proxy aktif  : {Fore.GREEN}{data.get('total_alive', 0)}{Style.RESET_ALL}")
+    print(f"  • Protokol           : {Fore.WHITE}{data.get('protocols', {})}{Style.RESET_ALL}\n")
+
+    proxies = data.get("proxies", [])
+    print(f"{Fore.CYAN}DAFTAR 10 PROXY TERCEPAT:{Style.RESET_ALL}")
+    for idx, p in enumerate(proxies[:10], 1):
+        proto = p.get('protocol', 'http').upper()
+        print(f"  {idx:>2}. {Fore.GREEN}{proto:<6}{Style.RESET_ALL} {Fore.WHITE}{p['proxy']:<21}{Style.RESET_ALL} | {Fore.YELLOW}{p['latency_ms']:>4}ms{Style.RESET_ALL} | [{p['country_code']}] {p['country']} ({p.get('isp', '-')[:22]})")
+
+def show_interactive_menu():
+    while True:
+        print(BANNER)
+        menu_box = f"""{Fore.CYAN}┌────────────────────────────────────────────────────────────────────────┐
+│                        {Fore.WHITE}{Style.BRIGHT}OMNIPROXY HARVESTER MENU{Fore.CYAN}                        │
+│                 {Fore.LIGHTBLACK_EX}High-Speed Multi-Protocol Scraper & Validator{Fore.CYAN}          │
+├────────────────────────────────────────────────────────────────────────┤
+│  {Fore.GREEN}[1]{Fore.WHITE} ⚡ Quick Harvest         {Fore.LIGHTBLACK_EX}Find 15 fastest proxies (All Protocols){Fore.CYAN}   │
+│  {Fore.GREEN}[2]{Fore.WHITE} 🔒 SOCKS5 Only           {Fore.LIGHTBLACK_EX}Harvest high-speed SOCKS5 proxies{Fore.CYAN}         │
+│  {Fore.GREEN}[3]{Fore.WHITE} 🌐 HTTP / HTTPS Only     {Fore.LIGHTBLACK_EX}Harvest web-browsing HTTP nodes{Fore.CYAN}           │
+│  {Fore.GREEN}[4]{Fore.WHITE} 🌍 Target by Country     {Fore.LIGHTBLACK_EX}Filter by ISO Code (ID, SG, US, DE, JP){Fore.CYAN}  │
+│  {Fore.GREEN}[5]{Fore.WHITE} 🚀 Deep Sweep            {Fore.LIGHTBLACK_EX}Thorough check (500+ candidates, 30 alive){Fore.CYAN}│
+│  {Fore.GREEN}[6]{Fore.WHITE} 🔄 Auto-Refresh Daemon   {Fore.LIGHTBLACK_EX}Loop run continuously every N minutes{Fore.CYAN}     │
+│  {Fore.GREEN}[7]{Fore.WHITE} 🔌 Sync to 9Router       {Fore.LIGHTBLACK_EX}Inject live proxies into 9Router SQLite{Fore.CYAN}   │
+│  {Fore.GREEN}[8]{Fore.WHITE} 📂 View Saved Output     {Fore.LIGHTBLACK_EX}Inspect last results in output/ directory{Fore.CYAN}│
+│  {Fore.RED}[0]{Fore.WHITE} ❌ Exit Program          {Fore.LIGHTBLACK_EX}Close terminal session{Fore.CYAN}                    │
+└────────────────────────────────────────────────────────────────────────┘{Style.RESET_ALL}"""
+        print(menu_box)
+        try:
+            choice = input(f"{Fore.YELLOW}Select option [0-8] (Default: 1): {Style.RESET_ALL}").strip()
+        except (KeyboardInterrupt, EOFError):
+            print(f"\n{Fore.YELLOW}Goodbye!{Style.RESET_ALL}")
+            break
+
+        if choice == "" or choice == "1":
+            run_harvester(protocols=["http", "socks4", "socks5"], max_check=250, target_alive=15, timeout=3.0)
+        elif choice == "2":
+            run_harvester(protocols=["socks5"], max_check=250, target_alive=15, timeout=3.0)
+        elif choice == "3":
+            run_harvester(protocols=["http"], max_check=250, target_alive=15, timeout=3.0)
+        elif choice == "4":
+            cc = input(f"{Fore.CYAN}Enter 2-letter Country Code (e.g. ID, SG, US, DE, JP) [default: ID]: {Style.RESET_ALL}").strip() or "ID"
+            t_input = input(f"{Fore.CYAN}Target alive count [default: 5]: {Style.RESET_ALL}").strip()
+            target_val = int(t_input) if t_input.isdigit() else 5
+            run_harvester(protocols=["http", "socks4", "socks5"], max_check=350, target_alive=target_val, country=cc, timeout=3.5)
+        elif choice == "5":
+            run_harvester(protocols=["http", "socks4", "socks5"], max_check=600, target_alive=30, timeout=2.5, workers=75)
+        elif choice == "6":
+            loop_str = input(f"{Fore.CYAN}Enter refresh interval in minutes [default: 20]: {Style.RESET_ALL}").strip()
+            loop_min = int(loop_str) if loop_str.isdigit() else 20
+            print(f"\n{Fore.MAGENTA}🔄 Auto-refresh active every {loop_min} minutes. Press Ctrl+C to return to menu.{Style.RESET_ALL}")
+            while True:
+                try:
+                    run_harvester(protocols=["http", "socks4", "socks5"], max_check=300, target_alive=20, timeout=3.0)
+                    print(f"{Fore.LIGHTBLACK_EX}Sleeping for {loop_min} minutes before next cycle...{Style.RESET_ALL}")
+                    time.sleep(loop_min * 60)
+                except KeyboardInterrupt:
+                    print(f"\n{Fore.YELLOW}Loop stopped.{Style.RESET_ALL}")
+                    break
+        elif choice == "7":
+            possible_path = "D:/FREELANCE/9router-mibp-version/data/db/data.sqlite"
+            custom_path = input(f"{Fore.CYAN}Enter 9Router data.sqlite path [press Enter for auto-detect]: {Style.RESET_ALL}").strip()
+            db_target = custom_path if custom_path else (possible_path if os.path.exists(possible_path) else None)
+            if db_target:
+                run_harvester(protocols=["http", "socks4", "socks5"], max_check=250, target_alive=15, sync_9router=db_target)
+            else:
+                print(f"{Fore.RED}Database 9Router tidak ditemukan.{Style.RESET_ALL}")
+        elif choice == "8":
+            view_saved_results()
+        elif choice == "0" or choice.lower() == "q":
+            print(f"\n{Fore.YELLOW}Terima kasih telah menggunakan OmniProxy Harvester! 👋{Style.RESET_ALL}\n")
+            break
+        else:
+            print(f"{Fore.RED}Pilihan tidak valid. Silakan pilih 0-8.{Style.RESET_ALL}")
+
+        try:
+            input(f"\n{Fore.LIGHTBLACK_EX}[Press Enter to return to menu...]{Style.RESET_ALL}")
+        except (KeyboardInterrupt, EOFError):
+            break
+
 def main():
+    if len(sys.argv) == 1:
+        show_interactive_menu()
+        return
+
     parser = argparse.ArgumentParser(description="OmniProxy Harvester - High-Speed Multi-Protocol Proxy Harvester")
     parser.add_argument("--protocol", "-p", choices=["all", "http", "socks4", "socks5"], default="all", help="Target proxy protocol (default: all)")
     parser.add_argument("--max", "-m", type=int, default=250, help="Maximum candidate proxies to validate (default: 250)")

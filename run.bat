@@ -1,6 +1,7 @@
 @echo off
 chcp 65001 >nul
 title PetaniProxy - Panen Proxy Segar by @itzluthfi
+mode con: cols=105 lines=38
 cd /d "%~dp0"
 
 echo ========================================================

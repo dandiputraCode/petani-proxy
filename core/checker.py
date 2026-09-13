@@ -1,12 +1,12 @@
 """
 OmniProxy Harvester - High-Speed Multi-Protocol Proxy Checker
-Tests connectivity, measures real-time latency, and enriches live proxies with GeoIP & ISP data.
+Tests connectivity, measures real-time latency, detects anonymity levels,
+and enriches live proxies with GeoIP & ISP data.
 Supports curl_cffi, requests, and zero-dependency urllib fallback.
 """
 import sys
 import time
 import json
-import asyncio
 import urllib.request
 import urllib.error
 from typing import List, Dict, Any, Optional
@@ -32,11 +32,78 @@ except ImportError:
     HAS_REQUESTS = False
 
 DEFAULT_TEST_URL = "https://api.ipify.org?format=json"
+_CACHED_HOST_IP: Optional[str] = None
 
-def test_single_proxy(proxy_info: Dict[str, Any], timeout: float = 3.0, test_url: str = DEFAULT_TEST_URL) -> Optional[Dict[str, Any]]:
+def get_host_ip() -> str:
+    """Retrieve host machine's external IP to detect transparent proxy leaks."""
+    global _CACHED_HOST_IP
+    if _CACHED_HOST_IP is not None:
+        return _CACHED_HOST_IP
+
+    endpoints = [
+        "https://api.ipify.org?format=json",
+        "https://icanhazip.com",
+        "https://ifconfig.me/ip"
+    ]
+    for url in endpoints:
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": "Mozilla/5.0"})
+            with urllib.request.urlopen(req, timeout=3.5) as resp:
+                raw = resp.read().decode("utf-8").strip()
+                if raw.startswith("{"):
+                    _CACHED_HOST_IP = json.loads(raw).get("ip", "").strip()
+                else:
+                    _CACHED_HOST_IP = raw.strip()
+                if _CACHED_HOST_IP:
+                    return _CACHED_HOST_IP
+        except Exception:
+            continue
+    _CACHED_HOST_IP = ""
+    return _CACHED_HOST_IP
+
+def classify_anonymity(headers_obj: Any, egress_ip: str, host_ip: str) -> str:
+    """
+    Classify proxy anonymity level:
+    - Transparent: Leaks real client IP
+    - Anonymous: Hides real client IP, but indicates proxy usage via headers
+    - Elite: Completely hides client IP and proxy presence
+    """
+    if host_ip and egress_ip and egress_ip == host_ip:
+        return "Transparent"
+
+    proxy_indicators = {
+        "via", "x-forwarded-for", "forwarded", "x-real-ip", 
+        "proxy-connection", "x-proxy-id", "x-cache"
+    }
+
+    found_proxy_header = False
+    items = []
+    if hasattr(headers_obj, "items"):
+        items = headers_obj.items()
+    elif isinstance(headers_obj, dict):
+        items = headers_obj.items()
+
+    for k, v in items:
+        k_low = str(k).lower()
+        v_str = str(v)
+        if host_ip and host_ip in v_str:
+            return "Transparent"
+        if k_low in proxy_indicators:
+            found_proxy_header = True
+
+    if found_proxy_header:
+        return "Anonymous"
+    return "Elite"
+
+def test_single_proxy(
+    proxy_info: Dict[str, Any], 
+    timeout: float = 3.0, 
+    test_url: str = DEFAULT_TEST_URL,
+    host_ip: str = ""
+) -> Optional[Dict[str, Any]]:
     """
     Test a single proxy candidate across its designated protocol.
-    Returns enriched dict if alive, None otherwise.
+    Returns enriched dict if alive and valid, None otherwise.
     """
     proxy_str = proxy_info["proxy"]
     proto = proxy_info.get("protocol", "http").lower()
@@ -47,10 +114,17 @@ def test_single_proxy(proxy_info: Dict[str, Any], timeout: float = 3.0, test_url
     try:
         if HAS_CURL_CFFI:
             resp = curl_requests.get(test_url, proxies=proxies, timeout=timeout)
-            if resp.status_code == 200:
+            status_code = resp.status_code
+            if 200 <= status_code < 400:
                 elapsed = round(time.perf_counter() - t0, 3)
-                data = resp.json()
-                public_ip = data.get("ip", proxy_info.get("ip", ""))
+                public_ip = proxy_info.get("ip", proxy_str.split(":")[0])
+                try:
+                    data = resp.json()
+                    public_ip = data.get("ip", public_ip)
+                except Exception:
+                    pass
+                
+                anon = classify_anonymity(resp.headers, public_ip, host_ip)
                 return {
                     "ip": proxy_info.get("ip", proxy_str.split(":")[0]),
                     "port": proxy_info.get("port", int(proxy_str.split(":")[1])),
@@ -59,6 +133,7 @@ def test_single_proxy(proxy_info: Dict[str, Any], timeout: float = 3.0, test_url
                     "latency_sec": elapsed,
                     "latency_ms": int(elapsed * 1000),
                     "egress_ip": public_ip,
+                    "anonymity": anon,
                     "country": "Unknown",
                     "country_code": "??",
                     "city": "-",
@@ -66,10 +141,17 @@ def test_single_proxy(proxy_info: Dict[str, Any], timeout: float = 3.0, test_url
                 }
         elif HAS_REQUESTS:
             resp = requests.get(test_url, proxies=proxies, timeout=timeout)
-            if resp.status_code == 200:
+            status_code = resp.status_code
+            if 200 <= status_code < 400:
                 elapsed = round(time.perf_counter() - t0, 3)
-                data = resp.json()
-                public_ip = data.get("ip", proxy_info.get("ip", ""))
+                public_ip = proxy_info.get("ip", proxy_str.split(":")[0])
+                try:
+                    data = resp.json()
+                    public_ip = data.get("ip", public_ip)
+                except Exception:
+                    pass
+                
+                anon = classify_anonymity(resp.headers, public_ip, host_ip)
                 return {
                     "ip": proxy_info.get("ip", proxy_str.split(":")[0]),
                     "port": proxy_info.get("port", int(proxy_str.split(":")[1])),
@@ -78,6 +160,7 @@ def test_single_proxy(proxy_info: Dict[str, Any], timeout: float = 3.0, test_url
                     "latency_sec": elapsed,
                     "latency_ms": int(elapsed * 1000),
                     "egress_ip": public_ip,
+                    "anonymity": anon,
                     "country": "Unknown",
                     "country_code": "??",
                     "city": "-",
@@ -89,10 +172,17 @@ def test_single_proxy(proxy_info: Dict[str, Any], timeout: float = 3.0, test_url
             opener = urllib.request.build_opener(proxy_handler)
             req = urllib.request.Request(test_url, headers={"User-Agent": "Mozilla/5.0"})
             with opener.open(req, timeout=timeout) as resp:
-                if resp.status == 200:
+                status_code = resp.status
+                if 200 <= status_code < 400:
                     elapsed = round(time.perf_counter() - t0, 3)
-                    data = json.loads(resp.read().decode("utf-8"))
-                    public_ip = data.get("ip", proxy_info.get("ip", ""))
+                    public_ip = proxy_info.get("ip", proxy_str.split(":")[0])
+                    try:
+                        data = json.loads(resp.read().decode("utf-8"))
+                        public_ip = data.get("ip", public_ip)
+                    except Exception:
+                        pass
+                    
+                    anon = classify_anonymity(resp.headers, public_ip, host_ip)
                     return {
                         "ip": proxy_info.get("ip", proxy_str.split(":")[0]),
                         "port": proxy_info.get("port", int(proxy_str.split(":")[1])),
@@ -101,6 +191,7 @@ def test_single_proxy(proxy_info: Dict[str, Any], timeout: float = 3.0, test_url
                         "latency_sec": elapsed,
                         "latency_ms": int(elapsed * 1000),
                         "egress_ip": public_ip,
+                        "anonymity": anon,
                         "country": "Unknown",
                         "country_code": "??",
                         "city": "-",
@@ -164,21 +255,34 @@ def check_proxies_pool(
     timeout: float = 3.0,
     max_workers: int = 60,
     country_filter: Optional[str] = None,
+    anonymity_filter: Optional[str] = None,
+    test_url: str = DEFAULT_TEST_URL,
     on_live_callback = None
 ) -> List[Dict[str, Any]]:
     """
     Concurrently check candidate proxies with early stop when target_alive is reached.
+    Supports country and anonymity filtering, plus custom target URLs.
     Sorts verified proxies by lowest latency.
     """
     to_test = candidates[:max_check]
     alive_list: List[Dict[str, Any]] = []
+    host_ip = get_host_ip()
 
     with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as executor:
-        future_to_proxy = {executor.submit(test_single_proxy, p, timeout): p for p in to_test}
+        future_to_proxy = {
+            executor.submit(test_single_proxy, p, timeout, test_url, host_ip): p 
+            for p in to_test
+        }
         
         for future in concurrent.futures.as_completed(future_to_proxy):
             res = future.result()
             if res:
+                # Anonymity filter check
+                if anonymity_filter and anonymity_filter.lower() != "all":
+                    if res.get("anonymity", "").lower() != anonymity_filter.lower():
+                        continue
+
+                # Country filter check
                 if country_filter:
                     c_upper = country_filter.upper()
                     try:

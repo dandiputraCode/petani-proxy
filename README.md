@@ -33,11 +33,16 @@ Created and maintained by [@itzluthfi](https://github.com/itzluthfi).
 
 - **Large-Scale Aggregation**: Harvests **115,000+ unique candidates** across 30+ feeds in under 3 seconds.
 - **Multi-Protocol Support**: Handles **HTTP**, **HTTPS**, **SOCKS4**, and **SOCKS5**.
-- **Real-Time Handshake Benchmarking**: Measures accurate round-trip latency (in milliseconds) against live endpoints (`https://api.ipify.org`).
-- **GeoIP & ASN Resolution**: Resolves country code, country name, city, and ISP for alive proxies using batch requests.
-- **Target-Driven Early Stop**: Halts validation as soon as your requested quota of live nodes is met.
-- **Multi-Format Export**: Generates plain text lists, URL lists (`protocol://ip:port`), structured JSON, and CSV tables.
-- **Automation Ready**: Pre-configured GitHub Actions workflow runs every 6 hours to maintain fresh proxy lists in your repository.
+- **Local Rotating Gateway**: Runs a local HTTP/HTTPS forward proxy on `127.0.0.1:8888` that automatically load-balances and rotates requests across live proxies.
+- **Built-in REST API**: Instant endpoints (`/api/random`, `/api/all`, `/api/status`) for programmatic integration with bots and scrapers.
+- **Anonymity Level Detection**: Classifies proxies into **Elite (High Anonymous)**, **Anonymous**, and **Transparent** by detecting header leaks.
+- **Target-Specific Validation**: Tests proxies directly against custom endpoints (e.g. `--target-url https://google.com` or e-commerce sites).
+- **Real-Time Handshake Benchmarking**: Measures round-trip latency in milliseconds against live endpoints.
+- **GeoIP & ASN Resolution**: Resolves country code, country name, city, and ISP for alive proxies.
+- **Target-Driven Early Stop**: Halts validation immediately once your desired quota of alive proxies is reached.
+- **Multi-Format Export**: Generates `live_all.txt`, `live_urls.txt`, `live_elite.txt`, `proxies.json`, and `proxies.csv`.
+- **Zero External Dependencies**: Works out-of-the-box on standard Python with optional acceleration via `curl_cffi` and `requests`.
+- **Automation Ready**: Pre-configured GitHub Actions workflow runs every 6 hours.
 - **9Router Integration**: Direct database injection into 9Router SQLite proxy pools via `--sync-9router`.
 
 ---
@@ -116,34 +121,52 @@ pip install -r requirements.txt
 
 ## Usage
 
-### 1. Basic Harvest
-Validate candidates across all protocols and find 15 live proxies:
+### 1. Interactive Terminal UI Mode
+Simply launch without arguments for the styled interactive menu:
 ```bash
 python main.py
 ```
 
-### 2. Protocol Filtering
-Filter specifically for SOCKS5 or HTTP proxies:
+### 2. Local Rotating Proxy Server & REST API Gateway
+Start a local proxy gateway and REST API on port `8888`:
 ```bash
-python main.py --protocol socks5 --target 20 --timeout 2.5
-python main.py --protocol http --target 25
+python main.py --serve 8888 --target 20
+```
+- **Forward Traffic**: Send your scraper or browser traffic to `http://127.0.0.1:8888`. OmniProxy automatically rotates requests across verified live proxies.
+  ```bash
+  curl -x http://127.0.0.1:8888 https://api.ipify.org
+  ```
+- **REST API Endpoints**:
+  - `GET http://127.0.0.1:8888/api/random` — Get a single fast live proxy.
+  - `GET http://127.0.0.1:8888/api/all` — Get all alive proxies in JSON.
+  - `GET http://127.0.0.1:8888/api/status` — Get pool health, request count, and uptime stats.
+
+### 3. Filter by Anonymity Level
+Filter strictly for High Anonymous (**Elite**) proxies with zero IP or header leaks:
+```bash
+python main.py --anonymity elite --target 15
 ```
 
-### 3. Country Filtering
-Target proxies within a designated country code:
+### 4. Target-Specific Website Validation
+Verify proxies directly against a custom website to ensure they are not blocked:
 ```bash
-python main.py --country US --target 10
-python main.py --country SG --target 10
-python main.py --country ID --target 5
+python main.py --target-url https://google.com --target 10
+python main.py --target-url https://shopee.co.id --target 10
 ```
 
-### 4. Continuous Background Daemon
+### 5. Protocol & Country Filtering
+```bash
+python main.py --protocol socks5 --country US --target 10
+python main.py --protocol http --country ID --target 5
+```
+
+### 6. Continuous Background Daemon
 Run a scheduled sweep every 30 minutes:
 ```bash
 python main.py --loop 30 --target 30
 ```
 
-### 5. 9Router SQLite Sync
+### 7. 9Router SQLite Sync
 Sync live proxies directly into 9Router:
 ```bash
 python main.py --sync-9router auto
@@ -156,8 +179,10 @@ python main.py --sync-9router auto
 ```text
 usage: main.py [-h] [--protocol {all,http,socks4,socks5}] [--max MAX]
                [--target TARGET] [--timeout TIMEOUT] [--workers WORKERS]
-               [--country COUNTRY] [--loop LOOP] [--output OUTPUT]
-               [--sync-9router SYNC_9ROUTER]
+               [--country COUNTRY]
+               [--anonymity {all,elite,anonymous,transparent}]
+               [--target-url TARGET_URL] [--serve [SERVE]] [--loop LOOP]
+               [--output OUTPUT] [--sync-9router SYNC_9ROUTER]
 
 options:
   -h, --help            Show this help message and exit
@@ -167,6 +192,9 @@ options:
   --timeout             Connection timeout in seconds (default: 3.0)
   --workers, -w         Concurrent testing workers (default: 50)
   --country, -c         Filter by ISO 2-letter country code (e.g. US, SG, ID, DE)
+  --anonymity           Filter by anonymity level: all, elite, anonymous, transparent
+  --target-url          Validate proxies against specific website (default: api.ipify.org)
+  --serve [PORT]        Start local rotating forward proxy & REST API (default port: 8888)
   --loop, -l            Auto-refresh loop interval in minutes (0 = single run)
   --output, -o          Custom output directory (default: output/)
   --sync-9router        Path to 9Router SQLite data.sqlite or 'auto'

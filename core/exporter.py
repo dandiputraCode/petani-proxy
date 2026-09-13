@@ -26,20 +26,27 @@ def export_all_formats(
 
     generated_files = {}
 
-    # 1. Plain Text Exporter (Categorized by protocol + unified all)
+    # 1. Plain Text Exporter (Categorized by protocol + unified all + elite)
     by_proto = {"http": [], "socks4": [], "socks5": []}
+    by_anon = {"Elite": [], "Anonymous": [], "Transparent": []}
     all_lines_raw = []
     all_lines_url = []
+    elite_lines = []
 
     for p in live_proxies:
         proto = p.get("protocol", "http").lower()
         proxy_raw = p["proxy"]
         proxy_url = f"{proto}://{proxy_raw}"
+        anon = p.get("anonymity", "Elite")
         
         all_lines_raw.append(proxy_raw)
         all_lines_url.append(proxy_url)
         if proto in by_proto:
             by_proto[proto].append(proxy_raw)
+        if anon in by_anon:
+            by_anon[anon].append(proxy_raw)
+        if anon == "Elite":
+            elite_lines.append(proxy_url)
 
     # Save live_all.txt
     all_txt_path = os.path.join(output_dir, "live_all.txt")
@@ -52,6 +59,12 @@ def export_all_formats(
     with open(all_url_path, "w", encoding="utf-8") as f:
         f.write("\n".join(all_lines_url) + ("\n" if all_lines_url else ""))
     generated_files["urls_txt"] = all_url_path
+
+    # Save live_elite.txt
+    elite_path = os.path.join(output_dir, "live_elite.txt")
+    with open(elite_path, "w", encoding="utf-8") as f:
+        f.write("\n".join(elite_lines) + ("\n" if elite_lines else ""))
+    generated_files["elite_txt"] = elite_path
 
     # Save per-protocol txt files
     for proto, items in by_proto.items():
@@ -66,6 +79,7 @@ def export_all_formats(
         "generated_at": datetime.datetime.now(datetime.timezone.utc).isoformat(),
         "total_alive": len(live_proxies),
         "protocols": {proto: len(items) for proto, items in by_proto.items()},
+        "anonymity": {anon: len(items) for anon, items in by_anon.items()},
         "proxies": live_proxies
     }
     with open(json_path, "w", encoding="utf-8") as f:
@@ -75,7 +89,7 @@ def export_all_formats(
     # 3. CSV Exporter
     csv_path = os.path.join(output_dir, "proxies.csv")
     fieldnames = [
-        "protocol", "ip", "port", "proxy", "latency_ms", 
+        "protocol", "ip", "port", "proxy", "anonymity", "latency_ms", 
         "country_code", "country", "city", "isp", "egress_ip"
     ]
     with open(csv_path, "w", newline="", encoding="utf-8") as f:

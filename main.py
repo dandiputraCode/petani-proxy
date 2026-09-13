@@ -37,6 +37,7 @@ BANNER = f"""{Fore.CYAN}{Style.BRIGHT}
   ╚═════╝ ╚═╝     ╚═╝╚═╝  ╚═══╝╚═╝╚═╝     ╚═╝  ╚═╝ ╚═════╝ ╚═╝  ╚═╝   ╚═╝   
 {Fore.WHITE}      High-Speed Multi-Protocol Open-Source Proxy Harvester & Validator
 {Fore.YELLOW}                  [HTTP • HTTPS • SOCKS4 • SOCKS5 • GeoIP]
+{Fore.LIGHTBLACK_EX}             Created & Maintained by {Fore.CYAN}@itzluthfi{Fore.LIGHTBLACK_EX} (github.com/itzluthfi)
 {Style.RESET_ALL}"""
 
 def print_live_proxy(proxy_res: dict, current_count: int, target: int):
@@ -160,6 +161,8 @@ def show_interactive_menu():
 │  {Fore.GREEN}[7]{Fore.WHITE} 🔌 Sync to 9Router       {Fore.LIGHTBLACK_EX}Inject live proxies into 9Router SQLite{Fore.CYAN}   │
 │  {Fore.GREEN}[8]{Fore.WHITE} 📂 View Saved Output     {Fore.LIGHTBLACK_EX}Inspect last results in output/ directory{Fore.CYAN}│
 │  {Fore.RED}[0]{Fore.WHITE} ❌ Exit Program          {Fore.LIGHTBLACK_EX}Close terminal session{Fore.CYAN}                    │
+├────────────────────────────────────────────────────────────────────────┤
+│  {Fore.LIGHTBLACK_EX}Maintainer: {Fore.YELLOW}@itzluthfi{Fore.LIGHTBLACK_EX}          Repository: {Fore.WHITE}github.com/itzluthfi{Fore.CYAN}       │
 └────────────────────────────────────────────────────────────────────────┘{Style.RESET_ALL}"""
         print(menu_box)
         try:

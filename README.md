@@ -6,10 +6,13 @@
 
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Python Version](https://img.shields.io/badge/python-3.9%2B-blue.svg)](https://www.python.org/)
+[![Maintainer](https://img.shields.io/badge/maintainer-itzluthfi-blueviolet.svg)](https://github.com/itzluthfi)
 [![Protocols](https://img.shields.io/badge/protocols-HTTP%20%7C%20HTTPS%20%7C%20SOCKS4%20%7C%20SOCKS5-green.svg)](#supported-protocols)
 [![GitHub Actions](https://img.shields.io/badge/actions-automated%20harvest-brightgreen.svg)](.github/workflows/auto_harvest.yml)
 
 OmniProxy Harvester concurrently extracts, deduplicates, and benchmarks public proxy lists from 30+ open-source upstream feeds. It tests real-world handshake latency against live endpoints, resolves country codes and ISP information, and outputs verified lists in TXT, JSON, and CSV.
+
+Created and maintained by [@itzluthfi](https://github.com/itzluthfi).
 
 </div>
 
@@ -214,8 +217,15 @@ This repository contains [`.github/workflows/auto_harvest.yml`](.github/workflow
 2. It executes `main.py`, validates live nodes, and commits updated files in `output/`.
 3. Your repository acts as a live, self-updating raw proxy endpoint:
    ```text
-   https://raw.githubusercontent.com/<user>/<repo>/main/output/live_all.txt
+   https://raw.githubusercontent.com/itzluthfi/omni-proxy-harvester/main/output/live_all.txt
    ```
+
+---
+
+## Author & Maintainer
+
+- **itzluthfi**: [GitHub Profile](https://github.com/itzluthfi)
+- Pull requests, issues, and star contributions are welcome!
 
 ---
 
@@ -228,3 +238,4 @@ This project collects and tests publicly accessible proxy lists for research, au
 ## License
 
 Licensed under the [MIT License](LICENSE).
+Copyright (c) 2026 itzluthfi.

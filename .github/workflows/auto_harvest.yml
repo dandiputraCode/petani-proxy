@@ -1,0 +1,40 @@
+name: Auto Proxy Harvester
+
+on:
+  schedule:
+    # Run every 6 hours
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  harvest:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run OmniProxy Harvester
+        run: |
+          python main.py --max 400 --target 50 --timeout 2.5
+
+      - name: Commit and push updated proxies
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add output/
+          git diff --quiet && git diff --staged --quiet || (git commit -m "chore(proxies): auto-update live verified proxies [skip ci]" && git push)

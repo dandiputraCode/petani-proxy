@@ -39,3 +39,10 @@ ENV/
 
 # Output cache (optional: comment out if you want to commit verified proxies to Git)
 # output/
+
+# Local custom automation scripts & private runners (never commit or push)
+local_*.py
+local_*.bat
+*.local.bat
+*.local.sh
+local_config.json

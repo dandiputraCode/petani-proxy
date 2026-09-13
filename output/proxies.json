@@ -1,50 +1,24 @@
 {
-  "generated_at": "2026-09-13T15:04:15.099027+00:00",
-  "total_alive": 3,
+  "generated_at": "2026-09-13T15:11:58.595802+00:00",
+  "total_alive": 1,
   "protocols": {
-    "http": 3,
+    "http": 1,
     "socks4": 0,
     "socks5": 0
   },
   "proxies": [
     {
-      "ip": "213.163.196.45",
-      "port": 80,
-      "proxy": "213.163.196.45:80",
+      "ip": "107.167.18.122",
+      "port": 443,
+      "proxy": "107.167.18.122:443",
       "protocol": "http",
-      "latency_sec": 0.531,
-      "latency_ms": 531,
-      "egress_ip": "213.163.196.45",
-      "country": "Singapore",
-      "country_code": "SG",
-      "city": "Singapore",
-      "isp": "UpCloud Ltd"
-    },
-    {
-      "ip": "103.237.102.191",
-      "port": 11111,
-      "proxy": "103.237.102.191:11111",
-      "protocol": "http",
-      "latency_sec": 1.305,
-      "latency_ms": 1305,
-      "egress_ip": "103.237.102.191",
-      "country": "Germany",
-      "country_code": "DE",
-      "city": "Frankfurt am Main",
-      "isp": "Zenlayer Inc"
-    },
-    {
-      "ip": "184.75.221.82",
-      "port": 3118,
-      "proxy": "184.75.221.82:3118",
-      "protocol": "http",
-      "latency_sec": 1.879,
-      "latency_ms": 1879,
-      "egress_ip": "184.75.221.82",
-      "country": "Canada",
-      "country_code": "CA",
-      "city": "Toronto",
-      "isp": "Amanah Tech Inc."
+      "latency_sec": 2.202,
+      "latency_ms": 2202,
+      "egress_ip": "107.167.18.99",
+      "country": "United States",
+      "country_code": "US",
+      "city": "Los Angeles",
+      "isp": "Sharktech"
     }
   ]
 }

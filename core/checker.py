@@ -115,6 +115,23 @@ def check_proxies_pool(
         for future in concurrent.futures.as_completed(future_to_proxy):
             res = future.result()
             if res:
+                if country_filter:
+                    c_upper = country_filter.upper()
+                    try:
+                        qr = requests.get(f"http://ip-api.com/json/{res['ip']}?fields=country,countryCode,city,isp,status", timeout=2.5)
+                        if qr.status_code == 200:
+                            cd = qr.json()
+                            if cd.get("status") == "success":
+                                res["country"] = cd.get("country", "Unknown")
+                                res["country_code"] = cd.get("countryCode", "??")
+                                res["city"] = cd.get("city", "-")
+                                res["isp"] = cd.get("isp", "-")
+                    except Exception:
+                        pass
+
+                    if res.get("country_code") != c_upper and res.get("country", "").upper() != c_upper:
+                        continue
+
                 alive_list.append(res)
                 if on_live_callback:
                     on_live_callback(res, len(alive_list), target_alive)
@@ -124,14 +141,9 @@ def check_proxies_pool(
                         f.cancel()
                     break
 
-    # Enrich with GeoIP
-    if alive_list:
+    # Enrich with GeoIP for general runs
+    if alive_list and not country_filter:
         batch_enrich_geoip(alive_list)
-
-    # Apply country filter if specified
-    if country_filter:
-        c_upper = country_filter.upper()
-        alive_list = [p for p in alive_list if p.get("country_code") == c_upper or p.get("country", "").upper() == c_upper]
 
     # Sort by lowest latency
     alive_list.sort(key=lambda x: x["latency_ms"])

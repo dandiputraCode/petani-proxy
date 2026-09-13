@@ -70,7 +70,7 @@ def run_harvester(
 ):
     t_start = time.perf_counter()
     print(f"\n{Fore.YELLOW}⚡ [1/3] Scraping raw candidates from open-source feeds...{Style.RESET_ALL}")
-    candidates = fetch_proxies_sync(protocols=protocols)
+    candidates = fetch_proxies_sync(protocols=protocols, country_filter=country)
     
     if not candidates:
         print(f"{Fore.RED}❌ Gagal mengambil kandidat proxy dari feed.{Style.RESET_ALL}")

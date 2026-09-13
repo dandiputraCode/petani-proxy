@@ -59,6 +59,7 @@ async def fetch_single_source(client: httpx.AsyncClient, url: str, protocol: str
 
 async def fetch_all_proxies(
     protocols: Optional[List[str]] = None, 
+    country_filter: Optional[str] = None,
     config_path: Optional[str] = None,
     verbose: bool = True
 ) -> List[Dict[str, str]]:
@@ -81,10 +82,14 @@ async def fetch_all_proxies(
         for proto in target_protocols:
             urls = sources.get(proto, [])
             for url in urls:
-                tasks.append(fetch_single_source(client, url, proto))
+                target_url = url
+                if country_filter and "proxyscrape.com" in target_url and "country=all" in target_url:
+                    target_url = target_url.replace("country=all", f"country={country_filter.upper()}")
+                tasks.append(fetch_single_source(client, target_url, proto))
 
         if verbose:
-            print(f"🌐 Fetching raw proxies from {len(tasks)} verified source feeds...")
+            c_info = f" (Country: {country_filter.upper()})" if country_filter else ""
+            print(f"🌐 Fetching raw proxies from {len(tasks)} verified source feeds{c_info}...")
 
         results = await asyncio.gather(*tasks)
 
@@ -107,6 +112,11 @@ async def fetch_all_proxies(
 
     return unique_candidates
 
-def fetch_proxies_sync(protocols: Optional[List[str]] = None, config_path: Optional[str] = None) -> List[Dict[str, str]]:
+def fetch_proxies_sync(
+    protocols: Optional[List[str]] = None, 
+    country_filter: Optional[str] = None,
+    config_path: Optional[str] = None
+) -> List[Dict[str, str]]:
     """Synchronous convenience wrapper around fetch_all_proxies."""
-    return asyncio.run(fetch_all_proxies(protocols=protocols, config_path=config_path))
+    return asyncio.run(fetch_all_proxies(protocols=protocols, country_filter=country_filter, config_path=config_path))
+

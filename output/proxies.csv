@@ -1,8 +1,28 @@
 protocol,ip,port,proxy,anonymity,latency_ms,country_code,country,city,isp,egress_ip
-socks5,5.75.133.113,10811,5.75.133.113:10811,Elite,1557,DE,Germany,Nuremberg,Hetzner Online GmbH,37.19.199.242
-socks5,193.25.215.182,22222,193.25.215.182:22222,Elite,1654,US,United States,Los Angeles,"ReadyDedis, LLC",193.25.215.182
-socks5,65.21.252.66,10811,65.21.252.66:10811,Elite,2055,FI,Finland,Helsinki,Hetzner Online GmbH,45.139.253.3
-socks5,45.74.31.42,11656,45.74.31.42:11656,Elite,2083,NL,The Netherlands,Eygelshoven,Secure Internet LLC,194.164.192.228
-socks5,43.160.255.142,7890,43.160.255.142:7890,Elite,2094,SG,Singapore,Singapore,Aceville Pte.ltd,43.160.255.142
-socks5,186.26.95.249,61445,186.26.95.249:61445,Elite,2319,BR,Brazil,São João de Meriti,Nosso Wi-fi Ltda,186.26.95.249
-socks5,152.53.183.107,8081,152.53.183.107:8081,Elite,2723,DE,Germany,Nuremberg,netcup GmbH,152.53.183.107
+http,107.167.18.122,443,107.167.18.122:443,Elite,107,US,United States,Los Angeles,Sharktech,107.167.18.99
+http,184.75.221.82,3118,184.75.221.82:3118,Elite,288,CA,Canada,Toronto,Amanah Tech Inc.,184.75.221.82
+http,38.51.207.104,8080,38.51.207.104:8080,Elite,614,VE,Venezuela,Maracaibo,Tecnoven Services C.A,38.51.207.106
+http,89.110.124.45,8888,89.110.124.45:8888,Elite,684,NL,The Netherlands,Amsterdam,Servers Tech Fzco,89.110.124.45
+http,103.237.102.191,11111,103.237.102.191:11111,Elite,693,DE,Germany,Frankfurt am Main,Zenlayer Inc,103.237.102.191
+http,190.97.236.128,999,190.97.236.128:999,Elite,694,VE,Venezuela,Maporal,Viginet C.A,153.51.201.35
+http,190.97.236.129,999,190.97.236.129:999,Elite,753,VE,Venezuela,San Carlos del Zulia,Viginet C.A,153.51.201.35
+http,101.32.65.42,8888,101.32.65.42:8888,Elite,826,HK,Hong Kong,Hong Kong,Aceville Pte.ltd,101.32.72.181
+http,62.238.59.40,443,62.238.59.40:443,Elite,893,FI,Finland,Helsinki,Hetzner Online GmbH,62.238.59.40
+http,167.86.104.220,80,167.86.104.220:80,Elite,905,FR,France,Lauterbourg,Contabo GmbH,167.86.104.220
+http,194.87.208.22,443,194.87.208.22:443,Elite,925,NL,The Netherlands,Amsterdam,"Timeweb, LLP",194.87.208.22
+http,185.103.202.23,8085,185.103.202.23:8085,Elite,926,TR,Turkey,Beyoğlu,HDM Dijital Hizmetleri Ticaret Limited Sirketi,185.103.202.23
+http,84.8.216.230,2001,84.8.216.230:2001,Elite,957,MA,Morocco,Casablanca,Oracle Corporation,84.8.216.230
+http,139.135.170.12,8082,139.135.170.12:8082,Elite,985,PH,Philippines,Tarlac City,Converge Information and Communications Technology Solutions,139.135.170.12
+http,14.251.13.20,8080,14.251.13.20:8080,Elite,1095,VN,Vietnam,Hanoi,VNPT,14.251.13.20
+http,95.3.69.222,8080,95.3.69.222:8080,Elite,1116,TR,Türkiye,Istanbul,Turk Telekomunikasyon Anonim Sirketi,95.3.69.222
+http,47.81.56.193,8888,47.81.56.193:8888,Elite,1135,TH,Thailand,Bangkok,Alibaba.com LLC,47.81.56.193
+http,124.217.6.117,8080,124.217.6.117:8080,Elite,1216,PH,Philippines,Cebu City,Philippine Long Distance Telephone Co.,124.217.6.117
+http,119.95.176.156,8082,119.95.176.156:8082,Elite,1266,PH,Philippines,San Fernando City,Philippine Long Distance Telephone Co.,119.95.176.156
+http,51.161.123.224,8080,51.161.123.224:8080,Elite,1306,CA,Canada,Beauharnois,OVH SAS,51.161.123.224
+http,37.59.125.131,8888,37.59.125.131:8888,Elite,1321,FR,France,Roubaix,OVH SAS,82.66.253.58
+http,210.211.113.33,80,210.211.113.33:80,Elite,1665,VN,Vietnam,Ho Chi Minh City,VTDC,210.211.113.33
+http,43.156.199.63,8080,43.156.199.63:8080,Elite,1674,SG,Singapore,Singapore,Shenzhen Tencent Computer Systems Company Limited,43.156.199.63
+http,213.163.196.45,80,213.163.196.45:80,Elite,1840,SG,Singapore,Singapore,UpCloud Ltd,213.163.196.45
+http,165.154.162.73,8888,165.154.162.73:8888,Elite,2016,US,United States,Los Angeles,UCLOUD INFORMATION TECHNOLOGY (HK) LIMITED,165.154.162.73
+http,154.59.56.78,999,154.59.56.78:999,Elite,2170,VE,Venezuela,Santa Cruz de Mora,Cogent Communications,154.59.56.77
+http,8.215.112.240,7777,8.215.112.240:7777,Elite,2363,ID,Indonesia,Jakarta,"Alibaba (US) Technology Co., Ltd.",8.215.112.240

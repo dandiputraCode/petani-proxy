@@ -148,15 +148,17 @@ Kalo PetaniProxy ngebantu lu ngurangin pengeluaran sewa proxy atau bikin project
 
 <div align="center">
 
-<br>
+<img src="assets/sticker.png" width="220" alt="DAHSYAT Meme">
 
-<img src="assets/qris.png" width="260" alt="QRIS Donasi PetaniProxy">
+<br>
+<i>"Proxy lancar, kuota aman, hati tenang. DAHSYAT!"</i>
+<br><br>
+
+<img src="assets/qris.png" width="280" alt="QRIS Donasi PetaniProxy">
 
 <br><br>
-<b>Bisa scan via BCA, GoPay, OVO, DANA, ShopeePay, LinkAja, atau Mobile Banking apa aja.</b>
-
-<br>
-<sub><i>(Punya file QRIS sendiri? Cukup letakkan gambar QRIS lu di <code>assets/qris.png</code>, otomatis tampil di sini!)</i></sub>
+<b>Bisa scan via BCA, GoPay, OVO, DANA, ShopeePay, LinkAja, atau Mobile Banking apa aja.</b><br>
+<sub>Atas Nama: <b>Luthfi Shidqi Habibulloh (Digital & Kreatif)</b> • NMID: <code>ID1026591157593</code></sub>
 
 </div>
 

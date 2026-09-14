@@ -30,6 +30,13 @@ from core.fetcher import fetch_proxies_sync
 from core.checker import check_proxies_pool, DEFAULT_TEST_URL
 from core.exporter import export_all_formats
 from core.server import start_proxy_server
+from core.updater import (
+    get_local_version_info,
+    check_for_updates,
+    render_update_banner,
+    show_full_announcement,
+    perform_update
+)
 
 BANNER = f"""{Fore.CYAN}{Style.BRIGHT}
   ██████╗ ███████╗████████╗ █████╗ ███╗   ██╗██╗██████╗ ██████╗  ██████╗ ██╗  ██╗██╗   ██╗
@@ -413,11 +420,32 @@ def show_manual_menu():
 
 def show_interactive_menu():
     global CURRENT_LANG
+    update_checked = False
+    cached_update_info = None
+
     while True:
+        # Check update once per app session (cached)
+        if not update_checked:
+            update_checked = True
+            try:
+                cached_update_info = check_for_updates(timeout=2.0)
+            except Exception:
+                cached_update_info = None
+
         print(BANNER)
+
+        # Show update banner if new version is available!
+        if cached_update_info and cached_update_info.get("has_update"):
+            print(render_update_banner(cached_update_info, lang=CURRENT_LANG))
+            print()
+
+        local_info = get_local_version_info()
+        local_ver = local_info.get("version", "1.0.0")
+
         if CURRENT_LANG == "ID":
+            u_line = f"│  {Fore.YELLOW}{Style.BRIGHT}[U]{Fore.WHITE}{Style.BRIGHT} 🚀 Update Tersedia!       {Fore.GREEN}v{cached_update_info.get('remote_version')} (Fitur baru siap update!)   {Fore.CYAN}│" if (cached_update_info and cached_update_info.get("has_update")) else f"│  {Fore.GREEN}[U]{Fore.WHITE} 🔄 Cek & Update Versi     {Fore.LIGHTBLACK_EX}Auto-update 1-klik via Git (v{local_ver})      {Fore.CYAN}│"
             menu_box = f"""{Fore.CYAN}┌────────────────────────────────────────────────────────────────────────┐
-│                   {Fore.WHITE}{Style.BRIGHT}🌾 PETANIPROXY v1.0 (PUSAT AMUNISI PROXY){Fore.CYAN}                   │
+│                   {Fore.WHITE}{Style.BRIGHT}🌾 PETANIPROXY v{local_ver} (PUSAT AMUNISI PROXY){Fore.CYAN}                 │
 │          {Fore.LIGHTBLACK_EX}Amunisi Proxy Anti-Tumbang, Siap Diajak Tempur 24/7 Gaspol!{Fore.CYAN}   │
 ├────────────────────────────────────────────────────────────────────────┤
 │  {Fore.YELLOW}{Style.BRIGHT}⭐ [MVP] AMUNISI SULTAN: IP RESIDENTIAL (TEMBUS CLOUDFLARE):{Fore.CYAN}            │
@@ -435,7 +463,8 @@ def show_interactive_menu():
 │  {Fore.CYAN}[E]{Fore.WHITE} 📥 Bungkus File Mentah    {Fore.LIGHTBLACK_EX}Sedot TXT (IP:Port / URL), JSON, CSV buat bot lu{Fore.CYAN}│
 │  {Fore.CYAN}[T]{Fore.WHITE} 🧪 Uji Kesaktian Topeng   {Fore.LIGHTBLACK_EX}Live Test: Buktiin IP asli lu beneran ga bocor  {Fore.CYAN}│
 ├────────────────────────────────────────────────────────────────────────┤
-│  {Fore.MAGENTA}BENGKEL OPREK & SANTAI:{Fore.CYAN}                                                 │
+│  {Fore.MAGENTA}PEMBARUAN & BENGKEL OPREK:{Fore.CYAN}                                              │
+{u_line}
 │  {Fore.YELLOW}[M]{Fore.WHITE} 🛠️ Oprek Suka-Suka        {Fore.LIGHTBLACK_EX}Racik protokol sendiri, pilih negara, tembak URL{Fore.CYAN}│
 │  {Fore.YELLOW}[S]{Fore.WHITE} 📂 Gudang Amunisi         {Fore.LIGHTBLACK_EX}Intip stok proxy segar yang udah tersimpan di disk{Fore.CYAN}│
 │  {Fore.BLUE}[L]{Fore.WHITE} 🌐 Ganti Bahasa (EN/ID)   {Fore.LIGHTBLACK_EX}Currently: Bahasa Indonesia                   {Fore.CYAN}│
@@ -443,10 +472,11 @@ def show_interactive_menu():
 ├────────────────────────────────────────────────────────────────────────┤
 │  {Fore.LIGHTBLACK_EX}Maintainer: {Fore.YELLOW}@itzluthfi{Fore.LIGHTBLACK_EX}          Repository: {Fore.WHITE}github.com/itzluthfi{Fore.CYAN}       │
 └────────────────────────────────────────────────────────────────────────┘{Style.RESET_ALL}"""
-            prompt_str = f"{Fore.YELLOW}Pilih Opsi [W (MVP), 1-4, E, T, M, S, L, 0] (Saran: Pencet W aja udah paling mantap): {Style.RESET_ALL}"
+            prompt_str = f"{Fore.YELLOW}Pilih Opsi [W (MVP), 1-4, E, T, U, M, S, L, 0] (Saran: Pencet W aja udah paling mantap): {Style.RESET_ALL}"
         else:
+            u_line = f"│  {Fore.YELLOW}{Style.BRIGHT}[U]{Fore.WHITE}{Style.BRIGHT} 🚀 New Update Available!  {Fore.GREEN}v{cached_update_info.get('remote_version')} (New features ready!)        {Fore.CYAN}│" if (cached_update_info and cached_update_info.get("has_update")) else f"│  {Fore.GREEN}[U]{Fore.WHITE} 🔄 Check & Update Version {Fore.LIGHTBLACK_EX}1-Click Git Auto-Update (v{local_ver})          {Fore.CYAN}│"
             menu_box = f"""{Fore.CYAN}┌────────────────────────────────────────────────────────────────────────┐
-│                  {Fore.WHITE}{Style.BRIGHT}🌾 PETANIPROXY v1.0 (ROTATING PROXY ARSENAL){Fore.CYAN}                 │
+│                  {Fore.WHITE}{Style.BRIGHT}🌾 PETANIPROXY v{local_ver} (ROTATING PROXY ARSENAL){Fore.CYAN}               │
 │             {Fore.LIGHTBLACK_EX}Battle-Tested Rotating Proxy Ammo — Zero BS, 100% Free!{Fore.CYAN}    │
 ├────────────────────────────────────────────────────────────────────────┤
 │  {Fore.YELLOW}{Style.BRIGHT}⭐ [MVP] S-TIER ARSENAL: GENUINE RESIDENTIAL POOL (CLOUDFLARE BYPASS):{Fore.CYAN} │
@@ -464,7 +494,8 @@ def show_interactive_menu():
 │  {Fore.CYAN}[E]{Fore.WHITE} 📥 Dump Raw Ammo Files    {Fore.LIGHTBLACK_EX}Export TXT (IP:Port / URLs), JSON, CSV for bots {Fore.CYAN}│
 │  {Fore.CYAN}[T]{Fore.WHITE} 🧪 Stealth Mask Check     {Fore.LIGHTBLACK_EX}Live test: Prove your real IP is 100% invisible {Fore.CYAN}│
 ├────────────────────────────────────────────────────────────────────────┤
-│  {Fore.MAGENTA}MAD SCIENTIST LAB & CONFIG:{Fore.CYAN}                                             │
+│  {Fore.MAGENTA}UPDATES & WORKSHOP:{Fore.CYAN}                                                     │
+{u_line}
 │  {Fore.YELLOW}[M]{Fore.WHITE} 🛠️ Custom Lab Workshop    {Fore.LIGHTBLACK_EX}Tweak protocols, filter ISO countries, pick URL {Fore.CYAN}│
 │  {Fore.YELLOW}[S]{Fore.WHITE} 📂 Ammo Storage Vault     {Fore.LIGHTBLACK_EX}Check active proxies sitting fresh on disk      {Fore.CYAN}│
 │  {Fore.BLUE}[L]{Fore.WHITE} 🌐 Switch Language (EN/ID){Fore.LIGHTBLACK_EX}Currently: English                            {Fore.CYAN}│
@@ -472,7 +503,7 @@ def show_interactive_menu():
 ├────────────────────────────────────────────────────────────────────────┤
 │  {Fore.LIGHTBLACK_EX}Maintainer: {Fore.YELLOW}@itzluthfi{Fore.LIGHTBLACK_EX}          Repository: {Fore.WHITE}github.com/itzluthfi{Fore.CYAN}       │
 └────────────────────────────────────────────────────────────────────────┘{Style.RESET_ALL}"""
-            prompt_str = f"{Fore.YELLOW}Select Option [W (MVP), 1-4, E, T, M, S, L, 0] (Pro-tip: Press W for godmode): {Style.RESET_ALL}"
+            prompt_str = f"{Fore.YELLOW}Select Option [W (MVP), 1-4, E, T, U, M, S, L, 0] (Pro-tip: Press W for godmode): {Style.RESET_ALL}"
 
         print(menu_box)
         try:
@@ -480,6 +511,27 @@ def show_interactive_menu():
         except (KeyboardInterrupt, EOFError):
             print(f"\n{Fore.YELLOW}Goodbye!{Style.RESET_ALL}")
             break
+
+        if choice.lower() == "u":
+            print(f"\n{Fore.CYAN}{'Memeriksa pembaruan ke GitHub...' if CURRENT_LANG == 'ID' else 'Checking GitHub for updates...'}{Style.RESET_ALL}")
+            info = check_for_updates(timeout=3.5)
+            if info.get("has_update"):
+                print(render_update_banner(info, lang=CURRENT_LANG))
+                show_full_announcement(info, lang=CURRENT_LANG)
+                c_up = input(f"\n{Fore.YELLOW}{'Lakukan update sekarang? [Y/n]: ' if CURRENT_LANG == 'ID' else 'Perform update now? [Y/n]: '}{Style.RESET_ALL}").strip().lower()
+                if c_up in ("", "y", "yes"):
+                    perform_update(restart=True, lang=CURRENT_LANG)
+            else:
+                curr_ver = info.get("current_version", "1.0.0")
+                print(f"\n{Fore.GREEN}✅ {'PetaniProxy sudah dalam versi paling baru' if CURRENT_LANG == 'ID' else 'PetaniProxy is up to date'} (v{curr_ver})!{Style.RESET_ALL}")
+                show_full_announcement(info, lang=CURRENT_LANG)
+            
+            try:
+                p_msg = "[Tekan Enter untuk kembali ke menu...]" if CURRENT_LANG == "ID" else "[Press Enter to return to main menu...]"
+                input(f"\n{Fore.LIGHTBLACK_EX}{p_msg}{Style.RESET_ALL}")
+            except (KeyboardInterrupt, EOFError):
+                break
+            continue
 
         if choice.lower() == "l":
             CURRENT_LANG = "EN" if CURRENT_LANG == "ID" else "ID"
@@ -605,8 +657,34 @@ def main():
     parser.add_argument("--sync-9router", type=str, default=None, help="Path to BansosRouter/9Router data.sqlite for direct database sync (or 'auto')")
     parser.add_argument("--webshare", "-W", type=int, nargs="?", const=1, default=None, help="Trigger Webshare Residential Hunter for N accounts (default: 1)")
     parser.add_argument("--headless", action="store_true", help="Run Webshare Hunter in headless mode")
+    parser.add_argument("--update", action="store_true", help="Perform 1-click update via git pull and exit")
+    parser.add_argument("--check-update", action="store_true", help="Check for available updates on GitHub and display patch notes")
+    parser.add_argument("--version", "-v", action="store_true", help="Show current version, announcement and exit")
 
     args = parser.parse_args()
+
+    if args.version:
+        v_info = get_local_version_info()
+        print(BANNER)
+        show_full_announcement(v_info)
+        return
+
+    if args.check_update:
+        print(BANNER)
+        print(f"{Fore.CYAN}Memeriksa pembaruan ke GitHub...{Style.RESET_ALL}\n")
+        info = check_for_updates(timeout=3.5)
+        if info.get("has_update"):
+            print(render_update_banner(info))
+            show_full_announcement(info)
+        else:
+            print(f"{Fore.GREEN}✅ PetaniProxy sudah versi terbaru (v{info.get('current_version')})!{Style.RESET_ALL}")
+            show_full_announcement(info)
+        return
+
+    if args.update:
+        print(BANNER)
+        perform_update(restart=False)
+        return
 
     print(BANNER)
 

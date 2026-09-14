@@ -43,6 +43,7 @@ Pernah ga lu lagi asyik scraping web atau jalanin bot akun, baru beberapa menit 
 | **Uji Anonimitas (Zero Leak)**| ❌ Jarang ada, IP asli bocor | ✅ Ada | ✅ **Built-in Elite L1 Detection** |
 | **Live Proof Masking [T]** | ❌ Ga ada pembuktian | ❌ Ga ada | ✅ **1-Click Test Perbandingan IP Asli** |
 | **Integrasi AI Router** | ❌ Kudu ngoding script sendiri | ❌ Ga ada | ✅ **Auto-Inject langsung ke 9Router DB** |
+| **Pembaruan Patch (Updater)**| ❌ Clone manual / download ulang | ❌ Ribet | ✅ **1-Click Auto-Updater [U] + Patch Notes** |
 
 ---
 
@@ -119,6 +120,21 @@ curl -x http://127.0.0.1:8888 https://api.ipify.org
 * `GET http://127.0.0.1:8888/api/random` — Ambil 1 proxy acak yang lagi hidup dan cepat.
 * `GET http://127.0.0.1:8888/api/all` — Ambil seluruh daftar pool proxy aktif dalam format JSON.
 * `GET http://127.0.0.1:8888/api/status` — Cek statistik pool, jumlah request sukses, dan persentase proxy aktif.
+
+### 4. Auto-Updater & Cek Patch Versi (`[U]`)
+PetaniProxy punya sistem pembaruan otomatis bawaan ala 9Router:
+- Setiap kali ada patch atau fitur baru di GitHub, banner notifikasi dan changelog akan langsung muncul di atas menu utama.
+- Tekan tombol **`[U]`** di menu untuk update otomatis dalam 1 klik tanpa perlu download ulang.
+- Bisa juga dicek & di-update langsung lewat terminal:
+```bash
+# Cek info rilis, versi terbaru & patch notes:
+python main.py --check-update
+
+# Update otomatis langsung ke commit master terbaru:
+python main.py --update
+```
+
+> 👨‍💻 **Buat Maintainer / Dev:** Cukup naikkan versi dan tulis rincian fitur barunya di `version.json`, lalu `git push`. Semua user yang membuka PetaniProxy akan otomatis mendapatkan notifikasi pengumuman rilis dan tombol update 1-klik!
 
 ---
 

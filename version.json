@@ -1,0 +1,15 @@
+{
+  "version": "1.0.0",
+  "release_date": "2026-09-14",
+  "title": "🌾 PetaniProxy v1.0.0 (Official Release)",
+  "announcement": "🔥 Rilis Resmi v1.0: Webshare Residential Hunter, Local Rotating Gateway & 9Router SQLite Sync!",
+  "changelog": [
+    "⭐ [MVP] Webshare Residential Hunter dengan AI Audio Captcha Solver (100% Gratis)",
+    "🎛️ Dukungan CapSolver opsional bagi pengguna yang punya saldo API Key",
+    "🚀 Local Rotating Proxy Gateway di http://127.0.0.1:8888 dengan failover retry 3x",
+    "🔌 Sinkronisasi otomatis ke database SQLite 9Router (data.sqlite)",
+    "🌍 Dukungan filter 150+ kode negara ISO (ID, SG, US, JP, DE, GB, dll)",
+    "🧪 Fitur Live Proof Masking [T] untuk uji kebocoran IP asli (Zero Leak)",
+    "🔄 Sistem Auto-Updater [U] untuk notifikasi dan pembaruan patch 1-klik"
+  ]
+}

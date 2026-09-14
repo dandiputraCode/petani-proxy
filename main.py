@@ -477,28 +477,64 @@ def show_manual_menu():
             break
 
 def get_features_readiness(lang: str = "ID") -> dict:
-    """Check readiness status of features (dependencies, 9router link, gateway port, storage)."""
+    """Check readiness status of features, CapSolver balance, and compute system readiness progress bar."""
     import importlib.util
     import socket
+    from core.webshare_hunter import check_capsolver_balance
 
     status = {}
+    score = 0
 
-    # 1. Webshare dependencies
+    # 1. Dependensi Inti
+    pkgs = ["httpx", "requests", "colorama", "DrissionPage", "speech_recognition", "pydub"]
+    missing = [p for p in pkgs if importlib.util.find_spec(p) is None]
+    if not missing:
+        status["deps_badge"] = f"{Fore.GREEN}[OK ✓]{Style.RESET_ALL}"
+        status["deps_desc"] = "DrissionPage, httpx, pydub, speech_recognition"
+        score += 25
+    else:
+        status["deps_badge"] = f"{Fore.YELLOW}[KURANG: {len(missing)}]{Style.RESET_ALL}"
+        status["deps_desc"] = f"Missing: {', '.join(missing)}"
+
+    # 2. Webshare Hunter Audio Solver
     dp_found = importlib.util.find_spec("DrissionPage") is not None
     sr_found = importlib.util.find_spec("speech_recognition") is not None
     if dp_found and sr_found:
         status["webshare"] = f"{Fore.GREEN}[SIAP TEMPUR ✓]{Style.RESET_ALL}" if lang == "ID" else f"{Fore.GREEN}[READY ✓]{Style.RESET_ALL}"
+        status["webshare_desc"] = "Free AI Audio Solver Aktif (Mode Jendela Tampak)" if lang == "ID" else "Free AI Audio Solver Active (Visible Window)"
+        score += 25
     else:
         status["webshare"] = f"{Fore.YELLOW}[PERLU INSTALL]{Style.RESET_ALL}" if lang == "ID" else f"{Fore.YELLOW}[SETUP NEEDED]{Style.RESET_ALL}"
+        status["webshare_desc"] = "Paket DrissionPage / speech_rec belum lengkap" if lang == "ID" else "Packages missing"
 
-    # 2. 9Router DB sync
+    # 3. CapSolver Engine (Headless capability)
+    cs_info = check_capsolver_balance()
+    status["capsolver_info"] = cs_info
+    if cs_info.get("can_headless"):
+        status["capsolver_badge"] = f"{Fore.GREEN}[SIAP ✓]{Style.RESET_ALL}" if lang == "ID" else f"{Fore.GREEN}[READY ✓]{Style.RESET_ALL}"
+        status["capsolver_desc"] = f"Saldo: ${cs_info['balance']:.3f} (Headless Didukung Penuh)" if lang == "ID" else f"Balance: ${cs_info['balance']:.3f} (Headless Ready)"
+        score += 20
+    elif cs_info.get("has_key"):
+        status["capsolver_badge"] = f"{Fore.YELLOW}[SALDO HABIS]{Style.RESET_ALL}" if lang == "ID" else f"{Fore.YELLOW}[EMPTY BALANCE]{Style.RESET_ALL}"
+        status["capsolver_desc"] = f"Saldo ${cs_info['balance']:.3f} (Headless Off, Gunakan Free Audio)" if lang == "ID" else f"Balance ${cs_info['balance']:.3f} (Use Free Audio)"
+        score += 10
+    else:
+        status["capsolver_badge"] = f"{Fore.LIGHTBLACK_EX}[STANDBY ○]{Style.RESET_ALL}"
+        status["capsolver_desc"] = "Key Kosong (Menggunakan Audio Solver Gratisan)" if lang == "ID" else "No Key (Using Free Audio Solver)"
+        score += 15
+
+    # 4. 9Router DB sync
     db_path = find_9router_db()
     if db_path:
         status["sync"] = f"{Fore.GREEN}[9ROUTER LINKED]{Style.RESET_ALL}"
+        status["db_desc"] = f"Terhubung ({os.path.basename(db_path)})" if lang == "ID" else f"Connected ({os.path.basename(db_path)})"
+        score += 20
     else:
         status["sync"] = f"{Fore.CYAN}[STANDALONE]{Style.RESET_ALL}"
+        status["db_desc"] = "Mode Mandiri (Database 9Router tidak terdeteksi)" if lang == "ID" else "Standalone mode"
+        score += 10
 
-    # 3. Gateway 8888 live port status
+    # 5. Gateway 8888 live port status
     gw_active = False
     try:
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
@@ -512,7 +548,7 @@ def get_features_readiness(lang: str = "ID") -> dict:
     else:
         status["gateway"] = f"{Fore.LIGHTBLACK_EX}[STANDBY]{Style.RESET_ALL}"
 
-    # 4. Storage count
+    # 6. Storage count
     base_dir = os.path.dirname(os.path.abspath(__file__))
     json_path = os.path.join(base_dir, "output", "proxies.json")
     if os.path.exists(json_path):
@@ -521,11 +557,35 @@ def get_features_readiness(lang: str = "ID") -> dict:
                 d = json.load(f)
                 count = d.get("total_alive", 0)
                 status["storage"] = f"{Fore.GREEN}[{count} PROXY TERSEDIA]{Style.RESET_ALL}" if lang == "ID" else f"{Fore.GREEN}[{count} PROXIES READY]{Style.RESET_ALL}"
+                status["storage_desc"] = f"{count} Proxy Aktif Tersimpan di Disk" if lang == "ID" else f"{count} Active Proxies Stored"
+                score += 15
         except Exception:
             status["storage"] = f"{Fore.GREEN}[READY]{Style.RESET_ALL}"
+            status["storage_desc"] = "File penyimpanan siap"
+            score += 10
     else:
         status["storage"] = f"{Fore.LIGHTBLACK_EX}[KOSONG]{Style.RESET_ALL}" if lang == "ID" else f"{Fore.LIGHTBLACK_EX}[EMPTY]{Style.RESET_ALL}"
+        status["storage_desc"] = "Belum ada riwayat panen tersimpan" if lang == "ID" else "No saved proxies yet"
+        score += 5
 
+    pct = min(100, score)
+    bar_len = 10
+    filled = int(bar_len * pct / 100)
+    bar_str = "█" * filled + "░" * (bar_len - filled)
+    status["percent"] = pct
+    status["bar"] = bar_str
+
+    if pct >= 85:
+        bar_color = Fore.GREEN
+        state_txt = "Amunisi Siap Tempur!" if lang == "ID" else "Battle-Ready!"
+    elif pct >= 60:
+        bar_color = Fore.YELLOW
+        state_txt = "Sebagian Siap" if lang == "ID" else "Partially Ready"
+    else:
+        bar_color = Fore.RED
+        state_txt = "Perlu Setup" if lang == "ID" else "Setup Needed"
+
+    status["progress_line"] = f"{bar_color}[{bar_str}] {pct}%{Style.RESET_ALL} {Fore.LIGHTBLACK_EX}({state_txt}){Style.RESET_ALL}"
     return status
 
 def show_interactive_menu():
@@ -562,6 +622,15 @@ def show_interactive_menu():
   {Fore.LIGHTBLACK_EX}Amunisi Proxy Anti-Tumbang, Siap Diajak Tempur 24/7 Gaspol!
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+  {Fore.WHITE}{Style.BRIGHT}📊 KESIAPAN AMUNISI : {st['progress_line']}
+  {Fore.LIGHTBLACK_EX}├─ {Fore.WHITE}Dependensi Inti : {st['deps_badge']} {Fore.LIGHTBLACK_EX}{st['deps_desc']}
+  {Fore.LIGHTBLACK_EX}├─ {Fore.WHITE}Webshare Hunter : {st['webshare']} {Fore.LIGHTBLACK_EX}{st['webshare_desc']}
+  {Fore.LIGHTBLACK_EX}├─ {Fore.WHITE}CapSolver Engine: {st['capsolver_badge']} {Fore.LIGHTBLACK_EX}{st['capsolver_desc']}
+  {Fore.LIGHTBLACK_EX}├─ {Fore.WHITE}BansosRouter DB : {st['sync']} {Fore.LIGHTBLACK_EX}{st['db_desc']}
+  {Fore.LIGHTBLACK_EX}└─ {Fore.WHITE}Stok di Gudang  : {st['storage']} {Fore.LIGHTBLACK_EX}{st['storage_desc']}
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
   {Fore.YELLOW}{Style.BRIGHT}⭐ [MVP] AMUNISI SULTAN: IP RESIDENTIAL (TEMBUS CLOUDFLARE)
   {Fore.YELLOW}{Style.BRIGHT}[W]{Fore.WHITE}{Style.BRIGHT} 🏢 Webshare Hunter Gacor   {st['webshare']} {Fore.YELLOW}(PILIHAN UTAMA MVP ⭐⭐⭐)
      {Fore.GREEN}└─ Auto-Solve Captcha Suara • IP Rumah Asli • 10-30 Proxy/Akun
@@ -592,6 +661,15 @@ def show_interactive_menu():
             menu_box = f"""{Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   {Fore.WHITE}{Style.BRIGHT}🌾 PETANIPROXY v{local_ver} (ROTATING PROXY ARSENAL)
   {Fore.LIGHTBLACK_EX}Battle-Tested Rotating Proxy Ammo — Zero BS, 100% Free!
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  {Fore.WHITE}{Style.BRIGHT}📊 SYSTEM READINESS : {st['progress_line']}
+  {Fore.LIGHTBLACK_EX}├─ {Fore.WHITE}Core Dependencies: {st['deps_badge']} {Fore.LIGHTBLACK_EX}{st['deps_desc']}
+  {Fore.LIGHTBLACK_EX}├─ {Fore.WHITE}Webshare Hunter  : {st['webshare']} {Fore.LIGHTBLACK_EX}{st['webshare_desc']}
+  {Fore.LIGHTBLACK_EX}├─ {Fore.WHITE}CapSolver Engine : {st['capsolver_badge']} {Fore.LIGHTBLACK_EX}{st['capsolver_desc']}
+  {Fore.LIGHTBLACK_EX}├─ {Fore.WHITE}BansosRouter DB  : {st['sync']} {Fore.LIGHTBLACK_EX}{st['db_desc']}
+  {Fore.LIGHTBLACK_EX}└─ {Fore.WHITE}Ammo in Storage  : {st['storage']} {Fore.LIGHTBLACK_EX}{st['storage_desc']}
+
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
   {Fore.YELLOW}{Style.BRIGHT}⭐ [MVP] S-TIER ARSENAL: GENUINE RESIDENTIAL POOL (CLOUDFLARE BYPASS)
@@ -739,9 +817,23 @@ def show_interactive_menu():
             a_input = input(acc_prompt).strip()
             total_acc = int(a_input) if a_input.isdigit() and int(a_input) > 0 else 1
 
-            head_prompt = f"{Fore.CYAN}{'Jalankan di background tanpa jendela (Headless)? [y/N]: ' if CURRENT_LANG == 'ID' else 'Run in background (Headless)? [y/N]: '}{Style.RESET_ALL}"
-            h_input = input(head_prompt).strip().lower()
-            is_headless = h_input in ("y", "yes")
+            from core.webshare_hunter import check_capsolver_balance
+            cs_info = check_capsolver_balance()
+            is_headless = False
+
+            if cs_info.get("can_headless"):
+                print(f"\n  {Fore.GREEN}✓ CapSolver API Aktif! Saldo: ${cs_info['balance']:.3f} (Mode Headless siap tempur){Style.RESET_ALL}")
+                head_prompt = f"{Fore.CYAN}{'Jalankan di background tanpa jendela (Headless)? [Y/n]: ' if CURRENT_LANG == 'ID' else 'Run in background (Headless)? [Y/n]: '}{Style.RESET_ALL}"
+                h_input = input(head_prompt).strip().lower()
+                is_headless = h_input in ("", "y", "yes")
+            else:
+                print(f"\n{Fore.CYAN}ℹ️  STATUS ENGINE CAPTCHA & MODE TAMPILAN:{Style.RESET_ALL}")
+                print(f"  • Solver Aktif   : {Fore.GREEN}Free AI Audio Solver (SpeechRecognition, Tanpa Saldo Token){Style.RESET_ALL}")
+                print(f"  • Status Headless: {Fore.YELLOW}Dimatikan Otomatis{Style.RESET_ALL} ({cs_info.get('message')})")
+                print(f"  {Fore.LIGHTBLACK_EX}💡 Penjelasan: Audio Solver gratisan WAJIB menggunakan jendela tampak agar bot")
+                print(f"     bergerak alami & tidak diblokir 'Automated queries' oleh Google reCAPTCHA.{Style.RESET_ALL}")
+                print(f"  {Fore.GREEN}👉 Otomatis menggunakan Mode Jendela Tampak (Mode Paling Stabil & Gacor)...{Style.RESET_ALL}\n")
+                is_headless = False
 
             db_target = find_9router_db()
             run_webshare_hunter(total=total_acc, headless=is_headless, sync_9router_db=db_target)
@@ -824,11 +916,19 @@ def main():
 
     if args.webshare is not None:
         try:
-            from core.webshare_hunter import run_webshare_hunter
+            from core.webshare_hunter import run_webshare_hunter, check_capsolver_balance
         except ImportError as e:
             print(f"{Fore.RED}⚠️ Dependensi Webshare Hunter belum lengkap: {e}{Style.RESET_ALL}")
             print(f"{Fore.YELLOW}Silakan jalankan: python main.py --install-deps{Style.RESET_ALL}\n")
             sys.exit(1)
+
+        if args.headless:
+            cs = check_capsolver_balance()
+            if not cs.get("can_headless"):
+                print(f"\n{Fore.YELLOW}⚠️ PERINGATAN HEADLESS:{Style.RESET_ALL} {cs.get('message')}")
+                print(f"{Fore.LIGHTBLACK_EX}Menjalankan Audio Solver gratisan di mode headless berisiko tinggi memicu blokir 'Automated queries' dari Google.")
+                print(f"Disarankan menjalankan tanpa flag --headless atau sediakan CAPSOLVER_API_KEY.{Style.RESET_ALL}\n")
+
         run_webshare_hunter(total=args.webshare, headless=args.headless, sync_9router_db=router_db, output_dir=args.output)
         return
 

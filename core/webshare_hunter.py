@@ -161,6 +161,79 @@ def human_click_element(page, element):
             pass
 
 
+def check_capsolver_balance(api_key: str = None) -> dict:
+    """
+    Cek ketersediaan CapSolver API Key dan saldo USD terkini secara real-time.
+    Mengembalikan status kesiapan dan apakah mode headless layak dijalankan.
+    """
+    key = api_key or os.environ.get("CAPSOLVER_API_KEY", "").strip()
+    if not key:
+        base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+        for fname in ["config.json", "local_config.json", ".env"]:
+            fpath = os.path.join(base_dir, fname)
+            if os.path.exists(fpath):
+                try:
+                    if fname.endswith(".json"):
+                        with open(fpath, "r", encoding="utf-8") as f:
+                            c = json.load(f)
+                            key = c.get("CAPSOLVER_API_KEY", "") or c.get("capsolver_api_key", "")
+                    elif fname == ".env":
+                        with open(fpath, "r", encoding="utf-8") as f:
+                            for line in f:
+                                if line.startswith("CAPSOLVER_API_KEY="):
+                                    key = line.split("=", 1)[1].strip().strip('"').strip("'")
+                except Exception:
+                    pass
+            if key:
+                break
+
+    if not key:
+        return {
+            "has_key": False,
+            "balance": 0.0,
+            "status": "NOT_CONFIGURED",
+            "can_headless": False,
+            "message": "Key Kosong (Free Audio Solver Aktif)"
+        }
+
+    try:
+        r = requests.post("https://api.capsolver.com/getBalance", json={"clientKey": key}, timeout=3.0)
+        data = r.json()
+        if data.get("errorId") == 0:
+            bal = float(data.get("balance", 0.0))
+            if bal >= 0.003:
+                return {
+                    "has_key": True,
+                    "balance": bal,
+                    "status": "READY",
+                    "can_headless": True,
+                    "message": f"Saldo Aktif: ${bal:.3f} (Headless Ready)"
+                }
+            else:
+                return {
+                    "has_key": True,
+                    "balance": bal,
+                    "status": "EMPTY",
+                    "can_headless": False,
+                    "message": f"Saldo Habis: ${bal:.3f} (Headless Dimatikan)"
+                }
+        else:
+            return {
+                "has_key": True,
+                "balance": 0.0,
+                "status": "INVALID",
+                "can_headless": False,
+                "message": f"Key Tidak Valid ({data.get('errorCode', 'Error')})"
+            }
+    except Exception:
+        return {
+            "has_key": True,
+            "balance": 0.0,
+            "status": "TIMEOUT",
+            "can_headless": False,
+            "message": "Key Ada (Network Timeout)"
+        }
+
 def try_solve_capsolver(page, capsolver_key):
     """Optional paid solver: solves reCAPTCHA via CapSolver API if key is configured."""
     try:

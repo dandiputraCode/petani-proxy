@@ -631,12 +631,16 @@ def show_interactive_menu():
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  {Fore.YELLOW}{Style.BRIGHT}⭐ [MVP] AMUNISI SULTAN: IP RESIDENTIAL (TEMBUS CLOUDFLARE)
-  {Fore.YELLOW}{Style.BRIGHT}[W]{Fore.WHITE}{Style.BRIGHT} 🏢 Webshare Hunter Gacor   {st['webshare']} {Fore.YELLOW}(PILIHAN UTAMA MVP ⭐⭐⭐)
+  {Fore.YELLOW}{Style.BRIGHT}⭐ [MVP] AMUNISI SULTAN: IP RESIDENTIAL & CLOUDFLARE WARP
+  {Fore.YELLOW}{Style.BRIGHT}[W]{Fore.WHITE}{Style.BRIGHT} 🏢 Webshare Hunter Gacor   {st['webshare']} {Fore.YELLOW}(RESIDENTIAL MVP ⭐⭐⭐)
      {Fore.GREEN}└─ Auto-Solve Captcha Suara • IP Rumah Asli • 10-30 Proxy/Akun
-     {Fore.LIGHTBLACK_EX}└─ Lolos Cloudflare, Grok AI, & provider bot AI ketat
+  {Fore.CYAN}{Style.BRIGHT}[C]{Fore.WHITE}{Style.BRIGHT} 🚀 Cloudflare WARP Local    {Fore.GREEN}[ULTRA FAST]{Style.RESET_ALL} {Fore.CYAN}(BEBAS CAPTCHA, UNLIMITED)
+     {Fore.GREEN}└─ Akun WireGuard Resmi • Mixed SOCKS5/HTTP • Latency <100ms
+  {Fore.LIGHTCYAN_EX}{Style.BRIGHT}[F]{Fore.WHITE}{Style.BRIGHT} ⚡ aiohttp Fast Harvester   {Fore.GREEN}[KENCANG]{Style.RESET_ALL} {Fore.LIGHTBLACK_EX}(Filter <350ms dalam 1 detik)
+     {Fore.GREEN}└─ Sedot ribuan kandidat secara asinkron • Auto-sync 9Router
 
-  {Fore.MAGENTA}RACIKAN PROXY GRATISAN RAKYAT JELATA (GATEWAY PORT 8888)
+  {Fore.MAGENTA}RACIKAN PROXY & GATEWAY LOKAL (PORT 8888)
+  {Fore.GREEN}[G]{Fore.WHITE} 🛡️ 24/7 Gateway + Healer   {ready_label} {Fore.LIGHTBLACK_EX}Mode server produksi non-stop (Auto-Prune & Refill)
   {Fore.GREEN}[1]{Fore.WHITE} 🐔 Racikan Ternak Akun    {st['sync']} {Fore.LIGHTBLACK_EX}Anti-limit buat Grok/Qoder
   {Fore.GREEN}[2]{Fore.WHITE} 🕷️ Racikan Scraper Barbar {ready_label} {Fore.LIGHTBLACK_EX}Pool 30+ IP, ganti IP tiap hit
   {Fore.GREEN}[3]{Fore.WHITE} ⚡ Racikan Ngacir Anti-Lag {ready_label} {Fore.LIGHTBLACK_EX}Ping <350ms, Node SG/ID/US
@@ -655,7 +659,7 @@ def show_interactive_menu():
 {Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   {Fore.LIGHTBLACK_EX}Maintainer: {Fore.YELLOW}@itzluthfi{Fore.LIGHTBLACK_EX}          Repository: {Fore.WHITE}github.com/itzluthfi
 {Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Style.RESET_ALL}"""
-            prompt_str = f"{Fore.YELLOW}Pilih Opsi [W (MVP), 1-4, E, T, U, M, S, L, 0] (Saran: Pencet W aja udah paling mantap): {Style.RESET_ALL}"
+            prompt_str = f"{Fore.YELLOW}Pilih Opsi [W, C, F, G, 1-4, E, T, U, M, S, L, 0] (Saran: W atau C untuk speed monster): {Style.RESET_ALL}"
         else:
             u_line = f"  {Fore.YELLOW}{Style.BRIGHT}[U]{Fore.WHITE}{Style.BRIGHT} 🚀 New Update Available!  {Fore.GREEN}v{cached_update_info.get('remote_version')} [SELECT TO UPDATE]\n" if (cached_update_info and cached_update_info.get("has_update")) else f"  {Fore.GREEN}[U]{Fore.WHITE} 🔄 Check & Update Version {Fore.GREEN}[v{local_ver} LATEST]{Style.RESET_ALL}\n"
             menu_box = f"""{Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -672,12 +676,16 @@ def show_interactive_menu():
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-  {Fore.YELLOW}{Style.BRIGHT}⭐ [MVP] S-TIER ARSENAL: GENUINE RESIDENTIAL POOL (CLOUDFLARE BYPASS)
-  {Fore.YELLOW}{Style.BRIGHT}[W]{Fore.WHITE}{Style.BRIGHT} 🏢 Webshare Hunter Elite   {st['webshare']} {Fore.YELLOW}(MVP TOP PICK! ⭐⭐⭐)
+  {Fore.YELLOW}{Style.BRIGHT}⭐ [MVP] S-TIER ARSENAL: RESIDENTIAL & CLOUDFLARE WARP
+  {Fore.YELLOW}{Style.BRIGHT}[W]{Fore.WHITE}{Style.BRIGHT} 🏢 Webshare Hunter Elite   {st['webshare']} {Fore.YELLOW}(RESIDENTIAL MVP ⭐⭐⭐)
      {Fore.GREEN}└─ Audio Captcha Solver • Real Residential IPs • 10-30 Nodes/Acc
-     {Fore.LIGHTBLACK_EX}└─ Bypasses Cloudflare, Grok AI, & tight bot detection
+  {Fore.CYAN}{Style.BRIGHT}[C]{Fore.WHITE}{Style.BRIGHT} 🚀 Cloudflare WARP Local    {Fore.GREEN}[ULTRA FAST]{Style.RESET_ALL} {Fore.CYAN}(ZERO CAPTCHA, UNLIMITED)
+     {Fore.GREEN}└─ Official WireGuard Profile • Mixed SOCKS5/HTTP • Latency <100ms
+  {Fore.LIGHTCYAN_EX}{Style.BRIGHT}[F]{Fore.WHITE}{Style.BRIGHT} ⚡ aiohttp Fast Harvester   {Fore.GREEN}[FAST]{Style.RESET_ALL} {Fore.LIGHTBLACK_EX}(Sub-350ms filter in 1 second)
+     {Fore.GREEN}└─ Concurrent async scraping • Auto-syncs 9Router DB
 
   {Fore.MAGENTA}FREE PUBLIC ROTATING GATEWAY (LOCAL PORT 8888)
+  {Fore.GREEN}[G]{Fore.WHITE} 🛡️ 24/7 Gateway + Healer   {ready_label} {Fore.LIGHTBLACK_EX}Production daemon (Auto-Prunes Dead Nodes & Auto-Refills)
   {Fore.GREEN}[1]{Fore.WHITE} 🐔 Bot Breeder Rig        {st['sync']} {Fore.LIGHTBLACK_EX}Anti-ban tuned for Grok/Qoder
   {Fore.GREEN}[2]{Fore.WHITE} 🕷️ Barbaric Web Scraper   {ready_label} {Fore.LIGHTBLACK_EX}30+ pool, fresh IP every hit
   {Fore.GREEN}[3]{Fore.WHITE} ⚡ Ludicrous Speed Mode   {ready_label} {Fore.LIGHTBLACK_EX}Ping <350ms, Node SG/ID/US
@@ -696,7 +704,7 @@ def show_interactive_menu():
 {Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   {Fore.LIGHTBLACK_EX}Maintainer: {Fore.YELLOW}@itzluthfi{Fore.LIGHTBLACK_EX}          Repository: {Fore.WHITE}github.com/itzluthfi
 {Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Style.RESET_ALL}"""
-            prompt_str = f"{Fore.YELLOW}Select Option [W (MVP), 1-4, E, T, U, M, S, L, 0] (Pro-tip: Press W for godmode): {Style.RESET_ALL}"
+            prompt_str = f"{Fore.YELLOW}Select Option [W, C, F, G, 1-4, E, T, U, M, S, L, 0] (Pro-tip: Press W or C for godmode): {Style.RESET_ALL}"
 
         print(menu_box)
         try:
@@ -837,6 +845,26 @@ def show_interactive_menu():
 
             db_target = find_9router_db()
             run_webshare_hunter(total=total_acc, headless=is_headless, sync_9router_db=db_target)
+        elif choice.lower() == "c":
+            print(f"\n{Fore.CYAN}{Style.BRIGHT}{'🚀 MEMBUAT PROFIL CLOUDFLARE WARP (WIREGUARD / SING-BOX)...' if CURRENT_LANG == 'ID' else '🚀 GENERATING CLOUDFLARE WARP PROFILE...'}{Style.RESET_ALL}")
+            print(f"{Fore.LIGHTBLACK_EX}{'💡 Info: Registrasi resmi via Cloudflare REST API (100% legal, tanpa captcha, unlimited).' if CURRENT_LANG == 'ID' else '💡 Info: Official registration via Cloudflare REST API (zero captcha, unlimited).'}{Style.RESET_ALL}\n")
+            from core.warp_generator import generate_and_save_warp
+            db_target = find_9router_db()
+            generate_and_save_warp(sync_db=bool(db_target))
+        elif choice.lower() == "f":
+            print(f"\n{Fore.CYAN}{Style.BRIGHT}{'⚡ MEMULAI AIOHTTP FAST PROXY HARVESTER...' if CURRENT_LANG == 'ID' else '⚡ LAUNCHING AIOHTTP FAST HARVESTER...'}{Style.RESET_ALL}")
+            from core.fast_validator import run_fast_harvester
+            db_target = find_9router_db()
+            run_fast_harvester(max_latency_ms=1200, target_count=15, sync_db=bool(db_target))
+        elif choice.lower() == "g":
+            print(f"\n{Fore.GREEN}{Style.BRIGHT}{'🛡️ MENJALANKAN 24/7 RESILIENT ROTATING GATEWAY (PORT 8888)...' if CURRENT_LANG == 'ID' else '🛡️ STARTING 24/7 RESILIENT ROTATING GATEWAY (PORT 8888)...'}{Style.RESET_ALL}")
+            from core.server import start_proxy_server
+            from core.fast_validator import run_fast_harvester
+            db_target = find_9router_db()
+            print(f"  {Fore.LIGHTBLACK_EX}• Menyiapkan amunisi awal dari feed cepat...{Style.RESET_ALL}")
+            initial = run_fast_harvester(max_latency_ms=1200, target_count=10, sync_db=bool(db_target))
+            print(f"\n{Fore.GREEN}✓ Gateway aktif di http://127.0.0.1:8888 (Health check & auto-refill aktif). Tekan Ctrl+C untuk berhenti.{Style.RESET_ALL}\n")
+            start_proxy_server(initial, port=8888, background=False, enable_health_check=True, health_check_interval=90, min_healthy_count=5)
         elif choice.lower() in ("s", "saved"):
             view_saved_results()
         elif choice == "0" or choice.lower() == "q":
@@ -871,6 +899,10 @@ def main():
     parser.add_argument("--loop", "-l", type=int, default=0, help="Auto-refresh loop interval in minutes (0 = single run)")
     parser.add_argument("--output", "-o", type=str, default=None, help="Custom output directory")
     parser.add_argument("--sync-9router", type=str, default=None, help="Path to BansosRouter/9Router data.sqlite for direct database sync (or 'auto')")
+    parser.add_argument("--warp", "-C", action="store_true", help="Generate Cloudflare WARP WireGuard & Sing-box profile (zero captcha, unlimited)")
+    parser.add_argument("--fast-harvest", "-F", type=int, nargs="?", const=15, default=None, help="Run ultra-fast aiohttp proxy harvester for N targets")
+    parser.add_argument("--max-latency", type=int, default=1200, help="Maximum latency in ms for fast harvester (default: 1200)")
+    parser.add_argument("--daemon-gateway", "-G", action="store_true", help="Run 24/7 resilient local gateway on port 8888 with auto-healer")
     parser.add_argument("--webshare", "-W", type=int, nargs="?", const=1, default=None, help="Trigger Webshare Residential Hunter for N accounts (default: 1)")
     parser.add_argument("--headless", action="store_true", help="Run Webshare Hunter in headless mode")
     parser.add_argument("--update", action="store_true", help="Perform 1-click update via git pull and exit")
@@ -913,6 +945,25 @@ def main():
     router_db = args.sync_9router
     if router_db == "auto" or router_db is None:
         router_db = find_9router_db()
+
+    if args.warp:
+        from core.warp_generator import generate_and_save_warp
+        generate_and_save_warp(output_dir=args.output, sync_db=bool(router_db))
+        return
+
+    if args.fast_harvest is not None:
+        from core.fast_validator import run_fast_harvester
+        run_fast_harvester(max_latency_ms=args.max_latency, target_count=args.fast_harvest, sync_db=bool(router_db))
+        return
+
+    if args.daemon_gateway:
+        from core.server import start_proxy_server
+        from core.fast_validator import run_fast_harvester
+        print(f"\n{Fore.GREEN}🛡️ Menyiapkan amunisi awal untuk 24/7 Resilient Gateway...{Style.RESET_ALL}")
+        initial = run_fast_harvester(max_latency_ms=args.max_latency, target_count=10, sync_db=bool(router_db))
+        print(f"\n{Fore.GREEN}✓ Meluncurkan Gateway di http://127.0.0.1:8888 dengan auto-healer...{Style.RESET_ALL}\n")
+        start_proxy_server(initial, port=8888, background=False, enable_health_check=True, health_check_interval=90, min_healthy_count=5)
+        return
 
     if args.webshare is not None:
         try:

@@ -25,6 +25,7 @@ class ProxyPoolManager:
         self.successful_requests = 0
         self.failed_requests = 0
         self.start_time = time.time()
+        self.health_checker = None
 
     def update_pool(self, new_proxies: List[Dict[str, Any]]):
         with self.lock:
@@ -61,7 +62,7 @@ class ProxyPoolManager:
     def get_stats(self) -> Dict[str, Any]:
         with self.lock:
             uptime = round(time.time() - self.start_time, 1)
-            return {
+            stats = {
                 "uptime_seconds": uptime,
                 "pool_size": len(self.proxies),
                 "total_routed_requests": self.total_requests,
@@ -69,6 +70,15 @@ class ProxyPoolManager:
                 "failed_requests": self.failed_requests,
                 "current_index": self.index
             }
+            if self.health_checker:
+                stats["health_checker"] = {
+                    "status": "active" if self.health_checker.is_running else "stopped",
+                    "interval_sec": self.health_checker.check_interval_sec,
+                    "total_evicted": self.health_checker.total_evicted,
+                    "total_refilled": self.health_checker.total_refilled,
+                    "last_check_time": self.health_checker.last_check_time
+                }
+            return stats
 
 
 class RotatingProxyRequestHandler(BaseHTTPRequestHandler):
@@ -254,12 +264,29 @@ def start_proxy_server(
     initial_proxies: List[Dict[str, Any]], 
     host: str = "127.0.0.1", 
     port: int = 8888, 
-    background: bool = False
+    background: bool = False,
+    enable_health_check: bool = True,
+    health_check_interval: int = 90,
+    min_healthy_count: int = 5
 ) -> tuple[HTTPServer, ProxyPoolManager]:
     """
     Launch the Rotating Proxy Gateway and REST API server.
     """
     pool_mgr = ProxyPoolManager(initial_proxies)
+
+    if enable_health_check:
+        try:
+            from core.pool_scheduler import PoolHealthChecker
+            checker = PoolHealthChecker(
+                pool_manager=pool_mgr,
+                check_interval_sec=health_check_interval,
+                min_healthy_count=min_healthy_count,
+                enable_auto_refill=True
+            )
+            checker.start()
+            pool_mgr.health_checker = checker
+        except Exception as e:
+            print(f"[Warning] Failed to initialize PoolHealthChecker: {e}")
 
     class CustomHandler(RotatingProxyRequestHandler):
         pool_manager = pool_mgr

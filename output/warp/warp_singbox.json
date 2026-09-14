@@ -1,0 +1,32 @@
+{
+  "log": {
+    "level": "warn"
+  },
+  "inbounds": [
+    {
+      "type": "mixed",
+      "tag": "mixed-in",
+      "listen": "127.0.0.1",
+      "listen_port": 10808
+    }
+  ],
+  "outbounds": [
+    {
+      "type": "wireguard",
+      "tag": "warp-out",
+      "server": "engage.cloudflareclient.com",
+      "server_port": 2408,
+      "local_address": [
+        "172.16.0.2",
+        "2606:4700:110:8b54:1755:da02:7455:c44f"
+      ],
+      "private_key": "YGOQMN7+HvwB7swmNaLRFwZiw5tQkPkoGDSsTa5M3XA=",
+      "peer_public_key": "bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo=",
+      "reserved": [
+        0,
+        0,
+        0
+      ]
+    }
+  ]
+}

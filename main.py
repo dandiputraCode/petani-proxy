@@ -52,8 +52,59 @@ BANNER = f"""{Fore.CYAN}{Style.BRIGHT}
 {Fore.LIGHTBLACK_EX}                 Created & Maintained by {Fore.CYAN}@itzluthfi{Fore.LIGHTBLACK_EX} (github.com/itzluthfi)
 {Style.RESET_ALL}"""
 
+def get_settings_path() -> str:
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(base_dir, "config", "settings.json")
+
+def load_settings() -> dict:
+    spath = get_settings_path()
+    if os.path.exists(spath):
+        try:
+            with open(spath, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception:
+            pass
+    return {}
+
+def save_settings(data: dict):
+    spath = get_settings_path()
+    os.makedirs(os.path.dirname(spath), exist_ok=True)
+    with open(spath, "w", encoding="utf-8") as f:
+        json.dump(data, f, indent=2, ensure_ascii=False)
+
+def open_in_explorer(target_path: str):
+    """Buka folder atau sorot file di Windows Explorer / File Manager."""
+    try:
+        norm = os.path.normpath(target_path)
+        if os.path.isfile(norm):
+            if sys.platform == "win32":
+                os.system(f'explorer /select,"{norm}"')
+            else:
+                import webbrowser
+                webbrowser.open(os.path.dirname(norm))
+        elif os.path.isdir(norm):
+            if sys.platform == "win32":
+                os.startfile(norm)
+            else:
+                import webbrowser
+                webbrowser.open(norm)
+    except Exception as e:
+        print(f"{Fore.RED}Gagal membuka File Explorer: {e}{Style.RESET_ALL}")
+
+def open_url_in_browser(url: str):
+    """Buka URL di browser default sistem."""
+    try:
+        import webbrowser
+        webbrowser.open(url)
+    except Exception as e:
+        print(f"{Fore.RED}Gagal membuka browser: {e}{Style.RESET_ALL}")
+
 def find_9router_db() -> Optional[str]:
     """Smart auto-detection for BansosRouter / 9Router SQLite database."""
+    cfg_db = load_settings().get("9router_db_path")
+    if cfg_db and os.path.exists(cfg_db):
+        return cfg_db
+
     env_path = os.environ.get("BANSOS_ROUTER_DB") or os.environ.get("NINEROUTER_DB")
     if env_path and os.path.exists(env_path):
         return env_path
@@ -69,6 +120,7 @@ def find_9router_db() -> Optional[str]:
         if os.path.exists(path):
             return path
     return None
+
 
 def install_dependencies(quiet: bool = False) -> bool:
     """Auto-install or repair project dependencies using requirements.txt."""
@@ -299,6 +351,30 @@ def view_saved_results(output_dir: str = None):
         proto = p.get('protocol', 'http').upper()
         print(f"  {idx:>2}. {Fore.GREEN}{proto:<6}{Style.RESET_ALL} {Fore.WHITE}{p['proxy']:<21}{Style.RESET_ALL} | {Fore.YELLOW}{p['latency_ms']:>4}ms{Style.RESET_ALL} | [{p['country_code']}] {p['country']} ({p.get('isp', '-')[:22]})")
 
+    print(f"\n{Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Style.RESET_ALL}")
+    print(f"{Fore.WHITE}{Style.BRIGHT}PILIH AKSI GUDANG AMUNISI:{Style.RESET_ALL}")
+    print(f"  {Fore.GREEN}[1]{Fore.WHITE} 🚀 Nyalakan Gateway 8888 Memakai Stok Ini")
+    print(f"  {Fore.GREEN}[2]{Fore.WHITE} 📂 Buka Folder Output di File Explorer")
+    print(f"  {Fore.GREEN}[3]{Fore.WHITE} 🧹 Bersihkan / Hapus Stok Lama")
+    print(f"  {Fore.RED}[0 / Enter]{Fore.WHITE} 🔙 Kembali ke Menu Utama")
+    print(f"{Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Style.RESET_ALL}")
+    sub = input(f"{Fore.YELLOW}Pilih aksi [1-3, 0=Kembali]: {Style.RESET_ALL}").strip()
+    if sub == "1":
+        print(f"\n{Fore.GREEN}✓ Menyalakan Gateway 8888 dengan {len(proxies)} proxy dari disk... Tekan Ctrl+C untuk stop.{Style.RESET_ALL}\n")
+        start_proxy_server(proxies, port=8888, background=False, enable_health_check=True)
+    elif sub == "2":
+        open_in_explorer(output_dir)
+    elif sub == "3":
+        c_del = input(f"{Fore.RED}Yakin ingin menghapus seluruh file cache proxy di {output_dir}? [y/N]: {Style.RESET_ALL}").strip().lower()
+        if c_del in ("y", "yes"):
+            for fname in os.listdir(output_dir):
+                if fname.endswith((".txt", ".json", ".csv")):
+                    try:
+                        os.remove(os.path.join(output_dir, fname))
+                    except Exception:
+                        pass
+            print(f"\n{Fore.GREEN}✓ Stok gudang amunisi berhasil dibersihkan!{Style.RESET_ALL}")
+
 CURRENT_LANG = "ID"
 
 def test_live_masking(port: int = 8888):
@@ -362,12 +438,126 @@ def test_live_masking(port: int = 8888):
         print(f"  • Gateway {port}     : {Fore.RED}Belum Aktif (Offline){Style.RESET_ALL}")
         print(f"\n  {Fore.YELLOW}🚨 Woy, Gateway Petani (127.0.0.1:{port}) belum nyala Bos! 🎭{Style.RESET_ALL}")
         print(f"  {Fore.LIGHTBLACK_EX}Masa mau ngetes topeng tapi belum dipasang topengnya?")
-        print(f"  {Fore.CYAN}👉 Nyalain dulu Gateway lewat menu {Fore.YELLOW}[G]{Fore.CYAN} atau racikan {Fore.YELLOW}[1-3]{Fore.CYAN}, baru balik lagi ke sini buat tes anti-bocor!{Style.RESET_ALL}")
+        print(f"{Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Style.RESET_ALL}")
+        ask = input(f"{Fore.CYAN}👉 Mau langsung nyalakan Gateway 8888 sekarang (1-Klik)? [Y/n]: {Style.RESET_ALL}").strip().lower()
+        if ask in ("", "y", "yes"):
+            print(f"\n{Fore.GREEN}🚀 Menyiapkan amunisi awal dan menyalakan Gateway {port}...{Style.RESET_ALL}")
+            from core.fast_validator import run_fast_harvester
+            db_target = find_9router_db()
+            initial = run_fast_harvester(max_latency_ms=1200, target_count=8, sync_db=bool(db_target))
+            if initial:
+                start_proxy_server(initial, port=port, background=True, enable_health_check=True)
+                time.sleep(1.5)
+                print(f"\n{Fore.GREEN}✓ Gateway berhasil aktif di background! Menguji kembali identitas...{Style.RESET_ALL}\n")
+                return test_live_masking(port=port)
+            else:
+                print(f"{Fore.RED}❌ Gagal mendapatkan proxy hidup untuk mengisi gateway.{Style.RESET_ALL}")
     print(f"{Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Style.RESET_ALL}\n")
 
 
+
+def show_settings_menu():
+    """Pusat Pengaturan Cepat [K] - Interactive paste & persist config."""
+    global CURRENT_LANG
+    while True:
+        cfg = load_settings()
+        cs_key = cfg.get("capsolver_api_key", "").strip()
+        custom_dom = cfg.get("custom_email_domain", "").strip()
+        custom_db = cfg.get("9router_db_path", "").strip()
+        
+        from core.webshare_hunter import check_capsolver_balance
+        cs_info = check_capsolver_balance()
+        
+        if cs_info.get("can_headless"):
+            cs_status = f"{Fore.GREEN}Aktif (Saldo: ${cs_info['balance']:.3f}){Style.RESET_ALL}"
+        elif cs_info.get("has_key"):
+            cs_status = f"{Fore.YELLOW}Saldo Habis (${cs_info['balance']:.3f}){Style.RESET_ALL}"
+        else:
+            cs_status = f"{Fore.CYAN}Belum Diisi (Mode AI Audio Gratisan Aktif){Style.RESET_ALL}"
+
+        dom_status = f"{Fore.GREEN}@{custom_dom}{Style.RESET_ALL}" if custom_dom else f"{Fore.CYAN}Otomatis / Fallback Pool (Bebas Domain Pribadi){Style.RESET_ALL}"
+        db_detected = find_9router_db()
+        db_status = f"{Fore.GREEN}{custom_db or db_detected}{Style.RESET_ALL}" if (custom_db or db_detected) else f"{Fore.LIGHTBLACK_EX}Tidak Terdeteksi (Mode Standalone){Style.RESET_ALL}"
+
+        print(BANNER)
+        print(f"""{Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  {Fore.WHITE}{Style.BRIGHT}⚙️  PUSAT PENGATURAN CEPAT (INTERAKTIF — PASTE & GO)
+  {Fore.LIGHTBLACK_EX}Tanpa perlu repot buka file JSON manual — tinggal paste di terminal!
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  {Fore.GREEN}[1]{Fore.WHITE} 🔑 Setup API Key CapSolver
+      {Fore.LIGHTBLACK_EX}Status : {cs_status}
+      {Fore.LIGHTBLACK_EX}Fungsi : Biar Webshare Hunter bisa jalan 100% di background (Headless).
+               {Fore.YELLOW}*CATATAN: Tidak wajib! Versi gratisan audio bawaan tetap aktif tanpa saldo.{Fore.LIGHTBLACK_EX}
+
+  {Fore.GREEN}[2]{Fore.WHITE} 📧 Setup Custom Domain Email Webshare
+      {Fore.LIGHTBLACK_EX}Status : {dom_status}
+      {Fore.LIGHTBLACK_EX}Fungsi : Masukkan domain kamu (Cloudflare Email Routing) agar notifikasi akun
+               masuk ke Gmail pribadi. Kosongkan jika ingin mode 0-modal otomatis.
+
+  {Fore.GREEN}[3]{Fore.WHITE} 🔌 Setup Lokasi Database 9Router
+      {Fore.LIGHTBLACK_EX}Status : {db_status}
+      {Fore.LIGHTBLACK_EX}Fungsi : Tentukan path file data.sqlite jika tidak otomatis terdeteksi.
+
+  {Fore.GREEN}[4]{Fore.WHITE} 🧹 Reset Pengaturan ke Default Pabrik (Bersihkan Config)
+  {Fore.RED}[0]{Fore.WHITE} 🔙 Kembali ke Menu Utama
+
+{Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Style.RESET_ALL}""")
+
+        choice = input(f"{Fore.YELLOW}Pilih opsi pengaturan [1-4, 0=Kembali]: {Style.RESET_ALL}").strip()
+        if choice in ("0", "b", "back", "q"):
+            break
+        elif choice == "1":
+            print(f"\n{Fore.CYAN}🔑 PENGATURAN API KEY CAPSOLVER{Style.RESET_ALL}")
+            print(f"{Fore.LIGHTBLACK_EX}Tekan Enter tanpa ketik apa pun jika ingin menghapus key (kembali ke gratisan).{Style.RESET_ALL}")
+            new_key = input(f"{Fore.YELLOW}Paste / Masukkan API Key CapSolver Anda: {Style.RESET_ALL}").strip()
+            cfg["capsolver_api_key"] = new_key
+            save_settings(cfg)
+            if new_key:
+                from core.webshare_hunter import check_capsolver_balance
+                check_res = check_capsolver_balance(new_key)
+                if check_res.get("can_headless"):
+                    print(f"\n{Fore.GREEN}✅ API Key berhasil disimpan & diverifikasi! Saldo: ${check_res['balance']:.3f}. Mode Headless siap digunakan!{Style.RESET_ALL}")
+                else:
+                    print(f"\n{Fore.YELLOW}⚠️ API Key disimpan, tapi saldo kosong atau tidak valid (${check_res.get('balance', 0):.3f}). Audio solver gratisan tetap siap.{Style.RESET_ALL}")
+            else:
+                print(f"\n{Fore.GREEN}✅ API Key dikosongkan. PetaniProxy kembali ke mode AI Audio Solver 100% gratisan bawaan.{Style.RESET_ALL}")
+            input(f"\n{Fore.LIGHTBLACK_EX}[Tekan Enter untuk lanjut...]{Style.RESET_ALL}")
+        elif choice == "2":
+            print(f"\n{Fore.CYAN}📧 PENGATURAN CUSTOM DOMAIN WEBSHARE{Style.RESET_ALL}")
+            print(f"{Fore.LIGHTBLACK_EX}Contoh: mydomain.com (pastikan sudah disetup Catch-all di Cloudflare Email Routing).{Style.RESET_ALL}")
+            print(f"{Fore.LIGHTBLACK_EX}Tekan Enter tanpa ketik apa pun untuk kembali ke domain pool otomatis (0-Modal).{Style.RESET_ALL}")
+            new_dom = input(f"{Fore.YELLOW}Masukkan domain email Anda: {Style.RESET_ALL}").strip().lstrip("@")
+            cfg["custom_email_domain"] = new_dom
+            save_settings(cfg)
+            if new_dom:
+                print(f"\n{Fore.GREEN}✅ Domain disimpan: @{new_dom}. Registrasi Webshare berikutnya akan memakai domain ini!{Style.RESET_ALL}")
+            else:
+                print(f"\n{Fore.GREEN}✅ Menggunakan domain pool otomatis bawaan PetaniProxy (0-Modal).{Style.RESET_ALL}")
+            input(f"\n{Fore.LIGHTBLACK_EX}[Tekan Enter untuk lanjut...]{Style.RESET_ALL}")
+        elif choice == "3":
+            print(f"\n{Fore.CYAN}🔌 PENGATURAN DATABASE 9ROUTER{Style.RESET_ALL}")
+            new_path = input(f"{Fore.YELLOW}Paste path lengkap ke data.sqlite 9Router: {Style.RESET_ALL}").strip()
+            if new_path and os.path.exists(new_path):
+                cfg["9router_db_path"] = new_path
+                save_settings(cfg)
+                print(f"\n{Fore.GREEN}✅ Database 9Router berhasil dihubungkan ke: {new_path}{Style.RESET_ALL}")
+            elif not new_path:
+                cfg.pop("9router_db_path", None)
+                save_settings(cfg)
+                print(f"\n{Fore.GREEN}✅ Menggunakan auto-detection bawaan.{Style.RESET_ALL}")
+            else:
+                print(f"\n{Fore.RED}❌ File tidak ditemukan di path tersebut: {new_path}{Style.RESET_ALL}")
+            input(f"\n{Fore.LIGHTBLACK_EX}[Tekan Enter untuk lanjut...]{Style.RESET_ALL}")
+        elif choice == "4":
+            if os.path.exists(get_settings_path()):
+                os.remove(get_settings_path())
+            print(f"\n{Fore.GREEN}✅ Pengaturan berhasil di-reset ke default pabrik!{Style.RESET_ALL}")
+            input(f"\n{Fore.LIGHTBLACK_EX}[Tekan Enter untuk lanjut...]{Style.RESET_ALL}")
+
 def show_manual_menu():
     """Sub-menu [M] Bengkel Oprek Manual untuk power user."""
+
     global CURRENT_LANG
     while True:
         print(BANNER)
@@ -523,9 +713,10 @@ def get_features_readiness(lang: str = "ID") -> dict:
         status["capsolver_desc"] = f"Saldo ${cs_info['balance']:.3f} (Headless Off, Gunakan Free Audio)" if lang == "ID" else f"Balance ${cs_info['balance']:.3f} (Use Free Audio)"
         score += 10
     else:
-        status["capsolver_badge"] = f"{Fore.LIGHTBLACK_EX}[TIDAK DIAKTIFKAN]{Style.RESET_ALL}" if lang == "ID" else f"{Fore.LIGHTBLACK_EX}[DISABLED]{Style.RESET_ALL}"
-        status["capsolver_desc"] = "Key Kosong (Audio Solver Gratisan Tetap Aktif)" if lang == "ID" else "No Key (Free Audio Solver Remains Active)"
-        score += 15
+        status["capsolver_badge"] = f"{Fore.CYAN}[OPSIONAL / OFF]{Style.RESET_ALL}" if lang == "ID" else f"{Fore.CYAN}[OPTIONAL / OFF]{Style.RESET_ALL}"
+        status["capsolver_desc"] = "Mode AI Audio Gratisan 100% Aktif & Siap Tempur ✓" if lang == "ID" else "100% Free AI Audio Solver Active & Ready ✓"
+        score += 20
+
 
     # 4. 9Router DB sync
     db_path = find_9router_db()
@@ -654,7 +845,8 @@ def show_interactive_menu():
   {Fore.CYAN}[E]{Fore.WHITE} 📥 Bungkus File Mentah    {Fore.GREEN}[SIAP EKSPOR]{Style.RESET_ALL} {Fore.LIGHTBLACK_EX}Sedot TXT, JSON, CSV buat bot lu
   {Fore.CYAN}[T]{Fore.WHITE} 🧪 Uji Kesaktian Topeng   {st['gateway']} {Fore.LIGHTBLACK_EX}Tes live: Adu IP asli lu vs IP Gateway (Anti-Bocor)
 
-  {Fore.MAGENTA}PEMBARUAN & BENGKEL OPREK
+  {Fore.MAGENTA}PEMBARUAN & PUSAT PENGATURAN
+  {Fore.YELLOW}{Style.BRIGHT}[K]{Fore.WHITE}{Style.BRIGHT} ⚙️ Pengaturan Cepat       {Fore.GREEN}[PASTE & GO]{Style.RESET_ALL} {Fore.LIGHTBLACK_EX}Setup API CapSolver & Domain Email tanpa ngoding
 {u_line}  {Fore.YELLOW}[M]{Fore.WHITE} 🛠️ Oprek Suka-Suka        {ready_label} {Fore.LIGHTBLACK_EX}Racik protokol sendiri, pilih negara
   {Fore.YELLOW}[S]{Fore.WHITE} 📂 Gudang Amunisi         {st['storage']} {Fore.LIGHTBLACK_EX}Stok proxy segar tersimpan di disk
   {Fore.BLUE}[L]{Fore.WHITE} 🌐 Ganti Bahasa (EN/ID)   {Fore.LIGHTBLACK_EX}Currently: Bahasa Indonesia
@@ -663,7 +855,7 @@ def show_interactive_menu():
 {Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   {Fore.LIGHTBLACK_EX}Maintainer: {Fore.YELLOW}@itzluthfi{Fore.LIGHTBLACK_EX}          Repository: {Fore.WHITE}github.com/itzluthfi
 {Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Style.RESET_ALL}"""
-            prompt_str = f"{Fore.YELLOW}Pilih Opsi [W, C, F, G, 1-3, E, T, U, M, S, L, 0] (Saran: W atau C untuk speed monster): {Style.RESET_ALL}"
+            prompt_str = f"{Fore.YELLOW}Pilih Opsi [W, C, F, G, 1-3, E, T, K, U, M, S, L, 0] (Saran: W atau C untuk speed monster): {Style.RESET_ALL}"
         else:
             u_line = f"  {Fore.YELLOW}{Style.BRIGHT}[U]{Fore.WHITE}{Style.BRIGHT} 🚀 New Update Available!  {Fore.GREEN}v{cached_update_info.get('remote_version')} [SELECT TO UPDATE]\n" if (cached_update_info and cached_update_info.get("has_update")) else f"  {Fore.GREEN}[U]{Fore.WHITE} 🔄 Check & Update Version {Fore.GREEN}[v{local_ver} LATEST]{Style.RESET_ALL}\n"
             menu_box = f"""{Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -698,7 +890,8 @@ def show_interactive_menu():
   {Fore.CYAN}[E]{Fore.WHITE} 📥 Dump Raw Ammo Files    {Fore.GREEN}[READY TO DUMP]{Style.RESET_ALL} {Fore.LIGHTBLACK_EX}Export TXT, JSON, CSV for bots
   {Fore.CYAN}[T]{Fore.WHITE} 🧪 Stealth Mask Check     {st['gateway']} {Fore.LIGHTBLACK_EX}Live test: Real IP vs Gateway IP (Zero Leak)
  
-  {Fore.MAGENTA}UPDATES & WORKSHOP
+  {Fore.MAGENTA}UPDATES & QUICK SETTINGS
+  {Fore.YELLOW}{Style.BRIGHT}[K]{Fore.WHITE}{Style.BRIGHT} ⚙️ Quick Settings Lab      {Fore.GREEN}[PASTE & GO]{Style.RESET_ALL} {Fore.LIGHTBLACK_EX}Setup CapSolver Key & Custom Domain with zero coding
 {u_line}  {Fore.YELLOW}[M]{Fore.WHITE} 🛠️ Custom Lab Workshop    {ready_label} {Fore.LIGHTBLACK_EX}Tweak protocols, filter ISO countries
   {Fore.YELLOW}[S]{Fore.WHITE} 📂 Ammo Storage Vault     {st['storage']} {Fore.LIGHTBLACK_EX}Check active proxies sitting on disk
   {Fore.BLUE}[L]{Fore.WHITE} 🌐 Switch Language (EN/ID){Fore.LIGHTBLACK_EX}Currently: English
@@ -707,7 +900,8 @@ def show_interactive_menu():
 {Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   {Fore.LIGHTBLACK_EX}Maintainer: {Fore.YELLOW}@itzluthfi{Fore.LIGHTBLACK_EX}          Repository: {Fore.WHITE}github.com/itzluthfi
 {Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Style.RESET_ALL}"""
-            prompt_str = f"{Fore.YELLOW}Select Option [W, C, F, G, 1-3, E, T, U, M, S, L, 0] (Pro-tip: Press W or C for godmode): {Style.RESET_ALL}"
+            prompt_str = f"{Fore.YELLOW}Select Option [W, C, F, G, 1-3, E, T, K, U, M, S, L, 0] (Pro-tip: Press W or C for godmode): {Style.RESET_ALL}"
+
 
 
         print(menu_box)
@@ -748,13 +942,35 @@ def show_interactive_menu():
             show_manual_menu()
             continue
 
+        if choice.lower() == "k":
+            show_settings_menu()
+            continue
+
         if choice.lower() == "t":
             test_live_masking(port=8888)
         elif choice.lower() == "e":
             q_str = f"{Fore.CYAN}{'Target jumlah proxy hidup yang mau diekspor [default: 20]: ' if CURRENT_LANG == 'ID' else 'Target alive proxies to export [default: 20]: '}{Style.RESET_ALL}"
             t_input = input(q_str).strip()
             target_val = int(t_input) if t_input.isdigit() and int(t_input) > 0 else 20
-            run_harvester(protocols=["http", "socks4", "socks5"], max_check=max(250, target_val * 15), target_alive=target_val, timeout=3.0)
+            res = run_harvester(protocols=["http", "socks4", "socks5"], max_check=max(250, target_val * 15), target_alive=target_val, timeout=3.0)
+            if res:
+                base_dir = os.path.dirname(os.path.abspath(__file__))
+                out_dir = os.path.join(base_dir, "output")
+                while True:
+                    print(f"\n{Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Style.RESET_ALL}")
+                    print(f"{Fore.WHITE}{Style.BRIGHT}💾 FILE MENTAH SEGAR BERHASIL DIBUNGKUS!{Style.RESET_ALL}")
+                    print(f"  {Fore.GREEN}[1]{Fore.WHITE} 📂 Buka Folder Output di File Explorer")
+                    print(f"  {Fore.GREEN}[2]{Fore.WHITE} 📝 Buka File live_all.txt di Notepad")
+                    print(f"  {Fore.RED}[0 / Enter]{Fore.WHITE} 🔙 Kembali ke Menu Utama")
+                    print(f"{Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Style.RESET_ALL}")
+                    sub = input(f"{Fore.YELLOW}Pilih aksi [1-2, 0=Kembali]: {Style.RESET_ALL}").strip()
+                    if sub == "1":
+                        open_in_explorer(out_dir)
+                    elif sub == "2":
+                        open_in_explorer(os.path.join(out_dir, "live_all.txt"))
+                    else:
+                        break
+            continue
         elif choice == "" or choice == "1":
             print(f"\n{Fore.GREEN}{'🐔 Menjalankan Racikan Ternak Akun (Grok, Qoder & Bot AI)...' if CURRENT_LANG == 'ID' else '🐔 Launching Account Farming Preset (Grok, Qoder & AI)...'}{Style.RESET_ALL}")
             db_target = find_9router_db()
@@ -824,7 +1040,7 @@ def show_interactive_menu():
             else:
                 print(f"\n{Fore.CYAN}ℹ️  STATUS ENGINE CAPTCHA & MODE TAMPILAN:{Style.RESET_ALL}")
                 print(f"  • Solver Aktif   : {Fore.GREEN}Free AI Audio Solver (SpeechRecognition, Tanpa Saldo Token){Style.RESET_ALL}")
-                print(f"  • Status Headless: {Fore.YELLOW}Dimatikan Otomatis{Style.RESET_ALL} ({cs_info.get('message')})")
+                print(f"  • Status Headless: {Fore.CYAN}Opsional / Dimatikan{Style.RESET_ALL} ({cs_info.get('message')})")
                 print(f"  {Fore.LIGHTBLACK_EX}💡 Penjelasan: Audio Solver gratisan WAJIB menggunakan jendela tampak agar bot")
                 print(f"     bergerak alami & tidak diblokir 'Automated queries' oleh Google reCAPTCHA.{Style.RESET_ALL}")
                 print(f"  {Fore.GREEN}👉 Otomatis menggunakan Mode Jendela Tampak (Mode Paling Stabil & Gacor)...{Style.RESET_ALL}\n")
@@ -832,12 +1048,73 @@ def show_interactive_menu():
 
             db_target = find_9router_db()
             run_webshare_hunter(total=total_acc, headless=is_headless, sync_9router_db=db_target)
+            
+            base_dir = os.path.dirname(os.path.abspath(__file__))
+            ws_file = os.path.join(base_dir, "output", "webshare_residential.txt")
+            if os.path.exists(ws_file) and os.path.getsize(ws_file) > 0:
+                while True:
+                    print(f"\n{Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Style.RESET_ALL}")
+                    print(f"{Fore.WHITE}{Style.BRIGHT}🏢 AMUNISI RESIDENTIAL SIAP! PILIH AKSI:{Style.RESET_ALL}")
+                    print(f"  {Fore.GREEN}[1]{Fore.WHITE} 📝 Buka File Daftar IP di Notepad ({Fore.YELLOW}webshare_residential.txt{Fore.WHITE})")
+                    print(f"  {Fore.GREEN}[2]{Fore.WHITE} 📂 Buka Folder Output di File Explorer")
+                    print(f"  {Fore.GREEN}[3]{Fore.WHITE} 📋 Tampilkan Contoh Kode Python Requests Siap Pakai")
+                    print(f"  {Fore.RED}[0 / Enter]{Fore.WHITE} 🔙 Kembali ke Menu Utama")
+                    print(f"{Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Style.RESET_ALL}")
+                    sub = input(f"{Fore.YELLOW}Pilih aksi [1-3, 0=Kembali]: {Style.RESET_ALL}").strip()
+                    if sub == "1":
+                        open_in_explorer(ws_file)
+                    elif sub == "2":
+                        open_in_explorer(os.path.dirname(ws_file))
+                    elif sub == "3":
+                        with open(ws_file, "r", encoding="utf-8") as f:
+                            first_proxy = f.readline().strip()
+                        print(f"\n{Fore.CYAN}📋 CONTOH KODE PYTHON REQUESTS:{Style.RESET_ALL}")
+                        print(f"""{Fore.WHITE}import requests
+
+proxies = {{
+    "http": "{first_proxy or 'http://user:pass@ip:port'}",
+    "https": "{first_proxy or 'http://user:pass@ip:port'}"
+}}
+
+resp = requests.get("https://api.ipify.org?format=json", proxies=proxies, timeout=10)
+print("IP Aktif Residential:", resp.json()["ip"])
+{Style.RESET_ALL}""")
+                    else:
+                        break
+            continue
         elif choice.lower() == "c":
             print(f"\n{Fore.CYAN}{Style.BRIGHT}{'🚀 MEMBUAT PROFIL CLOUDFLARE WARP (WIREGUARD / SING-BOX)...' if CURRENT_LANG == 'ID' else '🚀 GENERATING CLOUDFLARE WARP PROFILE...'}{Style.RESET_ALL}")
             print(f"{Fore.LIGHTBLACK_EX}{'💡 Info: Registrasi resmi via Cloudflare REST API (100% legal, tanpa captcha, unlimited).' if CURRENT_LANG == 'ID' else '💡 Info: Official registration via Cloudflare REST API (zero captcha, unlimited).'}{Style.RESET_ALL}\n")
             from core.warp_generator import generate_and_save_warp
             db_target = find_9router_db()
-            generate_and_save_warp(sync_db=bool(db_target))
+            profile = generate_and_save_warp(sync_db=bool(db_target))
+            if profile:
+                base_dir = os.path.dirname(os.path.abspath(__file__))
+                warp_conf = os.path.join(base_dir, "output", "warp", "warp.conf")
+                warp_folder = os.path.join(base_dir, "output", "warp")
+                while True:
+                    print(f"\n{Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Style.RESET_ALL}")
+                    print(f"{Fore.WHITE}{Style.BRIGHT}🎉 AMUNISI CLOUDFLARE WARP SIAP DIGUNAKAN! PILIH AKSI:{Style.RESET_ALL}")
+                    print(f"  {Fore.GREEN}[1]{Fore.WHITE} 📂 Buka Folder File ({Fore.YELLOW}warp.conf{Fore.WHITE} di File Explorer)")
+                    print(f"  {Fore.GREEN}[2]{Fore.WHITE} 🌐 Download Aplikasi Resmi WireGuard Windows (Buka Browser)")
+                    print(f"  {Fore.GREEN}[3]{Fore.WHITE} 📋 Panduan Kilat 3 Langkah Cara Pakai di WireGuard")
+                    print(f"  {Fore.RED}[0 / Enter]{Fore.WHITE} 🔙 Kembali ke Menu Utama")
+                    print(f"{Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Style.RESET_ALL}")
+                    sub = input(f"{Fore.YELLOW}Pilih aksi [1-3, 0=Kembali]: {Style.RESET_ALL}").strip()
+                    if sub == "1":
+                        open_in_explorer(warp_conf if os.path.exists(warp_conf) else warp_folder)
+                    elif sub == "2":
+                        open_url_in_browser("https://www.wireguard.com/install/")
+                    elif sub == "3":
+                        print(f"\n{Fore.CYAN}📖 PANDUAN KILAT CARA PAKAI (1 MENIT LANGSUNG KONEK):{Style.RESET_ALL}")
+                        print(f"  1. Buka aplikasi WireGuard di Windows.")
+                        print(f"  2. Klik tombol {Fore.YELLOW}'Add Tunnel'{Style.RESET_ALL} (atau tekan {Fore.YELLOW}Ctrl + O{Style.RESET_ALL}).")
+                        print(f"  3. Pilih file: {Fore.GREEN}{warp_conf}{Style.RESET_ALL}")
+                        print(f"  4. Klik tombol {Fore.YELLOW}'Activate'{Style.RESET_ALL}.")
+                        print(f"  {Fore.GREEN}✓ Selesai! Seluruh koneksi PC kamu otomatis berkecepatan monster via Cloudflare!{Style.RESET_ALL}")
+                    else:
+                        break
+            continue
         elif choice.lower() == "f":
             print(f"\n{Fore.CYAN}{Style.BRIGHT}{'⚡ MEMULAI AIOHTTP FAST PROXY HARVESTER...' if CURRENT_LANG == 'ID' else '⚡ LAUNCHING AIOHTTP FAST HARVESTER...'}{Style.RESET_ALL}")
             from core.fast_validator import run_fast_harvester
@@ -859,8 +1136,9 @@ def show_interactive_menu():
             print(f"\n{Fore.YELLOW}{goodbye_msg}{Style.RESET_ALL}\n")
             break
         else:
-            invalid_msg = "Pilihan tidak valid. Silakan pilih W, C, F, G, 1-3, E, T, U, M, S, L, atau 0." if CURRENT_LANG == "ID" else "Invalid option. Please choose W, C, F, G, 1-3, E, T, U, M, S, L, or 0."
+            invalid_msg = "Pilihan tidak valid. Silakan pilih W, C, F, G, 1-3, E, T, K, U, M, S, L, atau 0." if CURRENT_LANG == "ID" else "Invalid option. Please choose W, C, F, G, 1-3, E, T, K, U, M, S, L, or 0."
             print(f"{Fore.RED}{invalid_msg}{Style.RESET_ALL}")
+
 
 
         try:

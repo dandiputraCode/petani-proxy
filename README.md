@@ -49,11 +49,12 @@ Created and maintained with ❤️ by [@itzluthfi](https://github.com/itzluthfi)
 > **Webshare Hunter** adalah senjata pamungkas PetaniProxy untuk memanen **IP Perumahan Asli (Genuine Residential Proxies)** secara 100% otomatis dan gratis!
 
 ### 🎯 Mengapa Ini Menjadi Fitur MVP (Unggulan Utama)?
-* 🧠 **AI Audio Captcha Solver Bawaan**: Memecahkan Cloudflare / hCaptcha otomatis menggunakan audio voice recognition (SpeechRecognition) tanpa perlu langganan API Captcha berbayar!
+* 🧠 **100% GRATIS dengan AI Audio Captcha Solver**: Menggunakan voice recognition bawaan (`SpeechRecognition` + `pydub`) untuk memecahkan audio challenge reCAPTCHA secara lokal **tanpa bayar API captcha sepeser pun**.
+* 🎛️ **Fleksibel (Dukungan CapSolver Berbayar)**: Bagi Anda yang punya saldo [CapSolver](https://www.capsolver.com) dan ingin solving lebih cepat secara headless, cukup set environment variable `CAPSOLVER_API_KEY`. PetaniProxy otomatis mendeteksinya, namun **DEFAULT-nya tetap 100% GRATIS**.
 * 🖱️ **Human Mouse Movement (Kurva Bezier)**: Mengemulasikan gerakan mouse melengkung alami manusia saat pengisian form agar lolos sensor bot.
-* 🏠 **IP Residential Rumah (Bukan Datacenter)**: Dikenali sebagai ISP rumahan biasa, sehingga **garansi lolos proteksi ketat** di Grok AI, Qoder, Twitter/X, Shopee, dan Cloudflare Protected Sites.
+* 🏠 **IP Residential Rumah (Bukan Datacenter)**: Dikenali sebagai ISP rumahan biasa, sehingga **lolos proteksi ketat** di Grok AI, Twitter/X, Qoder, Shopee, Tokopedia, dan Cloudflare Protected Sites.
 * 🔑 **Kredensial Privat**: Lengkap dengan `username:password` pribadi per IP, aman dan stabil tanpa rebutan bandwidth dengan orang lain.
-* 🔄 **Auto-Sync 9Router / BansosRouter**: Hasil panen otomatis disuntikkan ke database SQLite 9Router lokal tanpa perlu input manual.
+* 🔄 **Auto-Sync 9Router / BansosRouter**: Hasil panen otomatis disuntikkan ke database SQLite 9Router lokal (`data.sqlite`) tanpa perlu input manual.
 
 ---
 
@@ -171,8 +172,8 @@ PetaniProxy aggregates public open-source proxy lists. All endpoints are configu
 ## Installation
 
 ```bash
-git clone https://github.com/your-username/omni-proxy-harvester.git
-cd omni-proxy-harvester
+git clone https://github.com/itzluthfi/petani-proxy.git
+cd petani-proxy
 pip install -r requirements.txt
 ```
 
@@ -304,8 +305,21 @@ This repository contains [`.github/workflows/auto_harvest.yml`](.github/workflow
 2. It executes `main.py`, validates live nodes, and commits updated files in `output/`.
 3. Your repository acts as a live, self-updating raw proxy endpoint:
    ```text
-   https://raw.githubusercontent.com/itzluthfi/omni-proxy-harvester/main/output/live_all.txt
+   https://raw.githubusercontent.com/itzluthfi/petani-proxy/main/output/live_all.txt
    ```
+
+---
+
+## 🙏 Acknowledgements & Attribution (CC BY)
+
+Proyek ini terinspirasi dan dikembangkan dengan memanfaatkan basis fondasi karya hebat dari:
+* **[@hirotomasato](https://github.com/hirotomasato)** — Kontributor & developer yang menginisiasi konsep dasar scraper awal.
+
+### 💡 Keunggulan PetaniProxy v1.0 dibanding Upstream:
+* **100% GRATIS Tanpa Biaya Token Captcha**: Upstream umumnya membutuhkan solver berbayar / ribet. PetaniProxy menyertakan **Built-in AI Speech Recognition Audio Solver** yang 100% gratis tanpa perlu berlangganan solver apapun!
+* **Dukungan CapSolver Opsional**: Bagi pengguna pro yang ingin memakai API key [CapSolver](https://www.capsolver.com), opsi ini tetap disediakan (tinggal pasang `CAPSOLVER_API_KEY`). Namun, default bawaannya tetap 100% gratis tanpa setup tambahan.
+* **Integrasi AI Router Langsung**: Otomatis menyuntikkan proxy hasil panen ke database SQLite 9Router (`data.sqlite`).
+* **Local Rotating Gateway**: Menjalankan forward proxy lokal di `127.0.0.1:8888` dengan auto-failover retry 3x.
 
 ---
 
@@ -325,4 +339,4 @@ This project collects and tests publicly accessible proxy lists for research, au
 ## License
 
 Licensed under the [MIT License](LICENSE).
-Copyright (c) 2026 itzluthfi.
+Copyright (c) 2026 itzluthfi. Attributions to upstream contributors under Creative Commons (CC BY).

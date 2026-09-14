@@ -161,6 +161,60 @@ def human_click_element(page, element):
             pass
 
 
+def try_solve_capsolver(page, capsolver_key):
+    """Optional paid solver: solves reCAPTCHA via CapSolver API if key is configured."""
+    try:
+        sitekey = page.run_js("""
+            const el = document.querySelector('[data-sitekey]');
+            if (el) return el.getAttribute('data-sitekey');
+            const iframe = document.querySelector('iframe[src*="recaptcha"]');
+            if (iframe) {
+                const match = iframe.src.match(/[?&]k=([^&]+)/);
+                if (match) return match[1];
+            }
+            return '';
+        """)
+        if not sitekey:
+            return False
+
+        print(f"[*] [CapSolver] Terdeteksi sitekey: {sitekey}. Mengirim task ke CapSolver...")
+        task_res = requests.post("https://api.capsolver.com/createTask", json={
+            "clientKey": capsolver_key,
+            "task": {
+                "type": "ReCaptchaV2TaskProxyLess",
+                "websiteURL": page.url,
+                "websiteKey": sitekey
+            }
+        }, timeout=10).json()
+
+        task_id = task_res.get("taskId")
+        if not task_id:
+            print(f"[!] [CapSolver] Gagal membuat task: {task_res.get('errorDescription')}")
+            return False
+
+        for _ in range(30):
+            time.sleep(2)
+            result = requests.post("https://api.capsolver.com/getTaskResult", json={
+                "clientKey": capsolver_key,
+                "taskId": task_id
+            }, timeout=10).json()
+            if result.get("status") == "ready":
+                token = result.get("solution", {}).get("gRecaptchaResponse")
+                if token:
+                    print("[+] [CapSolver] Token reCAPTCHA berhasil didapatkan!")
+                    page.run_js(f"""
+                        const el = document.getElementById('g-recaptcha-response');
+                        if (el) el.value = "{token}";
+                    """)
+                    return True
+            elif result.get("status") == "failed":
+                return False
+        return False
+    except Exception as e:
+        print(f"[Debug] CapSolver error: {e}")
+        return False
+
+
 def try_solve_audio(page):
 
     try:
@@ -385,10 +439,15 @@ def hunt_single_auto(index, total, headless=False):
                 except:
                     pass
 
-            # Update last_attempt_time setiap kali memanggil try_solve_audio agar tidak spam
+            # Update last_attempt_time setiap kali memanggil solver agar tidak spam
             if time.time() - last_attempt_time > 15:
                 last_attempt_time = time.time()
-                try_solve_audio(page)
+                capsolver_key = os.environ.get("CAPSOLVER_API_KEY", "").strip()
+                solved = False
+                if capsolver_key:
+                    solved = try_solve_capsolver(page, capsolver_key)
+                if not solved:
+                    try_solve_audio(page)
 
             time.sleep(3)
 

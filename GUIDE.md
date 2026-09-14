@@ -109,7 +109,7 @@ Jika Anda membuka link tersebut di browser (Chrome / Edge / Firefox), akan muncu
 ```json
 {
   "service": "PetaniProxy Gateway & REST API",
-  "version": "2.0.0",
+  "version": "1.0.0",
   "maintainer": "@itzluthfi (github.com/itzluthfi)",
   "stats": {
     "uptime_seconds": 24.5,

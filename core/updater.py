@@ -139,7 +139,7 @@ def check_for_updates(timeout: float = 2.5) -> Dict[str, Any]:
     return result
 
 def render_update_banner(update_info: Dict[str, Any], lang: str = "ID") -> str:
-    """Render a compact terminal banner displaying update notification and announcement."""
+    """Render a clean, modern terminal banner displaying update notification and announcement."""
     curr = update_info.get("current_version", "1.0.0")
     remote = update_info.get("remote_version", "1.0.0")
     title = update_info.get("title", f"PetaniProxy v{remote}")
@@ -147,36 +147,31 @@ def render_update_banner(update_info: Dict[str, Any], lang: str = "ID") -> str:
     changelog = update_info.get("changelog", [])
 
     lines = []
-    lines.append(f"{Fore.YELLOW}┌────────────────────────────────────────────────────────────────────────┐")
+    lines.append(f"{Fore.YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Style.RESET_ALL}")
     if lang == "ID":
-        lines.append(f"│ {Fore.WHITE}{Style.BRIGHT}🚀 UPDATE TERSEDIA! {Fore.GREEN}v{remote}{Fore.WHITE} (Versi Terpasang: {Fore.YELLOW}v{curr}{Fore.WHITE}){Fore.YELLOW}                       │")
+        lines.append(f"  {Fore.WHITE}{Style.BRIGHT}🚀 UPDATE TERSEDIA! {Fore.GREEN}v{remote}{Fore.WHITE} (Versi Terpasang: {Fore.YELLOW}v{curr}{Fore.WHITE}){Style.RESET_ALL}")
         if announcement:
-            ann_clean = announcement[:60]
-            lines.append(f"│ 📢 {Fore.CYAN}{ann_clean:<67}{Fore.YELLOW}│")
-        lines.append(f"├────────────────────────────────────────────────────────────────────────┤")
-        lines.append(f"│ {Fore.MAGENTA}📝 Rincian Pembaruan & Fitur Baru:{Fore.YELLOW}                                     │")
+            lines.append(f"  📢 {Fore.CYAN}{announcement}{Style.RESET_ALL}")
+        lines.append(f"{Fore.LIGHTBLACK_EX}────────────────────────────────────────────────────────────────────────────{Style.RESET_ALL}")
+        lines.append(f"  {Fore.MAGENTA}📝 Rincian Pembaruan & Fitur Baru:{Style.RESET_ALL}")
     else:
-        lines.append(f"│ {Fore.WHITE}{Style.BRIGHT}🚀 NEW UPDATE AVAILABLE! {Fore.GREEN}v{remote}{Fore.WHITE} (Current: {Fore.YELLOW}v{curr}{Fore.WHITE}){Fore.YELLOW}                       │")
+        lines.append(f"  {Fore.WHITE}{Style.BRIGHT}🚀 NEW UPDATE AVAILABLE! {Fore.GREEN}v{remote}{Fore.WHITE} (Current: {Fore.YELLOW}v{curr}{Fore.WHITE}){Style.RESET_ALL}")
         if announcement:
-            ann_clean = announcement[:60]
-            lines.append(f"│ 📢 {Fore.CYAN}{ann_clean:<67}{Fore.YELLOW}│")
-        lines.append(f"├────────────────────────────────────────────────────────────────────────┤")
-        lines.append(f"│ {Fore.MAGENTA}📝 Patch Notes & What's New:{Fore.YELLOW}                                           │")
+            lines.append(f"  📢 {Fore.CYAN}{announcement}{Style.RESET_ALL}")
+        lines.append(f"{Fore.LIGHTBLACK_EX}────────────────────────────────────────────────────────────────────────────{Style.RESET_ALL}")
+        lines.append(f"  {Fore.MAGENTA}📝 Patch Notes & What's New:{Style.RESET_ALL}")
 
     if changelog:
         for item in changelog[:4]:
-            item_clean = item.strip()
-            if len(item_clean) > 64:
-                item_clean = item_clean[:61] + "..."
-            lines.append(f"│   {Fore.WHITE}• {item_clean:<65}{Fore.YELLOW}│")
+            lines.append(f"   {Fore.YELLOW}•{Fore.WHITE} {item.strip()}{Style.RESET_ALL}")
     else:
         hint = "Peningkatan performa & perbaikan bug." if lang == "ID" else "Performance improvements & bug fixes."
-        lines.append(f"│   {Fore.WHITE}• {hint:<65}{Fore.YELLOW}│")
+        lines.append(f"   {Fore.YELLOW}•{Fore.WHITE} {hint}{Style.RESET_ALL}")
 
-    lines.append(f"├────────────────────────────────────────────────────────────────────────┤")
+    lines.append(f"{Fore.LIGHTBLACK_EX}────────────────────────────────────────────────────────────────────────────{Style.RESET_ALL}")
     cta = "👉 Tekan [U] di menu untuk update otomatis dalam 1 klik! ✨" if lang == "ID" else "👉 Press [U] in menu for seamless 1-click update! ✨"
-    lines.append(f"│ {Fore.GREEN}{Style.BRIGHT}{cta:<70}{Fore.YELLOW} │")
-    lines.append(f"└────────────────────────────────────────────────────────────────────────┘{Style.RESET_ALL}")
+    lines.append(f"  {Fore.GREEN}{Style.BRIGHT}{cta}{Style.RESET_ALL}")
+    lines.append(f"{Fore.YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Style.RESET_ALL}")
 
     return "\n".join(lines)
 

@@ -31,7 +31,7 @@ if %errorlevel% neq 0 (
 )
 
 :: Auto install dependencies if missing
-%PY_CMD% -c "import httpx, requests, colorama" >nul 2>&1
+%PY_CMD% -c "import httpx, requests, colorama, DrissionPage, speech_recognition" >nul 2>&1
 if %errorlevel% neq 0 (
     echo.
     echo [SETUP] Memasang paket dependencies untuk pengguna baru...

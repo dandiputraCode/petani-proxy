@@ -318,36 +318,40 @@ def show_manual_menu():
     while True:
         print(BANNER)
         if CURRENT_LANG == "ID":
-            m_box = f"""{Fore.CYAN}┌────────────────────────────────────────────────────────────────────────┐
-│               {Fore.WHITE}{Style.BRIGHT}🛠️  BENGKEL OPREK MANUAL (PETANIPROXY){Fore.CYAN}                  │
-│       {Fore.LIGHTBLACK_EX}"Buat yang paham jeroan teknis — tetap penting & bebas diatur!"{Fore.CYAN}  │
-├────────────────────────────────────────────────────────────────────────┤
-│  {Fore.GREEN}[1]{Fore.WHITE} ⚡ Quick Harvest Standar   {Fore.LIGHTBLACK_EX}Ambil 15 proxy tercepat dari semua tipe     {Fore.CYAN}│
-│  {Fore.GREEN}[2]{Fore.WHITE} 🔒 Khusus SOCKS5          {Fore.LIGHTBLACK_EX}Protokol tercepat & stabil (HTTP diskip)    {Fore.CYAN}│
-│  {Fore.GREEN}[3]{Fore.WHITE} 🌐 Khusus HTTP / HTTPS    {Fore.LIGHTBLACK_EX}Proxy klasik untuk web traffic biasa        {Fore.CYAN}│
-│  {Fore.GREEN}[4]{Fore.WHITE} 🌍 Filter Negara Tertentu {Fore.LIGHTBLACK_EX}Bebas ketik kode ISO (ID, SG, US, JP, dll)  {Fore.CYAN}│
-│  {Fore.GREEN}[5]{Fore.WHITE} 🛡️ Khusus Elite Proxies   {Fore.LIGHTBLACK_EX}High Anonymity Only — anti bocor header     {Fore.CYAN}│
-│  {Fore.GREEN}[6]{Fore.WHITE} 🎯 Tembak Target URL      {Fore.LIGHTBLACK_EX}Uji tembus domain incaran (contoh: x.ai)    {Fore.CYAN}│
-│  {Fore.GREEN}[7]{Fore.WHITE} 🏠 Nyalakan Gateway 8888  {Fore.LIGHTBLACK_EX}Host forward proxy & REST API lokal         {Fore.CYAN}│
-│  {Fore.GREEN}[8]{Fore.WHITE} 🔌 Setor ke BansosRouter  {Fore.LIGHTBLACK_EX}Inject proxy langsung ke database SQLite    {Fore.CYAN}│
-│  {Fore.RED}[0]{Fore.WHITE} 🔙 Balik ke Menu Racikan  {Fore.LIGHTBLACK_EX}Kembali ke beranda utama                    {Fore.CYAN}│
-└────────────────────────────────────────────────────────────────────────┘{Style.RESET_ALL}"""
+            m_box = f"""{Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  {Fore.WHITE}{Style.BRIGHT}🛠️  BENGKEL OPREK MANUAL (PETANIPROXY)
+  {Fore.LIGHTBLACK_EX}Buat yang paham jeroan teknis — bebas atur protokol, filter & hook database
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  {Fore.GREEN}[1]{Fore.WHITE} ⚡ Quick Harvest Standar   {Fore.LIGHTBLACK_EX}Ambil 15 proxy tercepat dari semua tipe
+  {Fore.GREEN}[2]{Fore.WHITE} 🔒 Khusus SOCKS5          {Fore.LIGHTBLACK_EX}Protokol tercepat & stabil (HTTP diskip)
+  {Fore.GREEN}[3]{Fore.WHITE} 🌐 Khusus HTTP / HTTPS    {Fore.LIGHTBLACK_EX}Proxy klasik untuk web traffic biasa
+  {Fore.GREEN}[4]{Fore.WHITE} 🌍 Filter Negara Tertentu {Fore.LIGHTBLACK_EX}Bebas ketik kode ISO (ID, SG, US, JP, dll)
+  {Fore.GREEN}[5]{Fore.WHITE} 🛡️ Khusus Elite Proxies   {Fore.LIGHTBLACK_EX}High Anonymity Only — anti bocor header
+  {Fore.GREEN}[6]{Fore.WHITE} 🎯 Tembak Target URL      {Fore.LIGHTBLACK_EX}Uji tembus domain incaran (contoh: x.ai)
+  {Fore.GREEN}[7]{Fore.WHITE} 🏠 Nyalakan Gateway 8888  {Fore.LIGHTBLACK_EX}Host forward proxy & REST API lokal
+  {Fore.GREEN}[8]{Fore.WHITE} 🔌 Setor ke BansosRouter  {Fore.LIGHTBLACK_EX}Inject proxy langsung ke database SQLite
+  {Fore.RED}[0]{Fore.WHITE} 🔙 Balik ke Menu Racikan  {Fore.LIGHTBLACK_EX}Kembali ke beranda utama
+
+{Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Style.RESET_ALL}"""
             prompt_str = f"{Fore.YELLOW}Pilih opsi Bengkel [1-8, 0=Kembali]: {Style.RESET_ALL}"
         else:
-            m_box = f"""{Fore.CYAN}┌────────────────────────────────────────────────────────────────────────┐
-│               {Fore.WHITE}{Style.BRIGHT}🛠️  MANUAL TUNING WORKSHOP (PETANIPROXY){Fore.CYAN}                │
-│        {Fore.LIGHTBLACK_EX}"For power users who need custom protocols, filters & hooks"{Fore.CYAN} │
-├────────────────────────────────────────────────────────────────────────┤
-│  {Fore.GREEN}[1]{Fore.WHITE} ⚡ Standard Quick Sweep   {Fore.LIGHTBLACK_EX}Grab 15 fastest random live proxies          {Fore.CYAN}│
-│  {Fore.GREEN}[2]{Fore.WHITE} 🔒 Pure SOCKS5 Only       {Fore.LIGHTBLACK_EX}Ultra-fast SOCKS5 sockets only              {Fore.CYAN}│
-│  {Fore.GREEN}[3]{Fore.WHITE} 🌐 Classic HTTP / HTTPS   {Fore.LIGHTBLACK_EX}Standard HTTP browsing nodes                {Fore.CYAN}│
-│  {Fore.GREEN}[4]{Fore.WHITE} 🌍 Custom Country Filter  {Fore.LIGHTBLACK_EX}Filter by country ISO code (ID, SG, US...)  {Fore.CYAN}│
-│  {Fore.GREEN}[5]{Fore.WHITE} 🛡️ Elite Proxies Only     {Fore.LIGHTBLACK_EX}Strict ghost mode — zero header leaks       {Fore.CYAN}│
-│  {Fore.GREEN}[6]{Fore.WHITE} 🎯 Target-Specific Snipe  {Fore.LIGHTBLACK_EX}Probe directly against custom website/API   {Fore.CYAN}│
-│  {Fore.GREEN}[7]{Fore.WHITE} 🏠 Launch Local Gateway   {Fore.LIGHTBLACK_EX}Start rotating forward proxy on port 8888   {Fore.CYAN}│
-│  {Fore.GREEN}[8]{Fore.WHITE} 🔌 Sync BansosRouter DB   {Fore.LIGHTBLACK_EX}Feed live proxies into SQLite database pool {Fore.CYAN}│
-│  {Fore.RED}[0]{Fore.WHITE} 🔙 Back to Presets Menu   {Fore.LIGHTBLACK_EX}Return to primary launcher                  {Fore.CYAN}│
-└────────────────────────────────────────────────────────────────────────┘{Style.RESET_ALL}"""
+            m_box = f"""{Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  {Fore.WHITE}{Style.BRIGHT}🛠️  MANUAL TUNING WORKSHOP (PETANIPROXY)
+  {Fore.LIGHTBLACK_EX}For power users who need custom protocols, filters & database hooks
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  {Fore.GREEN}[1]{Fore.WHITE} ⚡ Standard Quick Sweep   {Fore.LIGHTBLACK_EX}Grab 15 fastest random live proxies
+  {Fore.GREEN}[2]{Fore.WHITE} 🔒 Pure SOCKS5 Only       {Fore.LIGHTBLACK_EX}Ultra-fast SOCKS5 sockets only
+  {Fore.GREEN}[3]{Fore.WHITE} 🌐 Classic HTTP / HTTPS   {Fore.LIGHTBLACK_EX}Standard HTTP browsing nodes
+  {Fore.GREEN}[4]{Fore.WHITE} 🌍 Custom Country Filter  {Fore.LIGHTBLACK_EX}Filter by country ISO code (ID, SG, US...)
+  {Fore.GREEN}[5]{Fore.WHITE} 🛡️ Elite Proxies Only     {Fore.LIGHTBLACK_EX}Strict ghost mode — zero header leaks
+  {Fore.GREEN}[6]{Fore.WHITE} 🎯 Target-Specific Snipe  {Fore.LIGHTBLACK_EX}Probe directly against custom website/API
+  {Fore.GREEN}[7]{Fore.WHITE} 🏠 Launch Local Gateway   {Fore.LIGHTBLACK_EX}Start rotating forward proxy on port 8888
+  {Fore.GREEN}[8]{Fore.WHITE} 🔌 Sync BansosRouter DB   {Fore.LIGHTBLACK_EX}Feed live proxies into SQLite database pool
+  {Fore.RED}[0]{Fore.WHITE} 🔙 Back to Presets Menu   {Fore.LIGHTBLACK_EX}Return to primary launcher
+
+{Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Style.RESET_ALL}"""
             prompt_str = f"{Fore.YELLOW}Select workshop option [1-8, 0=Back]: {Style.RESET_ALL}"
 
         print(m_box)
@@ -443,66 +447,68 @@ def show_interactive_menu():
         local_ver = local_info.get("version", "1.0.0")
 
         if CURRENT_LANG == "ID":
-            u_line = f"│  {Fore.YELLOW}{Style.BRIGHT}[U]{Fore.WHITE}{Style.BRIGHT} 🚀 Update Tersedia!       {Fore.GREEN}v{cached_update_info.get('remote_version')} (Fitur baru siap update!)   {Fore.CYAN}│" if (cached_update_info and cached_update_info.get("has_update")) else f"│  {Fore.GREEN}[U]{Fore.WHITE} 🔄 Cek & Update Versi     {Fore.LIGHTBLACK_EX}Auto-update 1-klik via Git (v{local_ver})      {Fore.CYAN}│"
-            menu_box = f"""{Fore.CYAN}┌────────────────────────────────────────────────────────────────────────┐
-│                   {Fore.WHITE}{Style.BRIGHT}🌾 PETANIPROXY v{local_ver} (PUSAT AMUNISI PROXY){Fore.CYAN}                 │
-│          {Fore.LIGHTBLACK_EX}Amunisi Proxy Anti-Tumbang, Siap Diajak Tempur 24/7 Gaspol!{Fore.CYAN}   │
-├────────────────────────────────────────────────────────────────────────┤
-│  {Fore.YELLOW}{Style.BRIGHT}⭐ [MVP] AMUNISI SULTAN: IP RESIDENTIAL (TEMBUS CLOUDFLARE):{Fore.CYAN}            │
-│  {Fore.YELLOW}{Style.BRIGHT}[W]{Fore.WHITE}{Style.BRIGHT} 🏢 Webshare Hunter Gacor   {Fore.YELLOW}(PILIHAN UTAMA MVP ⭐⭐⭐){Fore.CYAN}       │
-│     {Fore.GREEN}└─ Auto-Solve Captcha Suara • IP Rumah Asli • 10-30 Proxy/Akun{Fore.CYAN}      │
-│     {Fore.LIGHTBLACK_EX}└─ Lolos Cloudflare, Grok, & provider AI lain yang mau lu coba  {Fore.CYAN} │
-├────────────────────────────────────────────────────────────────────────┤
-│  {Fore.MAGENTA}RACIKAN PROXY GRATISAN RAKYAT JELATA (GATEWAY PORT 8888):{Fore.CYAN}               │
-│  {Fore.GREEN}[1]{Fore.WHITE} 🐔 Racikan Ternak Akun    {Fore.LIGHTBLACK_EX}Anti-limit buat Grok/Qoder, Auto-Sync 9Router{Fore.CYAN}│
-│  {Fore.GREEN}[2]{Fore.WHITE} 🕷️ Racikan Scraper Barbar {Fore.LIGHTBLACK_EX}Pool 30+ IP, ganti IP tiap request, anti-ban {Fore.CYAN}│
-│  {Fore.GREEN}[3]{Fore.WHITE} ⚡ Racikan Ngacir Anti-Lag {Fore.LIGHTBLACK_EX}Ping <350ms, Node SG/ID/US, libas blokir Net+{Fore.CYAN}│
-│  {Fore.GREEN}[4]{Fore.WHITE} 🚜 Mode Petani AFK 24 Jam {Fore.LIGHTBLACK_EX}Tinggal tidur, auto-panen & muter tiap 15 menit{Fore.CYAN}│
-├────────────────────────────────────────────────────────────────────────┤
-│  {Fore.MAGENTA}BUNGKUS HASIL PANEN & TES KESAKTIAN:{Fore.CYAN}                                     │
-│  {Fore.CYAN}[E]{Fore.WHITE} 📥 Bungkus File Mentah    {Fore.LIGHTBLACK_EX}Sedot TXT (IP:Port / URL), JSON, CSV buat bot lu{Fore.CYAN}│
-│  {Fore.CYAN}[T]{Fore.WHITE} 🧪 Uji Kesaktian Topeng   {Fore.LIGHTBLACK_EX}Live Test: Buktiin IP asli lu beneran ga bocor  {Fore.CYAN}│
-├────────────────────────────────────────────────────────────────────────┤
-│  {Fore.MAGENTA}PEMBARUAN & BENGKEL OPREK:{Fore.CYAN}                                              │
-{u_line}
-│  {Fore.YELLOW}[M]{Fore.WHITE} 🛠️ Oprek Suka-Suka        {Fore.LIGHTBLACK_EX}Racik protokol sendiri, pilih negara, tembak URL{Fore.CYAN}│
-│  {Fore.YELLOW}[S]{Fore.WHITE} 📂 Gudang Amunisi         {Fore.LIGHTBLACK_EX}Intip stok proxy segar yang udah tersimpan di disk{Fore.CYAN}│
-│  {Fore.BLUE}[L]{Fore.WHITE} 🌐 Ganti Bahasa (EN/ID)   {Fore.LIGHTBLACK_EX}Currently: Bahasa Indonesia                   {Fore.CYAN}│
-│  {Fore.RED}[0]{Fore.WHITE} 💀 Cabut Dulu (Rebahan)   {Fore.LIGHTBLACK_EX}Tutup laptop, ngopi dulu atau sentuh rumput   {Fore.CYAN}│
-├────────────────────────────────────────────────────────────────────────┤
-│  {Fore.LIGHTBLACK_EX}Maintainer: {Fore.YELLOW}@itzluthfi{Fore.LIGHTBLACK_EX}          Repository: {Fore.WHITE}github.com/itzluthfi{Fore.CYAN}       │
-└────────────────────────────────────────────────────────────────────────┘{Style.RESET_ALL}"""
+            u_line = f"  {Fore.YELLOW}{Style.BRIGHT}[U]{Fore.WHITE}{Style.BRIGHT} 🚀 Update Tersedia!       {Fore.GREEN}v{cached_update_info.get('remote_version')} (Ada fitur baru, klik di sini!)\n" if (cached_update_info and cached_update_info.get("has_update")) else f"  {Fore.GREEN}[U]{Fore.WHITE} 🔄 Cek & Update Versi     {Fore.LIGHTBLACK_EX}Auto-update 1-klik via Git (v{local_ver})\n"
+            menu_box = f"""{Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  {Fore.WHITE}{Style.BRIGHT}🌾 PETANIPROXY v{local_ver} (PUSAT AMUNISI PROXY)
+  {Fore.LIGHTBLACK_EX}Amunisi Proxy Anti-Tumbang, Siap Diajak Tempur 24/7 Gaspol!
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  {Fore.YELLOW}{Style.BRIGHT}⭐ [MVP] AMUNISI SULTAN: IP RESIDENTIAL (TEMBUS CLOUDFLARE)
+  {Fore.YELLOW}{Style.BRIGHT}[W]{Fore.WHITE}{Style.BRIGHT} 🏢 Webshare Hunter Gacor   {Fore.YELLOW}(PILIHAN UTAMA MVP ⭐⭐⭐)
+     {Fore.GREEN}└─ Auto-Solve Captcha Suara • IP Rumah Asli • 10-30 Proxy/Akun
+     {Fore.LIGHTBLACK_EX}└─ Lolos Cloudflare, Grok AI, & provider bot AI ketat
+
+  {Fore.MAGENTA}RACIKAN PROXY GRATISAN RAKYAT JELATA (GATEWAY PORT 8888)
+  {Fore.GREEN}[1]{Fore.WHITE} 🐔 Racikan Ternak Akun    {Fore.LIGHTBLACK_EX}Anti-limit buat Grok/Qoder, Auto-Sync 9Router
+  {Fore.GREEN}[2]{Fore.WHITE} 🕷️ Racikan Scraper Barbar {Fore.LIGHTBLACK_EX}Pool 30+ IP, ganti IP tiap request, anti-ban
+  {Fore.GREEN}[3]{Fore.WHITE} ⚡ Racikan Ngacir Anti-Lag {Fore.LIGHTBLACK_EX}Ping <350ms, Node SG/ID/US, libas blokir Net+
+  {Fore.GREEN}[4]{Fore.WHITE} 🚜 Mode Petani AFK 24 Jam {Fore.LIGHTBLACK_EX}Tinggal tidur, auto-panen & muter tiap 15 menit
+
+  {Fore.MAGENTA}BUNGKUS HASIL PANEN & TES IDENTITAS
+  {Fore.CYAN}[E]{Fore.WHITE} 📥 Bungkus File Mentah    {Fore.LIGHTBLACK_EX}Sedot TXT (IP:Port / URL), JSON, CSV buat bot lu
+  {Fore.CYAN}[T]{Fore.WHITE} 🧪 Uji Kesaktian Topeng   {Fore.LIGHTBLACK_EX}Live Test: Buktiin IP asli lu beneran ga bocor
+
+  {Fore.MAGENTA}PEMBARUAN & BENGKEL OPREK
+{u_line}  {Fore.YELLOW}[M]{Fore.WHITE} 🛠️ Oprek Suka-Suka        {Fore.LIGHTBLACK_EX}Racik protokol sendiri, pilih negara, tembak URL
+  {Fore.YELLOW}[S]{Fore.WHITE} 📂 Gudang Amunisi         {Fore.LIGHTBLACK_EX}Intip stok proxy segar yang udah tersimpan di disk
+  {Fore.BLUE}[L]{Fore.WHITE} 🌐 Ganti Bahasa (EN/ID)   {Fore.LIGHTBLACK_EX}Currently: Bahasa Indonesia
+  {Fore.RED}[0]{Fore.WHITE} 💀 Cabut Dulu (Rebahan)   {Fore.LIGHTBLACK_EX}Tutup laptop, ngopi dulu atau sentuh rumput
+
+{Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  {Fore.LIGHTBLACK_EX}Maintainer: {Fore.YELLOW}@itzluthfi{Fore.LIGHTBLACK_EX}          Repository: {Fore.WHITE}github.com/itzluthfi
+{Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Style.RESET_ALL}"""
             prompt_str = f"{Fore.YELLOW}Pilih Opsi [W (MVP), 1-4, E, T, U, M, S, L, 0] (Saran: Pencet W aja udah paling mantap): {Style.RESET_ALL}"
         else:
-            u_line = f"│  {Fore.YELLOW}{Style.BRIGHT}[U]{Fore.WHITE}{Style.BRIGHT} 🚀 New Update Available!  {Fore.GREEN}v{cached_update_info.get('remote_version')} (New features ready!)        {Fore.CYAN}│" if (cached_update_info and cached_update_info.get("has_update")) else f"│  {Fore.GREEN}[U]{Fore.WHITE} 🔄 Check & Update Version {Fore.LIGHTBLACK_EX}1-Click Git Auto-Update (v{local_ver})          {Fore.CYAN}│"
-            menu_box = f"""{Fore.CYAN}┌────────────────────────────────────────────────────────────────────────┐
-│                  {Fore.WHITE}{Style.BRIGHT}🌾 PETANIPROXY v{local_ver} (ROTATING PROXY ARSENAL){Fore.CYAN}               │
-│             {Fore.LIGHTBLACK_EX}Battle-Tested Rotating Proxy Ammo — Zero BS, 100% Free!{Fore.CYAN}    │
-├────────────────────────────────────────────────────────────────────────┤
-│  {Fore.YELLOW}{Style.BRIGHT}⭐ [MVP] S-TIER ARSENAL: GENUINE RESIDENTIAL POOL (CLOUDFLARE BYPASS):{Fore.CYAN} │
-│  {Fore.YELLOW}{Style.BRIGHT}[W]{Fore.WHITE}{Style.BRIGHT} 🏢 Webshare Hunter Elite   {Fore.YELLOW}(MVP TOP PICK! ⭐⭐⭐){Fore.CYAN}          │
-│     {Fore.GREEN}└─ Audio Captcha Solver • Real Residential IPs • 10-30 Nodes/Acc{Fore.CYAN}   │
-│     {Fore.LIGHTBLACK_EX}└─ Bypasses Cloudflare, Grok, & whatever AI providers you test  {Fore.CYAN} │
-├────────────────────────────────────────────────────────────────────────┤
-│  {Fore.MAGENTA}FREE PUBLIC ROTATING GATEWAY (LOCAL PORT 8888):{Fore.CYAN}                         │
-│  {Fore.GREEN}[1]{Fore.WHITE} 🐔 Bot Breeder Rig        {Fore.LIGHTBLACK_EX}Anti-ban tuned for Grok/Qoder, Auto-Sync 9Router{Fore.CYAN}│
-│  {Fore.GREEN}[2]{Fore.WHITE} 🕷️ Barbaric Web Scraper   {Fore.LIGHTBLACK_EX}30+ pool, fresh IP every hit, zero 429 mercy   {Fore.CYAN}│
-│  {Fore.GREEN}[3]{Fore.WHITE} ⚡ Ludicrous Speed Mode   {Fore.LIGHTBLACK_EX}Ping <350ms, Node SG/ID/US, blast geo-blocks   {Fore.CYAN}│
-│  {Fore.GREEN}[4]{Fore.WHITE} 🚜 24/7 AFK Farmer Daemon {Fore.LIGHTBLACK_EX}Put your feet up, auto-harvests every 15 mins   {Fore.CYAN}│
-├────────────────────────────────────────────────────────────────────────┤
-│  {Fore.MAGENTA}DUMP RAW AMMO & STEALTH TEST:{Fore.CYAN}                                           │
-│  {Fore.CYAN}[E]{Fore.WHITE} 📥 Dump Raw Ammo Files    {Fore.LIGHTBLACK_EX}Export TXT (IP:Port / URLs), JSON, CSV for bots {Fore.CYAN}│
-│  {Fore.CYAN}[T]{Fore.WHITE} 🧪 Stealth Mask Check     {Fore.LIGHTBLACK_EX}Live test: Prove your real IP is 100% invisible {Fore.CYAN}│
-├────────────────────────────────────────────────────────────────────────┤
-│  {Fore.MAGENTA}UPDATES & WORKSHOP:{Fore.CYAN}                                                     │
-{u_line}
-│  {Fore.YELLOW}[M]{Fore.WHITE} 🛠️ Custom Lab Workshop    {Fore.LIGHTBLACK_EX}Tweak protocols, filter ISO countries, pick URL {Fore.CYAN}│
-│  {Fore.YELLOW}[S]{Fore.WHITE} 📂 Ammo Storage Vault     {Fore.LIGHTBLACK_EX}Check active proxies sitting fresh on disk      {Fore.CYAN}│
-│  {Fore.BLUE}[L]{Fore.WHITE} 🌐 Switch Language (EN/ID){Fore.LIGHTBLACK_EX}Currently: English                            {Fore.CYAN}│
-│  {Fore.RED}[0]{Fore.WHITE} 💀 Rage Quit              {Fore.LIGHTBLACK_EX}Close terminal, sip coffee & go touch grass     {Fore.CYAN}│
-├────────────────────────────────────────────────────────────────────────┤
-│  {Fore.LIGHTBLACK_EX}Maintainer: {Fore.YELLOW}@itzluthfi{Fore.LIGHTBLACK_EX}          Repository: {Fore.WHITE}github.com/itzluthfi{Fore.CYAN}       │
-└────────────────────────────────────────────────────────────────────────┘{Style.RESET_ALL}"""
+            u_line = f"  {Fore.YELLOW}{Style.BRIGHT}[U]{Fore.WHITE}{Style.BRIGHT} 🚀 New Update Available!  {Fore.GREEN}v{cached_update_info.get('remote_version')} (New features ready!)\n" if (cached_update_info and cached_update_info.get("has_update")) else f"  {Fore.GREEN}[U]{Fore.WHITE} 🔄 Check & Update Version {Fore.LIGHTBLACK_EX}1-Click Git Auto-Update (v{local_ver})\n"
+            menu_box = f"""{Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  {Fore.WHITE}{Style.BRIGHT}🌾 PETANIPROXY v{local_ver} (ROTATING PROXY ARSENAL)
+  {Fore.LIGHTBLACK_EX}Battle-Tested Rotating Proxy Ammo — Zero BS, 100% Free!
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  {Fore.YELLOW}{Style.BRIGHT}⭐ [MVP] S-TIER ARSENAL: GENUINE RESIDENTIAL POOL (CLOUDFLARE BYPASS)
+  {Fore.YELLOW}{Style.BRIGHT}[W]{Fore.WHITE}{Style.BRIGHT} 🏢 Webshare Hunter Elite   {Fore.YELLOW}(MVP TOP PICK! ⭐⭐⭐)
+     {Fore.GREEN}└─ Audio Captcha Solver • Real Residential IPs • 10-30 Nodes/Acc
+     {Fore.LIGHTBLACK_EX}└─ Bypasses Cloudflare, Grok AI, & tight bot detection
+
+  {Fore.MAGENTA}FREE PUBLIC ROTATING GATEWAY (LOCAL PORT 8888)
+  {Fore.GREEN}[1]{Fore.WHITE} 🐔 Bot Breeder Rig        {Fore.LIGHTBLACK_EX}Anti-ban tuned for Grok/Qoder, Auto-Sync 9Router
+  {Fore.GREEN}[2]{Fore.WHITE} 🕷️ Barbaric Web Scraper   {Fore.LIGHTBLACK_EX}30+ pool, fresh IP every hit, zero 429 mercy
+  {Fore.GREEN}[3]{Fore.WHITE} ⚡ Ludicrous Speed Mode   {Fore.LIGHTBLACK_EX}Ping <350ms, Node SG/ID/US, blast geo-blocks
+  {Fore.GREEN}[4]{Fore.WHITE} 🚜 24/7 AFK Farmer Daemon {Fore.LIGHTBLACK_EX}Put your feet up, auto-harvests every 15 mins
+
+  {Fore.MAGENTA}DUMP RAW AMMO & STEALTH TEST
+  {Fore.CYAN}[E]{Fore.WHITE} 📥 Dump Raw Ammo Files    {Fore.LIGHTBLACK_EX}Export TXT (IP:Port / URLs), JSON, CSV for bots
+  {Fore.CYAN}[T]{Fore.WHITE} 🧪 Stealth Mask Check     {Fore.LIGHTBLACK_EX}Live test: Prove your real IP is 100% invisible
+
+  {Fore.MAGENTA}UPDATES & WORKSHOP
+{u_line}  {Fore.YELLOW}[M]{Fore.WHITE} 🛠️ Custom Lab Workshop    {Fore.LIGHTBLACK_EX}Tweak protocols, filter ISO countries, pick URL
+  {Fore.YELLOW}[S]{Fore.WHITE} 📂 Ammo Storage Vault     {Fore.LIGHTBLACK_EX}Check active proxies sitting fresh on disk
+  {Fore.BLUE}[L]{Fore.WHITE} 🌐 Switch Language (EN/ID){Fore.LIGHTBLACK_EX}Currently: English
+  {Fore.RED}[0]{Fore.WHITE} 💀 Rage Quit              {Fore.LIGHTBLACK_EX}Close terminal, sip coffee & go touch grass
+
+{Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  {Fore.LIGHTBLACK_EX}Maintainer: {Fore.YELLOW}@itzluthfi{Fore.LIGHTBLACK_EX}          Repository: {Fore.WHITE}github.com/itzluthfi
+{Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Style.RESET_ALL}"""
             prompt_str = f"{Fore.YELLOW}Select Option [W (MVP), 1-4, E, T, U, M, S, L, 0] (Pro-tip: Press W for godmode): {Style.RESET_ALL}"
 
         print(menu_box)

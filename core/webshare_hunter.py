@@ -292,140 +292,127 @@ def try_solve_audio(page):
 
     try:
         frames = page.get_frames()
-        if not frames:
-            return False
         for f in frames:
-            try:
-                # 1. Cek apakah ada input response audio di frame ini
-                has_input = f.run_js('return !!document.getElementById("audio-response");')
-            except Exception:
-                continue  # Frame tidak valid / sudah mati, skip
+            # 1. Cek apakah ada input response audio di frame ini
+            has_input = f.run_js('return !!document.getElementById("audio-response");')
 
-            try:
-                # 2. Jika input belum ada, cek dan klik tombol headphone
-                if not has_input:
-                    clicked_audio = f.run_js('''
-                        const btn = document.getElementById('recaptcha-audio-button') || 
-                                    document.querySelector('.rc-button-audio');
-                        if (btn && btn.offsetParent !== null) {
-                            btn.click();
+            # 2. Jika input belum ada, cek dan klik tombol headphone
+            if not has_input:
+                clicked_audio = f.run_js('''
+                    const btn = document.getElementById('recaptcha-audio-button') || 
+                                document.querySelector('.rc-button-audio');
+                    if (btn && btn.offsetParent !== null) {
+                        btn.click();
+                        return true;
+                    }
+                    return false;
+                ''')
+                if clicked_audio:
+                    print('[*] Tombol Headphone reCAPTCHA diklik, menunggu audio siap...')
+                    time.sleep(4)
+                    f.run_js('''
+                        const playBtn = Array.from(document.querySelectorAll('button')).find(b => b.innerText.includes('PLAY'));
+                        if (playBtn) playBtn.click();
+                    ''')
+                    time.sleep(2)
+                    has_input = f.run_js('return !!document.getElementById("audio-response");')
+
+            if not has_input:
+                continue
+
+            # Cek jika ada batas automated queries
+            is_limited = f.run_js('''
+                const el = document.querySelector('.rc-doscaptcha-header-text') || 
+                           Array.from(document.querySelectorAll('div, p')).find(e => e.innerText && e.innerText.includes('automated queries'));
+                return el ? el.innerText : '';
+            ''')
+            if is_limited and 'automated queries' in is_limited:
+                print(f'[!] Google mendeteksi limit audio: "{is_limited.strip()}".')
+                return False
+
+            # Ambil link audio
+            mp3_url = f.run_js('''
+                const src = document.getElementById('audio-source');
+                if (src && src.src) return src.src;
+                const a = document.querySelector('a.rc-audiochallenge-tdownload-link') || 
+                          document.querySelector('a[href*=".mp3"]');
+                return a ? a.href : '';
+            ''')
+
+            if not mp3_url:
+                # Cek teks tantangan apa yang muncul di frame
+                frame_text = f.run_js('return document.body ? document.body.innerText.replace(/\\n+/g, " ") : "";')
+                print(f'[*] Status kotak audio: {frame_text[:100]}...')
+                time.sleep(2)
+                continue
+
+            if mp3_url:
+                print('[*] Mengunduh rekaman audio captcha...')
+                with tempfile.TemporaryDirectory() as tmpdir:
+                    mp3_path = os.path.join(tmpdir, 'audio.mp3')
+                    wav_path = os.path.join(tmpdir, 'audio.wav')
+                    urllib.request.urlretrieve(mp3_url, mp3_path)
+                    
+                    sound = AudioSegment.from_file(mp3_path)
+                    duration_sec = sound.duration_seconds
+                    sound.export(wav_path, format='wav')
+
+                    rec = sr.Recognizer()
+                    with sr.AudioFile(wav_path) as source:
+                        audio = rec.record(source)
+                        text = rec.recognize_google(audio)
+                        print(f'[+] Durasi audio: {duration_sec:.1f} detik. Transkripsi: "{text}"')
+
+                    listen_wait = max(4.0, duration_sec + 1.5)
+                    print(f'[*] Jeda mendengarkan audio ({listen_wait:.1f} detik)...')
+                    time.sleep(listen_wait)
+
+                    f.run_js('''
+                        const inp = document.getElementById('audio-response');
+                        if (inp) { inp.focus(); inp.value = ""; }
+                    ''')
+                    time.sleep(0.5)
+
+                    print('[*] Mengetik teks per karakter perlahan layaknya manusia...')
+                    for char in text:
+                        escaped_char = char.replace('\\', '\\\\').replace('"', '\\"')
+                        f.run_js(f'''
+                            const inp = document.getElementById('audio-response');
+                            if (inp) {{
+                                inp.value += "{escaped_char}";
+                                inp.dispatchEvent(new KeyboardEvent('keydown', {{ key: "{escaped_char}", bubbles: true }}));
+                                inp.dispatchEvent(new KeyboardEvent('keypress', {{ key: "{escaped_char}", bubbles: true }}));
+                                inp.dispatchEvent(new Event('input', {{ bubbles: true }}));
+                                inp.dispatchEvent(new KeyboardEvent('keyup', {{ key: "{escaped_char}", bubbles: true }}));
+                            }}
+                        ''')
+                        time.sleep(random.uniform(0.12, 0.28))
+
+                    time.sleep(random.uniform(1.5, 2.5))
+
+                    verified = f.run_js('''
+                        const vbtn = document.getElementById('recaptcha-verify-button');
+                        if (vbtn) {
+                            vbtn.click();
                             return true;
                         }
                         return false;
                     ''')
-                    if clicked_audio:
-                        print('[*] Tombol Headphone reCAPTCHA diklik, menunggu audio siap...')
-                        time.sleep(4)
-                        f.run_js('''
-                            const playBtn = Array.from(document.querySelectorAll('button')).find(b => b.innerText.includes('PLAY'));
-                            if (playBtn) playBtn.click();
-                        ''')
-                        time.sleep(2)
-                        has_input = f.run_js('return !!document.getElementById("audio-response");')
-
-                if not has_input:
-                    continue
-
-                # Cek jika ada batas automated queries
-                is_limited = f.run_js('''
-                    const el = document.querySelector('.rc-doscaptcha-header-text') || 
-                               Array.from(document.querySelectorAll('div, p')).find(e => e.innerText && e.innerText.includes('automated queries'));
-                    return el ? el.innerText : '';
-                ''')
-                if is_limited and 'automated queries' in is_limited:
-                    print(f'[!] Google mendeteksi limit audio: "{is_limited.strip()}".')
-                    return False
-
-                # Ambil link audio
-                mp3_url = f.run_js('''
-                    const src = document.getElementById('audio-source');
-                    if (src && src.src) return src.src;
-                    const a = document.querySelector('a.rc-audiochallenge-tdownload-link') || 
-                              document.querySelector('a[href*=".mp3"]');
-                    return a ? a.href : '';
-                ''')
-
-                if not mp3_url:
-                    # Cek teks tantangan apa yang muncul di frame
-                    frame_text = f.run_js('return document.body ? document.body.innerText.replace(/\\n+/g, " ") : "";')
-                    print(f'[*] Status kotak audio: {frame_text[:100]}...')
-                    time.sleep(2)
-                    continue
-
-                if mp3_url:
-                    print('[*] Mengunduh rekaman audio captcha...')
-                    with tempfile.TemporaryDirectory() as tmpdir:
-                        mp3_path = os.path.join(tmpdir, 'audio.mp3')
-                        wav_path = os.path.join(tmpdir, 'audio.wav')
-                        urllib.request.urlretrieve(mp3_url, mp3_path)
-                        
-                        sound = AudioSegment.from_file(mp3_path)
-                        duration_sec = sound.duration_seconds
-                        sound.export(wav_path, format='wav')
-
-                        rec = sr.Recognizer()
-                        with sr.AudioFile(wav_path) as source:
-                            audio = rec.record(source)
-                            text = rec.recognize_google(audio)
-                            print(f'[+] Durasi audio: {duration_sec:.1f} detik. Transkripsi: "{text}"')
-
-                        listen_wait = max(4.0, duration_sec + 1.5)
-                        print(f'[*] Jeda mendengarkan audio ({listen_wait:.1f} detik)...')
-                        time.sleep(listen_wait)
-
-                        f.run_js('''
-                            const inp = document.getElementById('audio-response');
-                            if (inp) { inp.focus(); inp.value = ""; }
-                        ''')
-                        time.sleep(0.5)
-
-                        print('[*] Mengetik teks per karakter perlahan layaknya manusia...')
-                        for char in text:
-                            escaped_char = char.replace('\\', '\\\\').replace('"', '\\"')
-                            f.run_js(f'''
-                                const inp = document.getElementById('audio-response');
-                                if (inp) {{
-                                    inp.value += "{escaped_char}";
-                                    inp.dispatchEvent(new KeyboardEvent('keydown', {{ key: "{escaped_char}", bubbles: true }}));
-                                    inp.dispatchEvent(new KeyboardEvent('keypress', {{ key: "{escaped_char}", bubbles: true }}));
-                                    inp.dispatchEvent(new Event('input', {{ bubbles: true }}));
-                                    inp.dispatchEvent(new KeyboardEvent('keyup', {{ key: "{escaped_char}", bubbles: true }}));
-                                }}
-                            ''')
-                            time.sleep(random.uniform(0.12, 0.28))
-
-                        time.sleep(random.uniform(1.5, 2.5))
-
-                        verified = f.run_js('''
-                            const vbtn = document.getElementById('recaptcha-verify-button');
-                            if (vbtn) {
-                                vbtn.click();
-                                return true;
-                            }
-                            return false;
-                        ''')
-                        if verified:
-                            print('[+] Tombol Verify captcha berhasil ditekan!')
-                            time.sleep(6)
-                            return True
-
-            except Exception as frame_err:
-                print(f'[Debug Audio] Frame error (skip): {frame_err}')
-                continue
-
+                    if verified:
+                        print('[+] Tombol Verify captcha berhasil ditekan!')
+                        time.sleep(6)
+                        return True
+            else:
+                # Di mode headless, jika audio-source lambat ter-load, beri jeda
+                time.sleep(2)
+                return False
     except Exception as e:
         print(f'[Debug Audio] {e}')
     return False
 
 def hunt_single_auto(index, total, headless=False):
     random_str = ''.join(random.choices(string.ascii_lowercase + string.digits, k=10))
-    # Rotasi domain email agar tidak mudah di-blacklist Webshare
-    _email_domains = [
-        'sharklasers.com', 'guerrillamail.com', 'grr.la',
-        'guerrillamailblock.com', 'spam4.me', 'trashmail.me',
-        'maildrop.cc', 'yopmail.com', 'tempr.email',
-    ]
-    email = f'ws{random_str}@{random.choice(_email_domains)}'
+    email = f'ws{random_str}@niceground.shop'
     special = random.choice('!@#$%')
     rand_mid = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
     password = f'Passw0rd{special}{rand_mid}@#'
@@ -438,136 +425,60 @@ def hunt_single_auto(index, total, headless=False):
 
     co = ChromiumOptions()
     co.auto_port()
-    co.set_load_mode('eager')
-    co.set_timeouts(page_load=12)
-    # Set user-agent realistis untuk semua mode (bukan hanya headless)
-    co.set_user_agent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36')
     if headless:
         co.headless(True)
         co.set_argument('--window-size=1920,1080')
+        # Di mode headless wajib set user-agent nyata agar reCAPTCHA tidak membatasi audio challenge
+        co.set_user_agent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36')
     else:
         co.set_argument('--start-maximized')
-    # HAPUS --disable-blink-features=AutomationControlled — flag ini sendiri memunculkan banner
-    # "You are using an unsupported command-line flag" yang bisa dibaca Webshare
-    # Sebagai gantinya kita inject stealth.min.js via CDP (lebih stealth)
-    co.set_argument('--disable-infobars')
+    co.set_argument('--disable-blink-features=AutomationControlled')
+    co.set_argument('--no-sandbox')
     co.set_argument('--disable-dev-shm-usage')
-    co.set_argument('--disable-extensions')
-    co.set_argument('--no-first-run')
-    co.set_argument('--no-default-browser-check')
-    co.set_argument('--lang=en-US,en')
 
     browser = Chromium(co)
     try:
         page = browser.latest_tab
-
-        # Inject stealth.min.js via CDP sebelum navigasi
-        # Ini patch: navigator.webdriver, window.chrome, plugins, permissions, WebGL, dll
-        stealth_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'core', 'stealth.min.js')
-        # Fallback ke directory script jika tidak ditemukan
-        if not os.path.exists(stealth_path):
-            stealth_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'stealth.min.js')
-        if os.path.exists(stealth_path):
-            with open(stealth_path, 'r', encoding='utf-8') as sf:
-                stealth_js = sf.read()
-            try:
-                page.run_cdp('Page.addScriptToEvaluateOnNewDocument', source=stealth_js)
-                print('[*] Stealth mode aktif — bot fingerprint diminimalkan.')
-            except Exception as se:
-                print(f'[!] Stealth inject gagal (lanjut tanpa stealth): {se}')
-        else:
-            print('[!] stealth.min.js tidak ditemukan — jalankan git pull untuk update.')
-
         print('[*] Meluncurkan browser Chrome...')
-        print('[*] Menghubungkan ke pendaftaran Webshare...')
-        try:
-            page.get('https://dashboard.webshare.io/register/', timeout=5)
-        except Exception:
-            pass
+        page.get('https://proxy.webshare.io/register')
+        time.sleep(3)
 
-        print('[*] Menunggu elemen form siap...')
-        email_box = None
-        start_wait = time.time()
-        while time.time() - start_wait < 25:
-            try:
-                body_text = page.run_js('return document.body ? document.body.innerText : "";') or ''
-                if 'Unexpected Error' in body_text or 'reload the page' in body_text.lower():
-                    print('[!] Halaman error Webshare terdeteksi. Me-refresh...')
-                    page.refresh()
-                    time.sleep(3)
-                    continue
-
-                email_box = page.ele('css:[data-testid="email-input"]', timeout=1) or page.ele('@type=email', timeout=1)
-                if email_box:
-                    break
-            except Exception:
-                pass
-            time.sleep(0.5)
+        # 1. Isi Form Email & Password & Checkbox ToS
         try:
-            # 1. Isi Email
-            email_box = page.ele('@data-testid=email-input', timeout=10) or page.ele('@id=email-input', timeout=5) or page.ele('@type=email', timeout=5)
+            email_box = page.ele('@name=email') or page.ele('@type=email')
             if email_box:
                 human_click_element(page, email_box)
                 email_box.clear()
                 for ch in email:
                     email_box.input(ch)
-                    time.sleep(random.uniform(0.02, 0.05))
-                time.sleep(0.3)
+                    time.sleep(random.uniform(0.02, 0.07))
+                time.sleep(0.4)
 
-            # 2. Isi Password
-            pass_box = page.ele('@data-testid=password-input', timeout=5) or page.ele('@type=password', timeout=5)
+            pass_box = page.ele('@name=password') or page.ele('@type=password')
             if pass_box:
                 human_click_element(page, pass_box)
                 pass_box.clear()
                 for ch in password:
                     pass_box.input(ch)
-                    time.sleep(random.uniform(0.02, 0.05))
-                time.sleep(0.3)
+                    time.sleep(random.uniform(0.02, 0.07))
+                time.sleep(0.4)
 
-            # Sinkronisasi state React agar validasi React Hook Form / Formik terdaftar
-            page.run_js(f'''
-                const setReactVal = (sel, val) => {{
-                    const el = document.querySelector(sel);
-                    if (el) {{
-                        const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
-                        setter.call(el, val);
-                        el.dispatchEvent(new Event('input', {{ bubbles: true }}));
-                        el.dispatchEvent(new Event('change', {{ bubbles: true }}));
-                    }}
-                }};
-                setReactVal('[data-testid="email-input"]', '{email}');
-                setReactVal('[data-testid="password-input"]', '{password}');
-            ''')
-            time.sleep(0.3)
-
-            # 3. Centang Terms of Service via data-testid resmi Webshare
-            tos_checked = page.run_js('''
-                const tos = document.querySelector('[data-testid="tos-checkbox"]') || 
-                            document.querySelector('.MuiCheckbox-root') || 
-                            document.querySelector("input[type='checkbox']");
-                if (tos) {
-                    tos.click();
-                }
-                const inp = document.querySelector('[data-testid="tos-checkbox"] input') || 
-                            document.querySelector("input[type='checkbox']");
-                return inp ? inp.checked : false;
-            ''')
-            time.sleep(0.5)
-
-            if tos_checked:
-                print('[*] Form terisi & Terms of Service ✓ berhasil dicentang!')
+            chk_ele = page.ele('tag:input@type=checkbox') or page.ele('.PrivateSwitchBase-input')
+            if chk_ele:
+                human_click_element(page, chk_ele)
             else:
-                chk_ele = page.ele('@data-testid=tos-checkbox', timeout=3) or page.ele('tag:input@type=checkbox', timeout=3)
-                if chk_ele:
-                    human_click_element(page, chk_ele)
-                print('[*] Form terisi, ToS checkbox diklik.')
+                page.run_js('''
+                    const chk = document.querySelector("input[type='checkbox'], input.PrivateSwitchBase-input");
+                    if (chk && !chk.checked) { chk.click(); }
+                ''')
+            print('[*] Form dan Terms of Service terisi dengan simulasi kursor alami.')
         except Exception as e:
             print(f'[Debug] Form: {e}')
 
         # 2. Klik tombol "Sign Up With Email"
         time.sleep(1)
         try:
-            btn_signup = page.ele('@data-testid=signup-button', timeout=5) or page.ele('text:Sign Up With Email') or page.ele('text:Sign Up')
+            btn_signup = page.ele('text:Sign Up With Email') or page.ele('text:Sign Up')
             if btn_signup:
                 human_click_element(page, btn_signup)
                 print('[*] Tombol "Sign Up With Email" berhasil diklik secara manusiawi!')
@@ -581,30 +492,21 @@ def hunt_single_auto(index, total, headless=False):
         last_attempt_time = 0
 
         while time.time() - start_time < 180:
-            try:
-                url = page.url or ''
-            except Exception:
-                time.sleep(1)
-                continue
-
+            url = page.url or ''
             if 'register' not in url and 'dashboard.webshare.io' in url:
                 logged_in = True
                 print('\n[+] Konfirmasi: Berhasil masuk ke dalam Dashboard!')
                 break
 
-            try:
-                has_error = page.run_js('''
-                    const alert = Array.from(document.querySelectorAll('div, p, span')).find(el => el.innerText && el.innerText.includes('Too many attempts'));
-                    return !!alert;
-                ''')
-            except Exception:
-                has_error = False
-
+            has_error = page.run_js('''
+                const alert = Array.from(document.querySelectorAll('div, p, span')).find(el => el.innerText && el.innerText.includes('Too many attempts'));
+                return !!alert;
+            ''')
             if has_error:
                 print('[!] Webshare mendeteksi "Too many attempts". Cooldown 30 detik...')
                 time.sleep(30)
                 try:
-                    retry_signup = page.ele('@data-testid=signup-button', timeout=3) or page.ele('text:Sign Up With Email')
+                    retry_signup = page.ele('text:Sign Up With Email')
                     if retry_signup:
                         human_click_element(page, retry_signup)
                 except:
@@ -616,15 +518,9 @@ def hunt_single_auto(index, total, headless=False):
                 capsolver_key = os.environ.get("CAPSOLVER_API_KEY", "").strip()
                 solved = False
                 if capsolver_key:
-                    try:
-                        solved = try_solve_capsolver(page, capsolver_key)
-                    except Exception:
-                        solved = False
+                    solved = try_solve_capsolver(page, capsolver_key)
                 if not solved:
-                    try:
-                        try_solve_audio(page)
-                    except Exception:
-                        pass
+                    try_solve_audio(page)
 
             time.sleep(3)
 

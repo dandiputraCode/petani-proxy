@@ -425,6 +425,8 @@ def hunt_single_auto(index, total, headless=False):
 
     co = ChromiumOptions()
     co.auto_port()
+    co.set_load_mode('eager')
+    co.set_timeouts(page_load=8)
     if headless:
         co.headless(True)
         co.set_argument('--window-size=1920,1080')
@@ -440,12 +442,17 @@ def hunt_single_auto(index, total, headless=False):
     try:
         page = browser.latest_tab
         print('[*] Meluncurkan browser Chrome...')
-        page.get('https://proxy.webshare.io/register')
-        time.sleep(3)
+        print('[*] Menghubungkan ke pendaftaran Webshare (Direct URL)...')
+        try:
+            page.get('https://dashboard.webshare.io/register/', timeout=8)
+        except Exception:
+            pass
+        time.sleep(2)
 
         # 1. Isi Form Email & Password & Checkbox ToS
+        print('[*] Menunggu elemen form siap...')
         try:
-            email_box = page.ele('@name=email') or page.ele('@type=email')
+            email_box = page.ele('@name=email', timeout=10) or page.ele('@type=email', timeout=5)
             if email_box:
                 human_click_element(page, email_box)
                 email_box.clear()
@@ -454,7 +461,7 @@ def hunt_single_auto(index, total, headless=False):
                     time.sleep(random.uniform(0.02, 0.07))
                 time.sleep(0.4)
 
-            pass_box = page.ele('@name=password') or page.ele('@type=password')
+            pass_box = page.ele('@name=password', timeout=5) or page.ele('@type=password', timeout=5)
             if pass_box:
                 human_click_element(page, pass_box)
                 pass_box.clear()
@@ -463,7 +470,7 @@ def hunt_single_auto(index, total, headless=False):
                     time.sleep(random.uniform(0.02, 0.07))
                 time.sleep(0.4)
 
-            chk_ele = page.ele('tag:input@type=checkbox') or page.ele('.PrivateSwitchBase-input')
+            chk_ele = page.ele('tag:input@type=checkbox', timeout=5) or page.ele('.PrivateSwitchBase-input', timeout=5)
             if chk_ele:
                 human_click_element(page, chk_ele)
             else:

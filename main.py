@@ -6,6 +6,7 @@ Pusat Amunisi Proxy Bersih, Segar & Berputar Otomatis (Local Rotating Gateway)
 import os
 import sys
 import time
+import json
 import argparse
 import requests
 from typing import Optional, List
@@ -475,6 +476,58 @@ def show_manual_menu():
         except (KeyboardInterrupt, EOFError):
             break
 
+def get_features_readiness(lang: str = "ID") -> dict:
+    """Check readiness status of features (dependencies, 9router link, gateway port, storage)."""
+    import importlib.util
+    import socket
+
+    status = {}
+
+    # 1. Webshare dependencies
+    dp_found = importlib.util.find_spec("DrissionPage") is not None
+    sr_found = importlib.util.find_spec("speech_recognition") is not None
+    if dp_found and sr_found:
+        status["webshare"] = f"{Fore.GREEN}[SIAP TEMPUR ✓]{Style.RESET_ALL}" if lang == "ID" else f"{Fore.GREEN}[READY ✓]{Style.RESET_ALL}"
+    else:
+        status["webshare"] = f"{Fore.YELLOW}[PERLU INSTALL]{Style.RESET_ALL}" if lang == "ID" else f"{Fore.YELLOW}[SETUP NEEDED]{Style.RESET_ALL}"
+
+    # 2. 9Router DB sync
+    db_path = find_9router_db()
+    if db_path:
+        status["sync"] = f"{Fore.GREEN}[9ROUTER LINKED]{Style.RESET_ALL}"
+    else:
+        status["sync"] = f"{Fore.CYAN}[STANDALONE]{Style.RESET_ALL}"
+
+    # 3. Gateway 8888 live port status
+    gw_active = False
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+            s.settimeout(0.05)
+            gw_active = (s.connect_ex(('127.0.0.1', 8888)) == 0)
+    except Exception:
+        gw_active = False
+
+    if gw_active:
+        status["gateway"] = f"{Fore.GREEN}[PORT 8888 AKTIF]{Style.RESET_ALL}" if lang == "ID" else f"{Fore.GREEN}[PORT 8888 ONLINE]{Style.RESET_ALL}"
+    else:
+        status["gateway"] = f"{Fore.LIGHTBLACK_EX}[STANDBY]{Style.RESET_ALL}"
+
+    # 4. Storage count
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    json_path = os.path.join(base_dir, "output", "proxies.json")
+    if os.path.exists(json_path):
+        try:
+            with open(json_path, "r", encoding="utf-8") as f:
+                d = json.load(f)
+                count = d.get("total_alive", 0)
+                status["storage"] = f"{Fore.GREEN}[{count} PROXY TERSEDIA]{Style.RESET_ALL}" if lang == "ID" else f"{Fore.GREEN}[{count} PROXIES READY]{Style.RESET_ALL}"
+        except Exception:
+            status["storage"] = f"{Fore.GREEN}[READY]{Style.RESET_ALL}"
+    else:
+        status["storage"] = f"{Fore.LIGHTBLACK_EX}[KOSONG]{Style.RESET_ALL}" if lang == "ID" else f"{Fore.LIGHTBLACK_EX}[EMPTY]{Style.RESET_ALL}"
+
+    return status
+
 def show_interactive_menu():
     global CURRENT_LANG
     check_initial_dependencies()
@@ -499,32 +552,34 @@ def show_interactive_menu():
 
         local_info = get_local_version_info()
         local_ver = local_info.get("version", "1.0.0")
+        st = get_features_readiness(lang=CURRENT_LANG)
+        ready_label = f"{Fore.GREEN}[SIAP PAKAI]{Style.RESET_ALL}" if CURRENT_LANG == "ID" else f"{Fore.GREEN}[READY]{Style.RESET_ALL}"
 
         if CURRENT_LANG == "ID":
-            u_line = f"  {Fore.YELLOW}{Style.BRIGHT}[U]{Fore.WHITE}{Style.BRIGHT} 🚀 Update Tersedia!       {Fore.GREEN}v{cached_update_info.get('remote_version')} (Ada fitur baru, klik di sini!)\n" if (cached_update_info and cached_update_info.get("has_update")) else f"  {Fore.GREEN}[U]{Fore.WHITE} 🔄 Cek & Update Versi     {Fore.LIGHTBLACK_EX}Auto-update 1-klik via Git (v{local_ver})\n"
+            u_line = f"  {Fore.YELLOW}{Style.BRIGHT}[U]{Fore.WHITE}{Style.BRIGHT} 🚀 Update Tersedia!       {Fore.GREEN}v{cached_update_info.get('remote_version')} [PILIH UNTUK UPDATE]\n" if (cached_update_info and cached_update_info.get("has_update")) else f"  {Fore.GREEN}[U]{Fore.WHITE} 🔄 Cek & Update Versi     {Fore.GREEN}[v{local_ver} TERBARU]{Style.RESET_ALL}\n"
             menu_box = f"""{Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   {Fore.WHITE}{Style.BRIGHT}🌾 PETANIPROXY v{local_ver} (PUSAT AMUNISI PROXY)
   {Fore.LIGHTBLACK_EX}Amunisi Proxy Anti-Tumbang, Siap Diajak Tempur 24/7 Gaspol!
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
   {Fore.YELLOW}{Style.BRIGHT}⭐ [MVP] AMUNISI SULTAN: IP RESIDENTIAL (TEMBUS CLOUDFLARE)
-  {Fore.YELLOW}{Style.BRIGHT}[W]{Fore.WHITE}{Style.BRIGHT} 🏢 Webshare Hunter Gacor   {Fore.YELLOW}(PILIHAN UTAMA MVP ⭐⭐⭐)
+  {Fore.YELLOW}{Style.BRIGHT}[W]{Fore.WHITE}{Style.BRIGHT} 🏢 Webshare Hunter Gacor   {st['webshare']} {Fore.YELLOW}(PILIHAN UTAMA MVP ⭐⭐⭐)
      {Fore.GREEN}└─ Auto-Solve Captcha Suara • IP Rumah Asli • 10-30 Proxy/Akun
      {Fore.LIGHTBLACK_EX}└─ Lolos Cloudflare, Grok AI, & provider bot AI ketat
 
   {Fore.MAGENTA}RACIKAN PROXY GRATISAN RAKYAT JELATA (GATEWAY PORT 8888)
-  {Fore.GREEN}[1]{Fore.WHITE} 🐔 Racikan Ternak Akun    {Fore.LIGHTBLACK_EX}Anti-limit buat Grok/Qoder, Auto-Sync 9Router
-  {Fore.GREEN}[2]{Fore.WHITE} 🕷️ Racikan Scraper Barbar {Fore.LIGHTBLACK_EX}Pool 30+ IP, ganti IP tiap request, anti-ban
-  {Fore.GREEN}[3]{Fore.WHITE} ⚡ Racikan Ngacir Anti-Lag {Fore.LIGHTBLACK_EX}Ping <350ms, Node SG/ID/US, libas blokir Net+
-  {Fore.GREEN}[4]{Fore.WHITE} 🚜 Mode Petani AFK 24 Jam {Fore.LIGHTBLACK_EX}Tinggal tidur, auto-panen & muter tiap 15 menit
+  {Fore.GREEN}[1]{Fore.WHITE} 🐔 Racikan Ternak Akun    {st['sync']} {Fore.LIGHTBLACK_EX}Anti-limit buat Grok/Qoder
+  {Fore.GREEN}[2]{Fore.WHITE} 🕷️ Racikan Scraper Barbar {ready_label} {Fore.LIGHTBLACK_EX}Pool 30+ IP, ganti IP tiap hit
+  {Fore.GREEN}[3]{Fore.WHITE} ⚡ Racikan Ngacir Anti-Lag {ready_label} {Fore.LIGHTBLACK_EX}Ping <350ms, Node SG/ID/US
+  {Fore.GREEN}[4]{Fore.WHITE} 🚜 Mode Petani AFK 24 Jam {ready_label} {Fore.LIGHTBLACK_EX}Tinggal tidur, muter 15 menit
 
   {Fore.MAGENTA}BUNGKUS HASIL PANEN & TES IDENTITAS
-  {Fore.CYAN}[E]{Fore.WHITE} 📥 Bungkus File Mentah    {Fore.LIGHTBLACK_EX}Sedot TXT (IP:Port / URL), JSON, CSV buat bot lu
-  {Fore.CYAN}[T]{Fore.WHITE} 🧪 Uji Kesaktian Topeng   {Fore.LIGHTBLACK_EX}Live Test: Buktiin IP asli lu beneran ga bocor
+  {Fore.CYAN}[E]{Fore.WHITE} 📥 Bungkus File Mentah    {Fore.GREEN}[SIAP EKSPOR]{Style.RESET_ALL} {Fore.LIGHTBLACK_EX}Sedot TXT, JSON, CSV buat bot lu
+  {Fore.CYAN}[T]{Fore.WHITE} 🧪 Uji Kesaktian Topeng   {st['gateway']} {Fore.LIGHTBLACK_EX}Live Test kebocoran IP asli
 
   {Fore.MAGENTA}PEMBARUAN & BENGKEL OPREK
-{u_line}  {Fore.YELLOW}[M]{Fore.WHITE} 🛠️ Oprek Suka-Suka        {Fore.LIGHTBLACK_EX}Racik protokol sendiri, pilih negara, tembak URL
-  {Fore.YELLOW}[S]{Fore.WHITE} 📂 Gudang Amunisi         {Fore.LIGHTBLACK_EX}Intip stok proxy segar yang udah tersimpan di disk
+{u_line}  {Fore.YELLOW}[M]{Fore.WHITE} 🛠️ Oprek Suka-Suka        {ready_label} {Fore.LIGHTBLACK_EX}Racik protokol sendiri, pilih negara
+  {Fore.YELLOW}[S]{Fore.WHITE} 📂 Gudang Amunisi         {st['storage']} {Fore.LIGHTBLACK_EX}Stok proxy segar tersimpan di disk
   {Fore.BLUE}[L]{Fore.WHITE} 🌐 Ganti Bahasa (EN/ID)   {Fore.LIGHTBLACK_EX}Currently: Bahasa Indonesia
   {Fore.RED}[0]{Fore.WHITE} 💀 Cabut Dulu (Rebahan)   {Fore.LIGHTBLACK_EX}Tutup laptop, ngopi dulu atau sentuh rumput
 
@@ -533,30 +588,30 @@ def show_interactive_menu():
 {Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Style.RESET_ALL}"""
             prompt_str = f"{Fore.YELLOW}Pilih Opsi [W (MVP), 1-4, E, T, U, M, S, L, 0] (Saran: Pencet W aja udah paling mantap): {Style.RESET_ALL}"
         else:
-            u_line = f"  {Fore.YELLOW}{Style.BRIGHT}[U]{Fore.WHITE}{Style.BRIGHT} 🚀 New Update Available!  {Fore.GREEN}v{cached_update_info.get('remote_version')} (New features ready!)\n" if (cached_update_info and cached_update_info.get("has_update")) else f"  {Fore.GREEN}[U]{Fore.WHITE} 🔄 Check & Update Version {Fore.LIGHTBLACK_EX}1-Click Git Auto-Update (v{local_ver})\n"
+            u_line = f"  {Fore.YELLOW}{Style.BRIGHT}[U]{Fore.WHITE}{Style.BRIGHT} 🚀 New Update Available!  {Fore.GREEN}v{cached_update_info.get('remote_version')} [SELECT TO UPDATE]\n" if (cached_update_info and cached_update_info.get("has_update")) else f"  {Fore.GREEN}[U]{Fore.WHITE} 🔄 Check & Update Version {Fore.GREEN}[v{local_ver} LATEST]{Style.RESET_ALL}\n"
             menu_box = f"""{Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   {Fore.WHITE}{Style.BRIGHT}🌾 PETANIPROXY v{local_ver} (ROTATING PROXY ARSENAL)
   {Fore.LIGHTBLACK_EX}Battle-Tested Rotating Proxy Ammo — Zero BS, 100% Free!
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
   {Fore.YELLOW}{Style.BRIGHT}⭐ [MVP] S-TIER ARSENAL: GENUINE RESIDENTIAL POOL (CLOUDFLARE BYPASS)
-  {Fore.YELLOW}{Style.BRIGHT}[W]{Fore.WHITE}{Style.BRIGHT} 🏢 Webshare Hunter Elite   {Fore.YELLOW}(MVP TOP PICK! ⭐⭐⭐)
+  {Fore.YELLOW}{Style.BRIGHT}[W]{Fore.WHITE}{Style.BRIGHT} 🏢 Webshare Hunter Elite   {st['webshare']} {Fore.YELLOW}(MVP TOP PICK! ⭐⭐⭐)
      {Fore.GREEN}└─ Audio Captcha Solver • Real Residential IPs • 10-30 Nodes/Acc
      {Fore.LIGHTBLACK_EX}└─ Bypasses Cloudflare, Grok AI, & tight bot detection
 
   {Fore.MAGENTA}FREE PUBLIC ROTATING GATEWAY (LOCAL PORT 8888)
-  {Fore.GREEN}[1]{Fore.WHITE} 🐔 Bot Breeder Rig        {Fore.LIGHTBLACK_EX}Anti-ban tuned for Grok/Qoder, Auto-Sync 9Router
-  {Fore.GREEN}[2]{Fore.WHITE} 🕷️ Barbaric Web Scraper   {Fore.LIGHTBLACK_EX}30+ pool, fresh IP every hit, zero 429 mercy
-  {Fore.GREEN}[3]{Fore.WHITE} ⚡ Ludicrous Speed Mode   {Fore.LIGHTBLACK_EX}Ping <350ms, Node SG/ID/US, blast geo-blocks
-  {Fore.GREEN}[4]{Fore.WHITE} 🚜 24/7 AFK Farmer Daemon {Fore.LIGHTBLACK_EX}Put your feet up, auto-harvests every 15 mins
+  {Fore.GREEN}[1]{Fore.WHITE} 🐔 Bot Breeder Rig        {st['sync']} {Fore.LIGHTBLACK_EX}Anti-ban tuned for Grok/Qoder
+  {Fore.GREEN}[2]{Fore.WHITE} 🕷️ Barbaric Web Scraper   {ready_label} {Fore.LIGHTBLACK_EX}30+ pool, fresh IP every hit
+  {Fore.GREEN}[3]{Fore.WHITE} ⚡ Ludicrous Speed Mode   {ready_label} {Fore.LIGHTBLACK_EX}Ping <350ms, Node SG/ID/US
+  {Fore.GREEN}[4]{Fore.WHITE} 🚜 24/7 AFK Farmer Daemon {ready_label} {Fore.LIGHTBLACK_EX}Put your feet up, every 15m
 
   {Fore.MAGENTA}DUMP RAW AMMO & STEALTH TEST
-  {Fore.CYAN}[E]{Fore.WHITE} 📥 Dump Raw Ammo Files    {Fore.LIGHTBLACK_EX}Export TXT (IP:Port / URLs), JSON, CSV for bots
-  {Fore.CYAN}[T]{Fore.WHITE} 🧪 Stealth Mask Check     {Fore.LIGHTBLACK_EX}Live test: Prove your real IP is 100% invisible
-
+  {Fore.CYAN}[E]{Fore.WHITE} 📥 Dump Raw Ammo Files    {Fore.GREEN}[READY TO DUMP]{Style.RESET_ALL} {Fore.LIGHTBLACK_EX}Export TXT, JSON, CSV for bots
+  {Fore.CYAN}[T]{Fore.WHITE} 🧪 Stealth Mask Check     {st['gateway']} {Fore.LIGHTBLACK_EX}Live test: Prove your real IP
+ 
   {Fore.MAGENTA}UPDATES & WORKSHOP
-{u_line}  {Fore.YELLOW}[M]{Fore.WHITE} 🛠️ Custom Lab Workshop    {Fore.LIGHTBLACK_EX}Tweak protocols, filter ISO countries, pick URL
-  {Fore.YELLOW}[S]{Fore.WHITE} 📂 Ammo Storage Vault     {Fore.LIGHTBLACK_EX}Check active proxies sitting fresh on disk
+{u_line}  {Fore.YELLOW}[M]{Fore.WHITE} 🛠️ Custom Lab Workshop    {ready_label} {Fore.LIGHTBLACK_EX}Tweak protocols, filter ISO countries
+  {Fore.YELLOW}[S]{Fore.WHITE} 📂 Ammo Storage Vault     {st['storage']} {Fore.LIGHTBLACK_EX}Check active proxies sitting on disk
   {Fore.BLUE}[L]{Fore.WHITE} 🌐 Switch Language (EN/ID){Fore.LIGHTBLACK_EX}Currently: English
   {Fore.RED}[0]{Fore.WHITE} 💀 Rage Quit              {Fore.LIGHTBLACK_EX}Close terminal, sip coffee & go touch grass
 

@@ -1038,6 +1038,32 @@ def show_interactive_menu():
                 serve_port=8888
             )
         elif choice.lower() == "w":
+            # Deteksi environment server/headless sebelum launch browser
+            is_server_env = (
+                not os.environ.get("DISPLAY")           # Tidak ada display X11
+                and not os.environ.get("WAYLAND_DISPLAY") # Tidak ada Wayland
+                and sys.platform != "win32"              # Bukan Windows
+                and sys.platform != "darwin"             # Bukan macOS
+            ) or os.path.exists("/.dockerenv")           # Atau di dalam Docker
+
+            if is_server_env:
+                print(f"\n{Fore.RED}{'━'*76}{Style.RESET_ALL}")
+                print(f"  {Fore.YELLOW}{Style.BRIGHT}⚠️  WEBSHARE HUNTER TIDAK TERSEDIA DI SERVER/DOCKER{Style.RESET_ALL}")
+                print(f"{Fore.RED}{'━'*76}{Style.RESET_ALL}")
+                print(f"\n  {Fore.WHITE}Fitur ini membutuhkan browser Chrome/Chromium dengan tampilan layar (GUI).")
+                print(f"  Server/Docker headless tidak memiliki display → tidak bisa dijalankan.{Style.RESET_ALL}")
+                print(f"\n  {Fore.CYAN}Gunakan fitur ini di PC lokal / laptop yang punya layar.{Style.RESET_ALL}")
+                print(f"\n  {Fore.GREEN}✅ Alternatif yang bisa jalan di server ini:{Style.RESET_ALL}")
+                print(f"     {Fore.GREEN}[F]{Fore.WHITE} aiohttp Fast Harvester  — harvest proxy cepat tanpa browser")
+                print(f"     {Fore.GREEN}[G]{Fore.WHITE} Mode Petani AFK 24/7    — daemon gateway non-stop")
+                print(f"     {Fore.GREEN}[C]{Fore.WHITE} Cloudflare WARP         — IP Cloudflare via REST API (no browser)")
+                print(f"\n{Fore.RED}{'━'*76}{Style.RESET_ALL}")
+                try:
+                    input(f"\n{Fore.LIGHTBLACK_EX}[Tekan Enter untuk kembali ke menu...]{Style.RESET_ALL}")
+                except (KeyboardInterrupt, EOFError):
+                    pass
+                continue
+
             try:
                 from core.webshare_hunter import run_webshare_hunter
             except ImportError as e:
@@ -1080,7 +1106,15 @@ def show_interactive_menu():
                 is_headless = False
 
             db_target = find_9router_db()
-            run_webshare_hunter(total=total_acc, headless=is_headless, sync_9router_db=db_target)
+            try:
+                run_webshare_hunter(total=total_acc, headless=is_headless, sync_9router_db=db_target)
+            except FileNotFoundError as e:
+                if "browser" in str(e).lower() or "chrome" in str(e).lower() or "executable" in str(e).lower():
+                    print(f"\n{Fore.RED}❌ Browser tidak ditemukan di sistem ini!{Style.RESET_ALL}")
+                    print(f"   {Fore.YELLOW}Webshare Hunter membutuhkan Chrome/Chromium yang terinstall.{Style.RESET_ALL}")
+                    print(f"   {Fore.CYAN}Gunakan fitur [F] Fast Harvester atau [G] Daemon Gateway sebagai alternatif.{Style.RESET_ALL}")
+                else:
+                    raise
             
             base_dir = os.path.dirname(os.path.abspath(__file__))
             ws_file = os.path.join(base_dir, "output", "webshare_residential.txt")

@@ -285,8 +285,7 @@ def run_harvester(
     target_url: str = None,
     output_dir: str = None, 
     sync_9router: str = None,
-    serve_port: int = None,
-    host: str = None
+    serve_port: int = None
 ):
     t_start = time.perf_counter()
     check_url = target_url or DEFAULT_TEST_URL
@@ -342,19 +341,17 @@ def run_harvester(
     print(f"{Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Style.RESET_ALL}\n")
 
     if serve_port:
-        gw_host = host or os.environ.get("PETANI_GATEWAY_HOST", "127.0.0.1")
-        display_host = "127.0.0.1" if gw_host == "0.0.0.0" else gw_host
         print(f"{Fore.GREEN}{Style.BRIGHT}🌐 STARTING LOCAL ROTATING GATEWAY & REST API...{Style.RESET_ALL}")
-        print(f"  • Forward Proxy Endpoint: {Fore.CYAN}http://{display_host}:{serve_port}{Style.RESET_ALL}")
-        print(f"  • Random Proxy REST API:  {Fore.CYAN}http://{display_host}:{serve_port}/api/random{Style.RESET_ALL}")
-        print(f"  • All Proxies REST API:   {Fore.CYAN}http://{display_host}:{serve_port}/api/all{Style.RESET_ALL}")
-        print(f"  • Health & Status API:    {Fore.CYAN}http://{display_host}:{serve_port}/api/status{Style.RESET_ALL}")
+        print(f"  • Forward Proxy Endpoint: {Fore.CYAN}http://127.0.0.1:{serve_port}{Style.RESET_ALL}")
+        print(f"  • Random Proxy REST API:  {Fore.CYAN}http://127.0.0.1:{serve_port}/api/random{Style.RESET_ALL}")
+        print(f"  • All Proxies REST API:   {Fore.CYAN}http://127.0.0.1:{serve_port}/api/all{Style.RESET_ALL}")
+        print(f"  • Health & Status API:    {Fore.CYAN}http://127.0.0.1:{serve_port}/api/status{Style.RESET_ALL}")
         print(f"\n{Fore.WHITE}📋 SNIPPET SIAP PAKAI (COPY-PASTE):{Style.RESET_ALL}")
-        print(f"  • {Fore.YELLOW}Python Requests:{Style.RESET_ALL} proxies={{'http': 'http://{display_host}:{serve_port}', 'https': 'http://{display_host}:{serve_port}'}}")
-        print(f"  • {Fore.YELLOW}cURL Command:{Style.RESET_ALL}    curl -x http://{display_host}:{serve_port} https://api.ipify.org")
-        print(f"  • {Fore.YELLOW}Browser Proxy:{Style.RESET_ALL}   Set Manual Proxy Host -> {display_host} | Port -> {serve_port}")
-        print(f"\n{Fore.LIGHTBLACK_EX}Server running at {gw_host}:{serve_port}. Press Ctrl+C to stop.{Style.RESET_ALL}\n")
-        start_proxy_server(live_proxies, host=gw_host, port=serve_port, background=False)
+        print(f"  • {Fore.YELLOW}Python Requests:{Style.RESET_ALL} proxies={{'http': 'http://127.0.0.1:{serve_port}', 'https': 'http://127.0.0.1:{serve_port}'}}")
+        print(f"  • {Fore.YELLOW}cURL Command:{Style.RESET_ALL}    curl -x http://127.0.0.1:{serve_port} https://api.ipify.org")
+        print(f"  • {Fore.YELLOW}Browser Proxy:{Style.RESET_ALL}   Set Manual Proxy Host -> 127.0.0.1 | Port -> {serve_port}")
+        print(f"\n{Fore.LIGHTBLACK_EX}Server running at 127.0.0.1:{serve_port}. Press Ctrl+C to stop.{Style.RESET_ALL}\n")
+        start_proxy_server(live_proxies, host="127.0.0.1", port=serve_port, background=False)
 
     return live_proxies
 
@@ -1038,32 +1035,6 @@ def show_interactive_menu():
                 serve_port=8888
             )
         elif choice.lower() == "w":
-            # Deteksi environment server/headless sebelum launch browser
-            is_server_env = (
-                not os.environ.get("DISPLAY")           # Tidak ada display X11
-                and not os.environ.get("WAYLAND_DISPLAY") # Tidak ada Wayland
-                and sys.platform != "win32"              # Bukan Windows
-                and sys.platform != "darwin"             # Bukan macOS
-            ) or os.path.exists("/.dockerenv")           # Atau di dalam Docker
-
-            if is_server_env:
-                print(f"\n{Fore.RED}{'━'*76}{Style.RESET_ALL}")
-                print(f"  {Fore.YELLOW}{Style.BRIGHT}⚠️  WEBSHARE HUNTER TIDAK TERSEDIA DI SERVER/DOCKER{Style.RESET_ALL}")
-                print(f"{Fore.RED}{'━'*76}{Style.RESET_ALL}")
-                print(f"\n  {Fore.WHITE}Fitur ini membutuhkan browser Chrome/Chromium dengan tampilan layar (GUI).")
-                print(f"  Server/Docker headless tidak memiliki display → tidak bisa dijalankan.{Style.RESET_ALL}")
-                print(f"\n  {Fore.CYAN}Gunakan fitur ini di PC lokal / laptop yang punya layar.{Style.RESET_ALL}")
-                print(f"\n  {Fore.GREEN}✅ Alternatif yang bisa jalan di server ini:{Style.RESET_ALL}")
-                print(f"     {Fore.GREEN}[F]{Fore.WHITE} aiohttp Fast Harvester  — harvest proxy cepat tanpa browser")
-                print(f"     {Fore.GREEN}[G]{Fore.WHITE} Mode Petani AFK 24/7    — daemon gateway non-stop")
-                print(f"     {Fore.GREEN}[C]{Fore.WHITE} Cloudflare WARP         — IP Cloudflare via REST API (no browser)")
-                print(f"\n{Fore.RED}{'━'*76}{Style.RESET_ALL}")
-                try:
-                    input(f"\n{Fore.LIGHTBLACK_EX}[Tekan Enter untuk kembali ke menu...]{Style.RESET_ALL}")
-                except (KeyboardInterrupt, EOFError):
-                    pass
-                continue
-
             try:
                 from core.webshare_hunter import run_webshare_hunter
             except ImportError as e:
@@ -1106,15 +1077,7 @@ def show_interactive_menu():
                 is_headless = False
 
             db_target = find_9router_db()
-            try:
-                run_webshare_hunter(total=total_acc, headless=is_headless, sync_9router_db=db_target)
-            except FileNotFoundError as e:
-                if "browser" in str(e).lower() or "chrome" in str(e).lower() or "executable" in str(e).lower():
-                    print(f"\n{Fore.RED}❌ Browser tidak ditemukan di sistem ini!{Style.RESET_ALL}")
-                    print(f"   {Fore.YELLOW}Webshare Hunter membutuhkan Chrome/Chromium yang terinstall.{Style.RESET_ALL}")
-                    print(f"   {Fore.CYAN}Gunakan fitur [F] Fast Harvester atau [G] Daemon Gateway sebagai alternatif.{Style.RESET_ALL}")
-                else:
-                    raise
+            run_webshare_hunter(total=total_acc, headless=is_headless, sync_9router_db=db_target)
             
             base_dir = os.path.dirname(os.path.abspath(__file__))
             ws_file = os.path.join(base_dir, "output", "webshare_residential.txt")
@@ -1287,7 +1250,6 @@ def main():
     parser.add_argument("--update", action="store_true", help="Perform 1-click update via git pull and exit")
     parser.add_argument("--check-update", action="store_true", help="Check for available updates on GitHub and display patch notes")
     parser.add_argument("--install-deps", action="store_true", help="Auto-install all dependencies from requirements.txt")
-    parser.add_argument("--host", type=str, default=None, help="Bind address for gateway server (default: 127.0.0.1, use 0.0.0.0 for Docker/network access). Env: PETANI_GATEWAY_HOST")
     parser.add_argument("--version", "-v", action="store_true", help="Show current version, announcement and exit")
 
     args = parser.parse_args()
@@ -1339,11 +1301,10 @@ def main():
     if args.daemon_gateway:
         from core.server import start_proxy_server
         from core.fast_validator import run_fast_harvester
-        gw_host = args.host or os.environ.get("PETANI_GATEWAY_HOST", "127.0.0.1")
         print(f"\n{Fore.GREEN}🛡️ Menyiapkan amunisi awal untuk 24/7 Resilient Gateway...{Style.RESET_ALL}")
         initial = run_fast_harvester(max_latency_ms=args.max_latency, target_count=10, sync_db=bool(router_db))
-        print(f"\n{Fore.GREEN}✓ Meluncurkan Gateway di http://{gw_host}:8888 dengan auto-healer...{Style.RESET_ALL}\n")
-        start_proxy_server(initial, host=gw_host, port=8888, background=False, enable_health_check=True, health_check_interval=90, min_healthy_count=5)
+        print(f"\n{Fore.GREEN}✓ Meluncurkan Gateway di http://127.0.0.1:8888 dengan auto-healer...{Style.RESET_ALL}\n")
+        start_proxy_server(initial, port=8888, background=False, enable_health_check=True, health_check_interval=90, min_healthy_count=5)
         return
 
     if args.webshare is not None:
@@ -1381,8 +1342,7 @@ def main():
                     target_url=args.target_url,
                     output_dir=args.output,
                     sync_9router=router_db,
-                    serve_port=args.serve,
-                    host=args.host
+                    serve_port=args.serve
                 )
                 print(f"{Fore.LIGHTBLACK_EX}Sleeping for {args.loop} minutes before next sweep...{Style.RESET_ALL}")
                 time.sleep(args.loop * 60)

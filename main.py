@@ -73,23 +73,49 @@ def save_settings(data: dict):
         json.dump(data, f, indent=2, ensure_ascii=False)
 
 def open_in_explorer(target_path: str):
-    """Buka folder atau sorot file di Windows Explorer / File Manager."""
+    """Buka folder atau sorot file di File Manager (Windows Explorer, macOS Finder, Linux)."""
     try:
         norm = os.path.normpath(target_path)
         if os.path.isfile(norm):
             if sys.platform == "win32":
                 os.system(f'explorer /select,"{norm}"')
+            elif sys.platform == "darwin":
+                import subprocess
+                subprocess.run(["open", "-R", norm])
             else:
-                import webbrowser
-                webbrowser.open(os.path.dirname(norm))
+                import subprocess
+                subprocess.run(["xdg-open", os.path.dirname(norm)])
         elif os.path.isdir(norm):
             if sys.platform == "win32":
                 os.startfile(norm)
+            elif sys.platform == "darwin":
+                import subprocess
+                subprocess.run(["open", norm])
             else:
-                import webbrowser
-                webbrowser.open(norm)
+                import subprocess
+                subprocess.run(["xdg-open", norm])
     except Exception as e:
-        print(f"{Fore.RED}Gagal membuka File Explorer: {e}{Style.RESET_ALL}")
+        print(f"{Fore.RED}Gagal membuka File Manager: {e}{Style.RESET_ALL}")
+
+def open_in_text_editor(file_path: str):
+    """Buka file text menggunakan default editor sistem (Notepad, TextEdit, atau default Linux)."""
+    try:
+        norm = os.path.normpath(file_path)
+        if not os.path.exists(norm):
+            return
+        if sys.platform == "win32":
+            os.system(f'start notepad "{norm}"')
+        elif sys.platform == "darwin":
+            import subprocess
+            subprocess.run(["open", "-t", norm])
+        else:
+            import subprocess
+            try:
+                subprocess.run(["xdg-open", norm])
+            except Exception:
+                pass
+    except Exception as e:
+        print(f"{Fore.RED}Gagal membuka Text Editor: {e}{Style.RESET_ALL}")
 
 def open_url_in_browser(url: str):
     """Buka URL di browser default sistem."""
@@ -956,18 +982,20 @@ def show_interactive_menu():
             if res:
                 base_dir = os.path.dirname(os.path.abspath(__file__))
                 out_dir = os.path.join(base_dir, "output")
+                fm_name = "File Explorer" if sys.platform == "win32" else "Finder" if sys.platform == "darwin" else "File Manager"
+                ed_name = "Notepad" if sys.platform == "win32" else "TextEdit" if sys.platform == "darwin" else "Text Editor"
                 while True:
                     print(f"\n{Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Style.RESET_ALL}")
                     print(f"{Fore.WHITE}{Style.BRIGHT}💾 FILE MENTAH SEGAR BERHASIL DIBUNGKUS!{Style.RESET_ALL}")
-                    print(f"  {Fore.GREEN}[1]{Fore.WHITE} 📂 Buka Folder Output di File Explorer")
-                    print(f"  {Fore.GREEN}[2]{Fore.WHITE} 📝 Buka File live_all.txt di Notepad")
+                    print(f"  {Fore.GREEN}[1]{Fore.WHITE} 📂 Buka Folder Output ({fm_name})")
+                    print(f"  {Fore.GREEN}[2]{Fore.WHITE} 📝 Buka File live_all.txt ({ed_name})")
                     print(f"  {Fore.RED}[0 / Enter]{Fore.WHITE} 🔙 Kembali ke Menu Utama")
                     print(f"{Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Style.RESET_ALL}")
                     sub = input(f"{Fore.YELLOW}Pilih aksi [1-2, 0=Kembali]: {Style.RESET_ALL}").strip()
                     if sub == "1":
                         open_in_explorer(out_dir)
                     elif sub == "2":
-                        open_in_explorer(os.path.join(out_dir, "live_all.txt"))
+                        open_in_text_editor(os.path.join(out_dir, "live_all.txt"))
                     else:
                         break
             continue
@@ -1052,17 +1080,19 @@ def show_interactive_menu():
             base_dir = os.path.dirname(os.path.abspath(__file__))
             ws_file = os.path.join(base_dir, "output", "webshare_residential.txt")
             if os.path.exists(ws_file) and os.path.getsize(ws_file) > 0:
+                fm_name = "File Explorer" if sys.platform == "win32" else "Finder" if sys.platform == "darwin" else "File Manager"
+                ed_name = "Notepad" if sys.platform == "win32" else "TextEdit" if sys.platform == "darwin" else "Text Editor"
                 while True:
                     print(f"\n{Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Style.RESET_ALL}")
                     print(f"{Fore.WHITE}{Style.BRIGHT}🏢 AMUNISI RESIDENTIAL SIAP! PILIH AKSI:{Style.RESET_ALL}")
-                    print(f"  {Fore.GREEN}[1]{Fore.WHITE} 📝 Buka File Daftar IP di Notepad ({Fore.YELLOW}webshare_residential.txt{Fore.WHITE})")
-                    print(f"  {Fore.GREEN}[2]{Fore.WHITE} 📂 Buka Folder Output di File Explorer")
+                    print(f"  {Fore.GREEN}[1]{Fore.WHITE} 📝 Buka File Daftar IP di {ed_name} ({Fore.YELLOW}webshare_residential.txt{Fore.WHITE})")
+                    print(f"  {Fore.GREEN}[2]{Fore.WHITE} 📂 Buka Folder Output di {fm_name}")
                     print(f"  {Fore.GREEN}[3]{Fore.WHITE} 📋 Tampilkan Contoh Kode Python Requests Siap Pakai")
                     print(f"  {Fore.RED}[0 / Enter]{Fore.WHITE} 🔙 Kembali ke Menu Utama")
                     print(f"{Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Style.RESET_ALL}")
                     sub = input(f"{Fore.YELLOW}Pilih aksi [1-3, 0=Kembali]: {Style.RESET_ALL}").strip()
                     if sub == "1":
-                        open_in_explorer(ws_file)
+                        open_in_text_editor(ws_file)
                     elif sub == "2":
                         open_in_explorer(os.path.dirname(ws_file))
                     elif sub == "3":
@@ -1092,26 +1122,69 @@ print("IP Aktif Residential:", resp.json()["ip"])
                 base_dir = os.path.dirname(os.path.abspath(__file__))
                 warp_conf = os.path.join(base_dir, "output", "warp", "warp.conf")
                 warp_folder = os.path.join(base_dir, "output", "warp")
+                is_win = sys.platform == "win32"
+                is_mac = sys.platform == "darwin"
+                is_linux = sys.platform.startswith("linux")
+                fm_name = "File Explorer" if is_win else "Finder" if is_mac else "File Manager"
+
+                if is_win:
+                    platform_label = "Windows (.exe)"
+                    download_url = "https://download.wireguard.com/windows-client/wireguard-installer.exe"
+                elif is_mac:
+                    platform_label = "macOS (Mac App Store)"
+                    download_url = "https://apps.apple.com/us/app/wireguard/id1451685025"
+                elif is_linux:
+                    platform_label = "Linux (apt / pacman)"
+                    download_url = "https://www.wireguard.com/install/"
+                else:
+                    platform_label = "Perangkat Anda"
+                    download_url = "https://www.wireguard.com/install/"
+
                 while True:
                     print(f"\n{Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Style.RESET_ALL}")
                     print(f"{Fore.WHITE}{Style.BRIGHT}🎉 AMUNISI CLOUDFLARE WARP SIAP DIGUNAKAN! PILIH AKSI:{Style.RESET_ALL}")
-                    print(f"  {Fore.GREEN}[1]{Fore.WHITE} 📂 Buka Folder File ({Fore.YELLOW}warp.conf{Fore.WHITE} di File Explorer)")
-                    print(f"  {Fore.GREEN}[2]{Fore.WHITE} 🌐 Download Aplikasi Resmi WireGuard Windows (Buka Browser)")
-                    print(f"  {Fore.GREEN}[3]{Fore.WHITE} 📋 Panduan Kilat 3 Langkah Cara Pakai di WireGuard")
+                    print(f"  {Fore.GREEN}[1]{Fore.WHITE} 📂 Buka Folder File ({Fore.YELLOW}warp.conf{Fore.WHITE} di {fm_name})")
+                    print(f"  {Fore.GREEN}[2]{Fore.WHITE} 🌐 Download / Install Resmi WireGuard untuk {Fore.YELLOW}{platform_label}{Fore.WHITE}")
+                    print(f"  {Fore.GREEN}[3]{Fore.WHITE} 📋 Panduan Kilat Cara Pakai di WireGuard ({'Windows' if is_win else 'macOS' if is_mac else 'Linux'})")
                     print(f"  {Fore.RED}[0 / Enter]{Fore.WHITE} 🔙 Kembali ke Menu Utama")
                     print(f"{Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Style.RESET_ALL}")
                     sub = input(f"{Fore.YELLOW}Pilih aksi [1-3, 0=Kembali]: {Style.RESET_ALL}").strip()
                     if sub == "1":
                         open_in_explorer(warp_conf if os.path.exists(warp_conf) else warp_folder)
                     elif sub == "2":
-                        open_url_in_browser("https://www.wireguard.com/install/")
+                        if is_linux:
+                            print(f"\n{Fore.CYAN}🐧 CARA INSTALL WIREGUARD DI LINUX:{Style.RESET_ALL}")
+                            print(f"  • Ubuntu / Debian / Mint : {Fore.GREEN}sudo apt update && sudo apt install -y wireguard{Style.RESET_ALL}")
+                            print(f"  • Arch Linux / Manjaro   : {Fore.GREEN}sudo pacman -S wireguard-tools{Style.RESET_ALL}")
+                            print(f"  • Fedora / RHEL          : {Fore.GREEN}sudo dnf install wireguard-tools{Style.RESET_ALL}")
+                            print(f"\n  🚀 Cara Konek Cepat via Terminal:")
+                            print(f"    {Fore.YELLOW}sudo wg-quick up \"{warp_conf}\"{Style.RESET_ALL}")
+                            print(f"  🛑 Cara Matikan Tunnel:")
+                            print(f"    {Fore.YELLOW}sudo wg-quick down \"{warp_conf}\"{Style.RESET_ALL}\n")
+                            open_url_in_browser(download_url)
+                        else:
+                            print(f"  {Fore.GREEN}🌐 Membuka link download resmi WireGuard {platform_label}...{Style.RESET_ALL}")
+                            open_url_in_browser(download_url)
                     elif sub == "3":
                         print(f"\n{Fore.CYAN}📖 PANDUAN KILAT CARA PAKAI (1 MENIT LANGSUNG KONEK):{Style.RESET_ALL}")
-                        print(f"  1. Buka aplikasi WireGuard di Windows.")
-                        print(f"  2. Klik tombol {Fore.YELLOW}'Add Tunnel'{Style.RESET_ALL} (atau tekan {Fore.YELLOW}Ctrl + O{Style.RESET_ALL}).")
-                        print(f"  3. Pilih file: {Fore.GREEN}{warp_conf}{Style.RESET_ALL}")
-                        print(f"  4. Klik tombol {Fore.YELLOW}'Activate'{Style.RESET_ALL}.")
-                        print(f"  {Fore.GREEN}✓ Selesai! Seluruh koneksi PC kamu otomatis berkecepatan monster via Cloudflare!{Style.RESET_ALL}")
+                        if is_win:
+                            print(f"  1. Buka aplikasi WireGuard di Windows.")
+                            print(f"  2. Klik tombol {Fore.YELLOW}'Add Tunnel'{Style.RESET_ALL} (atau tekan {Fore.YELLOW}Ctrl + O{Style.RESET_ALL}).")
+                            print(f"  3. Pilih file: {Fore.GREEN}{warp_conf}{Style.RESET_ALL}")
+                            print(f"  4. Klik tombol {Fore.YELLOW}'Activate'{Style.RESET_ALL}.")
+                            print(f"  {Fore.GREEN}✓ Selesai! Seluruh koneksi PC kamu otomatis berkecepatan monster via Cloudflare!{Style.RESET_ALL}")
+                        elif is_mac:
+                            print(f"  1. Buka aplikasi WireGuard dari Mac App Store / Applications.")
+                            print(f"  2. Klik menu bar WireGuard -> {Fore.YELLOW}'Import tunnel(s) from file'{Style.RESET_ALL} (atau tekan {Fore.YELLOW}Cmd + O{Style.RESET_ALL}).")
+                            print(f"  3. Pilih file: {Fore.GREEN}{warp_conf}{Style.RESET_ALL}")
+                            print(f"  4. Klik tombol {Fore.YELLOW}'Activate'{Style.RESET_ALL}.")
+                            print(f"  {Fore.GREEN}✓ Selesai! Seluruh koneksi Mac kamu otomatis lewat Cloudflare WARP!{Style.RESET_ALL}")
+                        else:
+                            print(f"  1. Buka terminal Linux.")
+                            print(f"  2. Jalankan perintah: {Fore.YELLOW}sudo wg-quick up \"{warp_conf}\"{Style.RESET_ALL}")
+                            print(f"  3. Cek IP aktif:      {Fore.GREEN}curl https://api.ipify.org{Style.RESET_ALL}")
+                            print(f"  4. Matikan tunnel:    {Fore.YELLOW}sudo wg-quick down \"{warp_conf}\"{Style.RESET_ALL}")
+                            print(f"  {Fore.GREEN}✓ Selesai! Seluruh network Linux kamu aman terlindungi Anycast Cloudflare!{Style.RESET_ALL}")
                     else:
                         break
             continue

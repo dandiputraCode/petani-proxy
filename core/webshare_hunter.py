@@ -419,7 +419,13 @@ def try_solve_audio(page):
 
 def hunt_single_auto(index, total, headless=False):
     random_str = ''.join(random.choices(string.ascii_lowercase + string.digits, k=10))
-    email = f'ws{random_str}@niceground.shop'
+    # Rotasi domain email agar tidak mudah di-blacklist Webshare
+    _email_domains = [
+        'sharklasers.com', 'guerrillamail.com', 'grr.la',
+        'guerrillamailblock.com', 'spam4.me', 'trashmail.me',
+        'maildrop.cc', 'yopmail.com', 'tempr.email',
+    ]
+    email = f'ws{random_str}@{random.choice(_email_domains)}'
     special = random.choice('!@#$%')
     rand_mid = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
     password = f'Passw0rd{special}{rand_mid}@#'

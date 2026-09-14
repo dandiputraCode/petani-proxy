@@ -479,11 +479,14 @@ def hunt_single_auto(index, total, headless=False):
             print('[!] stealth.min.js tidak ditemukan — jalankan git pull untuk update.')
 
         print('[*] Meluncurkan browser Chrome...')
-        print('[*] Menghubungkan ke pendaftaran Webshare (Direct URL)...')
+        print('[*] Menghubungkan ke pendaftaran Webshare (Gateway URL)...')
         try:
-            page.get('https://dashboard.webshare.io/register/', timeout=12)
+            page.get('https://proxy.webshare.io/register', timeout=15)
         except Exception:
-            pass
+            try:
+                page.get('https://dashboard.webshare.io/register/', timeout=15)
+            except Exception:
+                pass
         time.sleep(3)
 
         # Deteksi jika Webshare mengembalikan halaman error (mis. "Unexpected Error Occurred")
@@ -492,7 +495,6 @@ def hunt_single_auto(index, total, headless=False):
             try:
                 page_body = page.run_js('return document.body ? document.body.innerText : "";') or ''
             except Exception:
-                # ContextLostError atau page belum siap — tunggu dulu lalu coba lagi
                 time.sleep(4)
                 try:
                     page_body = page.run_js('return document.body ? document.body.innerText : "";') or ''
@@ -502,72 +504,78 @@ def hunt_single_auto(index, total, headless=False):
                 print(f'[!] Webshare halaman error (percobaan {retry_i+1}/3). Reload dalam 4 detik...')
                 try:
                     page.refresh()
-                    time.sleep(4)  # tunggu lebih lama setelah refresh supaya tidak ContextLostError
+                    time.sleep(4)
                 except Exception:
                     time.sleep(4)
             else:
-                break  # Halaman normal, lanjut
-
+                break
 
         print('[*] Menunggu elemen form siap...')
         try:
-            email_box = page.ele('@name=email', timeout=10) or page.ele('@type=email', timeout=5)
+            # 1. Isi Email
+            email_box = page.ele('@data-testid=email-input', timeout=10) or page.ele('@id=email-input', timeout=5) or page.ele('@type=email', timeout=5)
             if email_box:
                 human_click_element(page, email_box)
                 email_box.clear()
                 for ch in email:
                     email_box.input(ch)
-                    time.sleep(random.uniform(0.02, 0.07))
-                time.sleep(0.4)
+                    time.sleep(random.uniform(0.02, 0.05))
+                time.sleep(0.3)
 
-            pass_box = page.ele('@name=password', timeout=5) or page.ele('@type=password', timeout=5)
+            # 2. Isi Password
+            pass_box = page.ele('@data-testid=password-input', timeout=5) or page.ele('@type=password', timeout=5)
             if pass_box:
                 human_click_element(page, pass_box)
                 pass_box.clear()
                 for ch in password:
                     pass_box.input(ch)
-                    time.sleep(random.uniform(0.02, 0.07))
-                time.sleep(0.4)
+                    time.sleep(random.uniform(0.02, 0.05))
+                time.sleep(0.3)
 
-            # Webshare pakai Material UI — checkbox input-nya hidden, harus klik label/span wrapper
-            # atau fire native event agar React state update
+            # Sinkronisasi state React agar validasi React Hook Form / Formik terdaftar
+            page.run_js(f'''
+                const setReactVal = (sel, val) => {{
+                    const el = document.querySelector(sel);
+                    if (el) {{
+                        const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
+                        setter.call(el, val);
+                        el.dispatchEvent(new Event('input', {{ bubbles: true }}));
+                        el.dispatchEvent(new Event('change', {{ bubbles: true }}));
+                    }}
+                }};
+                setReactVal('[data-testid="email-input"]', '{email}');
+                setReactVal('[data-testid="password-input"]', '{password}');
+            ''')
+            time.sleep(0.3)
+
+            # 3. Centang Terms of Service via data-testid resmi Webshare
             tos_checked = page.run_js('''
-                // Coba klik label atau span wrapper di sekitar checkbox (cara paling andal untuk MUI)
-                const label = document.querySelector('label[for*="terms"], label[for*="tos"], label[for*="agree"]');
-                if (label) { label.click(); }
-                
-                // Fallback: cari span MUI yang wrapping checkbox dan klik
-                const spans = Array.from(document.querySelectorAll('span.MuiCheckbox-root, span.MuiButtonBase-root'));
-                if (spans.length > 0) { spans[0].click(); }
-                
-                // Fallback: klik input langsung + fire change event supaya React detect
-                const chk = document.querySelector("input[type='checkbox']");
-                if (chk && !chk.checked) {
-                    chk.click();
-                    chk.dispatchEvent(new Event('change', { bubbles: true }));
+                const tos = document.querySelector('[data-testid="tos-checkbox"]') || 
+                            document.querySelector('.MuiCheckbox-root') || 
+                            document.querySelector("input[type='checkbox']");
+                if (tos) {
+                    tos.click();
                 }
-                
-                // Verifikasi apakah sudah checked
-                const finalChk = document.querySelector("input[type='checkbox']");
-                return finalChk ? finalChk.checked : false;
+                const inp = document.querySelector('[data-testid="tos-checkbox"] input') || 
+                            document.querySelector("input[type='checkbox']");
+                return inp ? inp.checked : false;
             ''')
             time.sleep(0.5)
+
             if tos_checked:
                 print('[*] Form terisi & Terms of Service ✓ berhasil dicentang!')
             else:
-                # Masih belum checked? Coba sekali lagi via DrissionPage click langsung
-                chk_ele = page.ele('tag:input@type=checkbox', timeout=3)
+                chk_ele = page.ele('@data-testid=tos-checkbox', timeout=3) or page.ele('tag:input@type=checkbox', timeout=3)
                 if chk_ele:
                     human_click_element(page, chk_ele)
-                    time.sleep(0.3)
-                print('[*] Form terisi, ToS checkbox dicoba klik (verifikasi manual di browser)')
+                print('[*] Form terisi, ToS checkbox diklik.')
         except Exception as e:
             print(f'[Debug] Form: {e}')
 
         # 2. Klik tombol "Sign Up With Email"
         time.sleep(1)
         try:
-            btn_signup = page.ele('text:Sign Up With Email') or page.ele('text:Sign Up')
+            btn_signup = page.ele('@data-testid=signup-button', timeout=5) or page.ele('text:Sign Up With Email') or page.ele('text:Sign Up')
             if btn_signup:
                 human_click_element(page, btn_signup)
                 print('[*] Tombol "Sign Up With Email" berhasil diklik secara manusiawi!')

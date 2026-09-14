@@ -123,21 +123,41 @@ curl -x http://127.0.0.1:8888 https://api.ipify.org
 
 ## Protokol & Fitur Filter Negara
 
-Mendukung protokol **HTTP, HTTPS, SOCKS4, SOCKS5** dan 150+ kode negara ISO:
+PetaniProxy mendukung protokol **HTTP, HTTPS, SOCKS4, SOCKS5** dan dapat menyaring proxy dari **150+ negara di seluruh dunia** (menggunakan engine geolokasi ISO 3166-1 alpha-2 otomatis).
 
-| Negara | Bendera | Kode ISO | Contoh Perintah CLI |
-| :--- | :---: | :---: | :--- |
-| Indonesia | <img src="https://flagcdn.com/20x15/id.png" width="20" alt="ID"> | `ID` | `python main.py --country ID --target 10` |
-| Singapura | <img src="https://flagcdn.com/20x15/sg.png" width="20" alt="SG"> | `SG` | `python main.py --country SG --target 10` |
-| Amerika Serikat | <img src="https://flagcdn.com/20x15/us.png" width="20" alt="US"> | `US` | `python main.py --country US --target 20` |
-| Jepang | <img src="https://flagcdn.com/20x15/jp.png" width="20" alt="JP"> | `JP` | `python main.py --country JP --target 10` |
-| Jerman | <img src="https://flagcdn.com/20x15/de.png" width="20" alt="DE"> | `DE` | `python main.py --country DE --target 10` |
-| Inggris | <img src="https://flagcdn.com/20x15/gb.png" width="20" alt="GB"> | `GB` | `python main.py --country GB --target 10` |
+Tabel di bawah adalah contoh cheat sheet kode negara yang sering dipanen:
+
+| Wilayah | Negara | Bendera | Kode ISO | Contoh Perintah CLI |
+| :--- | :--- | :---: | :---: | :--- |
+| **Asia Tenggara** | Indonesia | <img src="https://flagcdn.com/20x15/id.png" width="20" alt="ID"> | `ID` | `python main.py --country ID --target 10` |
+| | Singapura | <img src="https://flagcdn.com/20x15/sg.png" width="20" alt="SG"> | `SG` | `python main.py --country SG --target 10` |
+| | Malaysia | <img src="https://flagcdn.com/20x15/my.png" width="20" alt="MY"> | `MY` | `python main.py --country MY --target 10` |
+| | Thailand | <img src="https://flagcdn.com/20x15/th.png" width="20" alt="TH"> | `TH` | `python main.py --country TH --target 10` |
+| | Vietnam | <img src="https://flagcdn.com/20x15/vn.png" width="20" alt="VN"> | `VN` | `python main.py --country VN --target 10` |
+| | Filipina | <img src="https://flagcdn.com/20x15/ph.png" width="20" alt="PH"> | `PH` | `python main.py --country PH --target 10` |
+| **Asia Timur & Selatan** | Jepang | <img src="https://flagcdn.com/20x15/jp.png" width="20" alt="JP"> | `JP` | `python main.py --country JP --target 10` |
+| | Korea Selatan | <img src="https://flagcdn.com/20x15/kr.png" width="20" alt="KR"> | `KR` | `python main.py --country KR --target 10` |
+| | Hong Kong | <img src="https://flagcdn.com/20x15/hk.png" width="20" alt="HK"> | `HK` | `python main.py --country HK --target 10` |
+| | India | <img src="https://flagcdn.com/20x15/in.png" width="20" alt="IN"> | `IN` | `python main.py --country IN --target 10` |
+| **Amerika & Oceania** | Amerika Serikat | <img src="https://flagcdn.com/20x15/us.png" width="20" alt="US"> | `US` | `python main.py --country US --target 20` |
+| | Kanada | <img src="https://flagcdn.com/20x15/ca.png" width="20" alt="CA"> | `CA` | `python main.py --country CA --target 10` |
+| | Brasil | <img src="https://flagcdn.com/20x15/br.png" width="20" alt="BR"> | `BR` | `python main.py --country BR --target 10` |
+| | Australia | <img src="https://flagcdn.com/20x15/au.png" width="20" alt="AU"> | `AU` | `python main.py --country AU --target 10` |
+| **Eropa** | Jerman | <img src="https://flagcdn.com/20x15/de.png" width="20" alt="DE"> | `DE` | `python main.py --country DE --target 10` |
+| | Inggris (UK) | <img src="https://flagcdn.com/20x15/gb.png" width="20" alt="GB"> | `GB` | `python main.py --country GB --target 10` |
+| | Belanda | <img src="https://flagcdn.com/20x15/nl.png" width="20" alt="NL"> | `NL` | `python main.py --country NL --target 10` |
+| | Prancis | <img src="https://flagcdn.com/20x15/fr.png" width="20" alt="FR"> | `FR` | `python main.py --country FR --target 10` |
+| | Rusia | <img src="https://flagcdn.com/20x15/ru.png" width="20" alt="RU"> | `RU` | `python main.py --country RU --target 10` |
+
+> 💡 **Mau negara lainnya?** Lu bisa pakai **kode ISO 2 huruf negara mana saja di dunia** (misal: Turki = `TR`, Italia = `IT`, Spanyol = `ES`, Taiwan = `TW`, dll). Sistem otomatis mendeteksi dan menyaring IP sesuai negara yang lu minta!
 
 Bisa juga digabung dengan filter protokol:
 ```bash
 # Contoh: Panen khusus SOCKS5 region Amerika Serikat (US)
 python main.py --protocol socks5 --country US --target 10
+
+# Contoh: Panen khusus HTTP region Singapura (SG)
+python main.py --protocol http --country SG --target 15
 ```
 
 ---

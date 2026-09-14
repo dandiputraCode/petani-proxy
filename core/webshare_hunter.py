@@ -494,15 +494,38 @@ def hunt_single_auto(index, total, headless=False):
                     time.sleep(random.uniform(0.02, 0.07))
                 time.sleep(0.4)
 
-            chk_ele = page.ele('tag:input@type=checkbox', timeout=5) or page.ele('.PrivateSwitchBase-input', timeout=5)
-            if chk_ele:
-                human_click_element(page, chk_ele)
+            # Webshare pakai Material UI — checkbox input-nya hidden, harus klik label/span wrapper
+            # atau fire native event agar React state update
+            tos_checked = page.run_js('''
+                // Coba klik label atau span wrapper di sekitar checkbox (cara paling andal untuk MUI)
+                const label = document.querySelector('label[for*="terms"], label[for*="tos"], label[for*="agree"]');
+                if (label) { label.click(); }
+                
+                // Fallback: cari span MUI yang wrapping checkbox dan klik
+                const spans = Array.from(document.querySelectorAll('span.MuiCheckbox-root, span.MuiButtonBase-root'));
+                if (spans.length > 0) { spans[0].click(); }
+                
+                // Fallback: klik input langsung + fire change event supaya React detect
+                const chk = document.querySelector("input[type='checkbox']");
+                if (chk && !chk.checked) {
+                    chk.click();
+                    chk.dispatchEvent(new Event('change', { bubbles: true }));
+                }
+                
+                // Verifikasi apakah sudah checked
+                const finalChk = document.querySelector("input[type='checkbox']");
+                return finalChk ? finalChk.checked : false;
+            ''')
+            time.sleep(0.5)
+            if tos_checked:
+                print('[*] Form terisi & Terms of Service ✓ berhasil dicentang!')
             else:
-                page.run_js('''
-                    const chk = document.querySelector("input[type='checkbox'], input.PrivateSwitchBase-input");
-                    if (chk && !chk.checked) { chk.click(); }
-                ''')
-            print('[*] Form dan Terms of Service terisi dengan simulasi kursor alami.')
+                # Masih belum checked? Coba sekali lagi via DrissionPage click langsung
+                chk_ele = page.ele('tag:input@type=checkbox', timeout=3)
+                if chk_ele:
+                    human_click_element(page, chk_ele)
+                    time.sleep(0.3)
+                print('[*] Form terisi, ToS checkbox dicoba klik (verifikasi manual di browser)')
         except Exception as e:
             print(f'[Debug] Form: {e}')
 

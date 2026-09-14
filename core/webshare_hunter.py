@@ -465,7 +465,7 @@ def hunt_single_auto(index, total, headless=False):
             with open(stealth_path, 'r', encoding='utf-8') as sf:
                 stealth_js = sf.read()
             try:
-                page.run_cdp('Page.addScriptToEvaluateOnNewDocument', {'source': stealth_js})
+                page.run_cdp('Page.addScriptToEvaluateOnNewDocument', source=stealth_js)
                 print('[*] Stealth mode aktif — bot fingerprint diminimalkan.')
             except Exception as se:
                 print(f'[!] Stealth inject gagal (lanjut tanpa stealth): {se}')

@@ -175,11 +175,25 @@ Kalo PetaniProxy ngebantu lu ngurangin pengeluaran sewa proxy atau bikin project
 <i>"Proxy lancar, kuota aman, hati tenang. DAHSYAT!"</i>
 <br><br>
 
-<img src="assets/qris.png" width="280" alt="QRIS Donasi PetaniProxy">
+<details>
+<summary><b>🚨 [WARNING] jangan-dibuka-kalau-ga-mau-penasaran.exe (KLIK DI SINI) 🚨</b></summary>
+
+<br>
+
+> *"Tuh kan dibilang jangan dibuka malah dibuka... yaudah berhubung udah terlanjur dibuka, traktir kopi sang petani dulu lah ya wkwk ☕"*
+
+<br>
+
+<img src="assets/jangan-dibuka-kalau-ga-mau-penasaran.png" width="300" alt="QRIS Donasi PetaniProxy">
 
 <br><br>
 <b>Bisa scan via BCA, GoPay, OVO, DANA, ShopeePay, LinkAja, atau Mobile Banking apa aja.</b><br>
 <sub>Atas Nama: <b>Luthfi Shidqi Habibulloh (Digital & Kreatif)</b> • NMID: <code>ID1026591157593</code></sub>
+
+</details>
+
+<br>
+<sub>📁 File misterius: <a href="assets/jangan-dibuka-kalau-ga-mau-penasaran.png"><code>jangan-dibuka-kalau-ga-mau-penasaran.exe</code></a></sub>
 
 </div>
 

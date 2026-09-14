@@ -122,7 +122,7 @@ class RotatingProxyRequestHandler(BaseHTTPRequestHandler):
             stats = self.pool_manager.get_stats()
             self.send_json_response({
                 "service": "PetaniProxy Gateway & REST API",
-                "version": "2.0.0",
+                "version": "1.0.0",
                 "maintainer": "@itzluthfi",
                 "stats": stats,
                 "endpoints": {

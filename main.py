@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-PetaniProxy (OmniProxy Harvester) v2.0
+PetaniProxy v1.0
 Pusat Amunisi Proxy Bersih, Segar & Berputar Otomatis (Local Rotating Gateway)
 """
 import os
@@ -417,7 +417,7 @@ def show_interactive_menu():
         print(BANNER)
         if CURRENT_LANG == "ID":
             menu_box = f"""{Fore.CYAN}┌────────────────────────────────────────────────────────────────────────┐
-│                   {Fore.WHITE}{Style.BRIGHT}🌾 PETANIPROXY v2.0 (PUSAT AMUNISI PROXY){Fore.CYAN}                   │
+│                   {Fore.WHITE}{Style.BRIGHT}🌾 PETANIPROXY v1.0 (PUSAT AMUNISI PROXY){Fore.CYAN}                   │
 │          {Fore.LIGHTBLACK_EX}Amunisi Proxy Anti-Tumbang, Siap Diajak Tempur 24/7 Gaspol!{Fore.CYAN}   │
 ├────────────────────────────────────────────────────────────────────────┤
 │  {Fore.YELLOW}{Style.BRIGHT}⭐ [MVP] AMUNISI SULTAN: IP RESIDENTIAL (TEMBUS CLOUDFLARE):{Fore.CYAN}            │
@@ -446,7 +446,7 @@ def show_interactive_menu():
             prompt_str = f"{Fore.YELLOW}Pilih Opsi [W (MVP), 1-4, E, T, M, S, L, 0] (Saran: Pencet W aja udah paling mantap): {Style.RESET_ALL}"
         else:
             menu_box = f"""{Fore.CYAN}┌────────────────────────────────────────────────────────────────────────┐
-│                  {Fore.WHITE}{Style.BRIGHT}🌾 PETANIPROXY v2.0 (ROTATING PROXY ARSENAL){Fore.CYAN}                 │
+│                  {Fore.WHITE}{Style.BRIGHT}🌾 PETANIPROXY v1.0 (ROTATING PROXY ARSENAL){Fore.CYAN}                 │
 │             {Fore.LIGHTBLACK_EX}Battle-Tested Rotating Proxy Ammo — Zero BS, 100% Free!{Fore.CYAN}    │
 ├────────────────────────────────────────────────────────────────────────┤
 │  {Fore.YELLOW}{Style.BRIGHT}⭐ [MVP] S-TIER ARSENAL: GENUINE RESIDENTIAL POOL (CLOUDFLARE BYPASS):{Fore.CYAN} │
@@ -590,7 +590,7 @@ def main():
         show_interactive_menu()
         return
 
-    parser = argparse.ArgumentParser(description="PetaniProxy v2.0 - High-Speed Multi-Protocol Proxy Harvester & Rotating Gateway")
+    parser = argparse.ArgumentParser(description="PetaniProxy v1.0 - High-Speed Multi-Protocol Proxy Harvester & Rotating Gateway")
     parser.add_argument("--protocol", "-p", choices=["all", "http", "socks4", "socks5"], default="all", help="Target proxy protocol (default: all)")
     parser.add_argument("--max", "-m", type=int, default=250, help="Maximum candidate proxies to validate (default: 250)")
     parser.add_argument("--target", "-t", type=int, default=15, help="Target number of alive proxies to collect (default: 15)")

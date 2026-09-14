@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🌾 PetaniProxy v2.0
+# 🌾 PetaniProxy v1.0
 
 **Pusat Amunisi Proxy Bersih, Segar & Berputar Otomatis (Local Rotating Gateway).**  
 *High-Speed Multi-Protocol Scraper, Validator, Self-Healing Pool & REST API.*
@@ -33,7 +33,7 @@ Created and maintained with ❤️ by [@itzluthfi](https://github.com/itzluthfi)
 
 ## 🥊 Mengapa PetaniProxy? (Comparison Matrix)
 
-| Fitur / Kemampuan | Proxy Gratisan Biasa | Layanan Komersial ($500/bln) | **🌾 PetaniProxy v2.0** |
+| Fitur / Kemampuan | Proxy Gratisan Biasa | Layanan Komersial ($500/bln) | **🌾 PetaniProxy v1.0** |
 | :--- | :---: | :---: | :---: |
 | **Biaya** | Gratis (manual & ribet) | Rp 1,5 Juta – 7 Juta/bulan | **100% Gratis & Bebas Batas** |
 | **Bentuk Akses** | File teks `ip:port` mentah | Forward Gateway & REST API | **Local Rotating Gateway (Port 8888)** |

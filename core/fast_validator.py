@@ -192,10 +192,24 @@ async def validate_batch(
                         t.cancel()
                 break
 
-def sync_to_9router(proxies: List[Dict[str, Any]], db_path: str = "d:/FREELANCE/9router-mibp-version/data/db/data.sqlite") -> int:
-    if not os.path.exists(db_path):
+def find_9router_db() -> Optional[str]:
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    candidates = [
+        os.path.normpath(os.path.join(base_dir, "..", "eLrouter", "data", "db", "data.sqlite")),
+        os.path.normpath(os.path.join(base_dir, "..", "9router-mibp-version", "data", "db", "data.sqlite")),
+        "D:/FREELANCE/eLrouter/data/db/data.sqlite",
+        "D:/FREELANCE/9router-mibp-version/data/db/data.sqlite",
+    ]
+    for c in candidates:
+        if os.path.exists(c):
+            return c
+    return None
+
+def sync_to_9router(proxies: List[Dict[str, Any]], db_path: Optional[str] = None) -> int:
+    target_db = db_path or find_9router_db()
+    if not target_db or not os.path.exists(target_db):
         return 0
-    conn = sqlite3.connect(db_path)
+    conn = sqlite3.connect(target_db)
     cur = conn.cursor()
     now_iso = datetime.datetime.now(datetime.timezone.utc).isoformat()
     inserted = 0
@@ -282,8 +296,7 @@ async def run_fast_harvester_async(
     print(f"💾 Disimpan ke: {output_file}")
 
     if sync_db and live_proxies:
-        db_path = "d:/FREELANCE/9router-mibp-version/data/db/data.sqlite"
-        inserted = sync_to_9router(live_proxies, db_path)
+        inserted = sync_to_9router(live_proxies)
         if inserted > 0:
             print(f"🔄 Berhasil menyinkronkan {inserted} proxy ke SQLite 9Router!")
 

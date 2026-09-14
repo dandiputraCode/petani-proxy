@@ -170,9 +170,23 @@ def build_singbox_config(profile: Dict[str, Any], local_port: int = 10808) -> Di
         ]
     }
 
-def sync_warp_to_9router(local_port: int = 10808, db_path: str = "d:/FREELANCE/9router-mibp-version/data/db/data.sqlite") -> bool:
+def find_9router_db() -> Optional[str]:
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    candidates = [
+        os.path.normpath(os.path.join(base_dir, "..", "eLrouter", "data", "db", "data.sqlite")),
+        os.path.normpath(os.path.join(base_dir, "..", "9router-mibp-version", "data", "db", "data.sqlite")),
+        "D:/FREELANCE/eLrouter/data/db/data.sqlite",
+        "D:/FREELANCE/9router-mibp-version/data/db/data.sqlite",
+    ]
+    for c in candidates:
+        if os.path.exists(c):
+            return c
+    return None
+
+def sync_warp_to_9router(local_port: int = 10808, db_path: Optional[str] = None) -> bool:
     """Syncs the local Cloudflare WARP endpoint to 9Router SQLite proxyPools."""
-    if not os.path.exists(db_path):
+    target_db = db_path or find_9router_db()
+    if not target_db or not os.path.exists(target_db):
         return False
     
     proxy_url = f"http://127.0.0.1:{local_port}"

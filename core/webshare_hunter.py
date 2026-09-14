@@ -30,8 +30,11 @@ from colorama import Fore, Style
 def find_default_db():
     current_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     candidates = [
+        os.path.join(os.path.dirname(current_dir), "eLrouter", "data", "db", "data.sqlite"),
         os.path.join(os.path.dirname(current_dir), "9router-mibp-version", "data", "db", "data.sqlite"),
+        os.path.join(current_dir, "..", "eLrouter", "data", "db", "data.sqlite"),
         os.path.join(current_dir, "..", "9router-mibp-version", "data", "db", "data.sqlite"),
+        r"d:\FREELANCE\eLrouter\data\db\data.sqlite",
         r"d:\FREELANCE\9router-mibp-version\data\db\data.sqlite"
     ]
     for c in candidates:

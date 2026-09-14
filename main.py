@@ -137,9 +137,11 @@ def find_9router_db() -> Optional[str]:
 
     base_dir = os.path.dirname(os.path.abspath(__file__))
     candidates = [
+        os.path.normpath(os.path.join(base_dir, "..", "eLrouter", "data", "db", "data.sqlite")),
         os.path.normpath(os.path.join(base_dir, "..", "9router-mibp-version", "data", "db", "data.sqlite")),
         os.path.normpath(os.path.join(base_dir, "..", "9router", "data", "db", "data.sqlite")),
         os.path.normpath(os.path.join(base_dir, "..", "bansos-router", "data", "db", "data.sqlite")),
+        "D:/FREELANCE/eLrouter/data/db/data.sqlite",
         "D:/FREELANCE/9router-mibp-version/data/db/data.sqlite",
     ]
     for path in candidates:

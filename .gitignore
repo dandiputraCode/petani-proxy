@@ -46,3 +46,5 @@ local_*.bat
 *.local.bat
 *.local.sh
 local_config.json
+config/settings.json
+

@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """
-PetaniProxy v1.0
-Pusat Amunisi Proxy Bersih, Segar & Berputar Otomatis (Local Rotating Gateway)
+PetaniProxy v1.1.0
+Pusat Amunisi Proxy Bersih, Segar & Berputar Otomatis (Local Rotating Gateway & WARP)
 """
+
 import os
 import sys
 import time
@@ -358,9 +359,12 @@ def test_live_masking(port: int = 8888):
         else:
             print(f"\n  {Fore.RED}⚠️ STATUS: IP Gateway sama dengan IP asli. Periksa kembali konfigurasi proxy.{Style.RESET_ALL}")
     else:
-        print(f"  • Gateway {port}     : {Fore.RED}Tidak aktif atau belum ada proxy hidup di pool.{Style.RESET_ALL}")
-        print(f"  {Fore.YELLOW}💡 Tips: Jalankan salah satu Racikan [1-4] dulu untuk menyalakan Gateway {port}!{Style.RESET_ALL}")
+        print(f"  • Gateway {port}     : {Fore.RED}Belum Aktif (Offline){Style.RESET_ALL}")
+        print(f"\n  {Fore.YELLOW}🚨 Woy, Gateway Petani (127.0.0.1:{port}) belum nyala Bos! 🎭{Style.RESET_ALL}")
+        print(f"  {Fore.LIGHTBLACK_EX}Masa mau ngetes topeng tapi belum dipasang topengnya?")
+        print(f"  {Fore.CYAN}👉 Nyalain dulu Gateway lewat menu {Fore.YELLOW}[G]{Fore.CYAN} atau racikan {Fore.YELLOW}[1-3]{Fore.CYAN}, baru balik lagi ke sini buat tes anti-bocor!{Style.RESET_ALL}")
     print(f"{Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Style.RESET_ALL}\n")
+
 
 def show_manual_menu():
     """Sub-menu [M] Bengkel Oprek Manual untuk power user."""
@@ -544,9 +548,10 @@ def get_features_readiness(lang: str = "ID") -> dict:
         gw_active = False
 
     if gw_active:
-        status["gateway"] = f"{Fore.GREEN}[PORT 8888 AKTIF]{Style.RESET_ALL}" if lang == "ID" else f"{Fore.GREEN}[PORT 8888 ONLINE]{Style.RESET_ALL}"
+        status["gateway"] = f"{Fore.GREEN}[PORT 8888 AKTIF 🟢]{Style.RESET_ALL}" if lang == "ID" else f"{Fore.GREEN}[PORT 8888 ONLINE 🟢]{Style.RESET_ALL}"
     else:
-        status["gateway"] = f"{Fore.RED}[BELUM AKTIF]{Style.RESET_ALL}" if lang == "ID" else f"{Fore.RED}[OFFLINE]{Style.RESET_ALL}"
+        status["gateway"] = f"{Fore.CYAN}[CEK LIVE]{Style.RESET_ALL}" if lang == "ID" else f"{Fore.CYAN}[LIVE TEST]{Style.RESET_ALL}"
+
 
     # 6. Storage count
     base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -640,15 +645,14 @@ def show_interactive_menu():
      {Fore.GREEN}└─ Sedot ribuan kandidat secara asinkron • Auto-sync 9Router
 
   {Fore.MAGENTA}RACIKAN PROXY & GATEWAY LOKAL (PORT 8888)
-  {Fore.GREEN}[G]{Fore.WHITE} 🛡️ 24/7 Gateway + Healer   {ready_label} {Fore.LIGHTBLACK_EX}Mode server produksi non-stop (Auto-Prune & Refill)
-  {Fore.GREEN}[1]{Fore.WHITE} 🐔 Racikan Ternak Akun    {st['sync']} {Fore.LIGHTBLACK_EX}Anti-limit buat Grok/Qoder
-  {Fore.GREEN}[2]{Fore.WHITE} 🕷️ Racikan Scraper Barbar {ready_label} {Fore.LIGHTBLACK_EX}Pool 30+ IP, ganti IP tiap hit
+  {Fore.GREEN}[G]{Fore.WHITE} 🚜 Mode Petani AFK 24/7   {ready_label} {Fore.LIGHTBLACK_EX}Tinggal tidur, auto-prune IP busuk & refill non-stop
+  {Fore.GREEN}[1]{Fore.WHITE} 🐔 Racikan Ternak Akun    {st['sync']} {Fore.LIGHTBLACK_EX}Anti-limit buat Grok/Qoder (Sync 9Router + Port 8888)
+  {Fore.GREEN}[2]{Fore.WHITE} 🕷️ Racikan Scraper Barbar {ready_label} {Fore.LIGHTBLACK_EX}Pool 30+ IP, ganti IP tiap request
   {Fore.GREEN}[3]{Fore.WHITE} ⚡ Racikan Ngacir Anti-Lag {ready_label} {Fore.LIGHTBLACK_EX}Ping <350ms, Node SG/ID/US
-  {Fore.GREEN}[4]{Fore.WHITE} 🚜 Mode Petani AFK 24 Jam {ready_label} {Fore.LIGHTBLACK_EX}Tinggal tidur, muter 15 menit
 
   {Fore.MAGENTA}BUNGKUS HASIL PANEN & TES IDENTITAS
   {Fore.CYAN}[E]{Fore.WHITE} 📥 Bungkus File Mentah    {Fore.GREEN}[SIAP EKSPOR]{Style.RESET_ALL} {Fore.LIGHTBLACK_EX}Sedot TXT, JSON, CSV buat bot lu
-  {Fore.CYAN}[T]{Fore.WHITE} 🧪 Uji Kesaktian Topeng   {st['gateway']} {Fore.LIGHTBLACK_EX}Live Test kebocoran IP asli
+  {Fore.CYAN}[T]{Fore.WHITE} 🧪 Uji Kesaktian Topeng   {st['gateway']} {Fore.LIGHTBLACK_EX}Tes live: Adu IP asli lu vs IP Gateway (Anti-Bocor)
 
   {Fore.MAGENTA}PEMBARUAN & BENGKEL OPREK
 {u_line}  {Fore.YELLOW}[M]{Fore.WHITE} 🛠️ Oprek Suka-Suka        {ready_label} {Fore.LIGHTBLACK_EX}Racik protokol sendiri, pilih negara
@@ -659,7 +663,7 @@ def show_interactive_menu():
 {Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   {Fore.LIGHTBLACK_EX}Maintainer: {Fore.YELLOW}@itzluthfi{Fore.LIGHTBLACK_EX}          Repository: {Fore.WHITE}github.com/itzluthfi
 {Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Style.RESET_ALL}"""
-            prompt_str = f"{Fore.YELLOW}Pilih Opsi [W, C, F, G, 1-4, E, T, U, M, S, L, 0] (Saran: W atau C untuk speed monster): {Style.RESET_ALL}"
+            prompt_str = f"{Fore.YELLOW}Pilih Opsi [W, C, F, G, 1-3, E, T, U, M, S, L, 0] (Saran: W atau C untuk speed monster): {Style.RESET_ALL}"
         else:
             u_line = f"  {Fore.YELLOW}{Style.BRIGHT}[U]{Fore.WHITE}{Style.BRIGHT} 🚀 New Update Available!  {Fore.GREEN}v{cached_update_info.get('remote_version')} [SELECT TO UPDATE]\n" if (cached_update_info and cached_update_info.get("has_update")) else f"  {Fore.GREEN}[U]{Fore.WHITE} 🔄 Check & Update Version {Fore.GREEN}[v{local_ver} LATEST]{Style.RESET_ALL}\n"
             menu_box = f"""{Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -685,15 +689,14 @@ def show_interactive_menu():
      {Fore.GREEN}└─ Concurrent async scraping • Auto-syncs 9Router DB
 
   {Fore.MAGENTA}FREE PUBLIC ROTATING GATEWAY (LOCAL PORT 8888)
-  {Fore.GREEN}[G]{Fore.WHITE} 🛡️ 24/7 Gateway + Healer   {ready_label} {Fore.LIGHTBLACK_EX}Production daemon (Auto-Prunes Dead Nodes & Auto-Refills)
-  {Fore.GREEN}[1]{Fore.WHITE} 🐔 Bot Breeder Rig        {st['sync']} {Fore.LIGHTBLACK_EX}Anti-ban tuned for Grok/Qoder
-  {Fore.GREEN}[2]{Fore.WHITE} 🕷️ Barbaric Web Scraper   {ready_label} {Fore.LIGHTBLACK_EX}30+ pool, fresh IP every hit
+  {Fore.GREEN}[G]{Fore.WHITE} 🚜 24/7 AFK Farmer Daemon {ready_label} {Fore.LIGHTBLACK_EX}Auto-prune dead nodes & refill non-stop
+  {Fore.GREEN}[1]{Fore.WHITE} 🐔 Bot Breeder Rig        {st['sync']} {Fore.LIGHTBLACK_EX}Anti-ban tuned for Grok/Qoder (Sync 9Router + Port 8888)
+  {Fore.GREEN}[2]{Fore.WHITE} 🕷️ Barbaric Web Scraper   {ready_label} {Fore.LIGHTBLACK_EX}30+ pool, fresh IP every request
   {Fore.GREEN}[3]{Fore.WHITE} ⚡ Ludicrous Speed Mode   {ready_label} {Fore.LIGHTBLACK_EX}Ping <350ms, Node SG/ID/US
-  {Fore.GREEN}[4]{Fore.WHITE} 🚜 24/7 AFK Farmer Daemon {ready_label} {Fore.LIGHTBLACK_EX}Put your feet up, every 15m
 
   {Fore.MAGENTA}DUMP RAW AMMO & STEALTH TEST
   {Fore.CYAN}[E]{Fore.WHITE} 📥 Dump Raw Ammo Files    {Fore.GREEN}[READY TO DUMP]{Style.RESET_ALL} {Fore.LIGHTBLACK_EX}Export TXT, JSON, CSV for bots
-  {Fore.CYAN}[T]{Fore.WHITE} 🧪 Stealth Mask Check     {st['gateway']} {Fore.LIGHTBLACK_EX}Live test: Prove your real IP
+  {Fore.CYAN}[T]{Fore.WHITE} 🧪 Stealth Mask Check     {st['gateway']} {Fore.LIGHTBLACK_EX}Live test: Real IP vs Gateway IP (Zero Leak)
  
   {Fore.MAGENTA}UPDATES & WORKSHOP
 {u_line}  {Fore.YELLOW}[M]{Fore.WHITE} 🛠️ Custom Lab Workshop    {ready_label} {Fore.LIGHTBLACK_EX}Tweak protocols, filter ISO countries
@@ -704,7 +707,8 @@ def show_interactive_menu():
 {Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   {Fore.LIGHTBLACK_EX}Maintainer: {Fore.YELLOW}@itzluthfi{Fore.LIGHTBLACK_EX}          Repository: {Fore.WHITE}github.com/itzluthfi
 {Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Style.RESET_ALL}"""
-            prompt_str = f"{Fore.YELLOW}Select Option [W, C, F, G, 1-4, E, T, U, M, S, L, 0] (Pro-tip: Press W or C for godmode): {Style.RESET_ALL}"
+            prompt_str = f"{Fore.YELLOW}Select Option [W, C, F, G, 1-3, E, T, U, M, S, L, 0] (Pro-tip: Press W or C for godmode): {Style.RESET_ALL}"
+
 
         print(menu_box)
         try:
@@ -784,23 +788,6 @@ def show_interactive_menu():
                 timeout=2.0, 
                 serve_port=8888
             )
-        elif choice == "4":
-            print(f"\n{Fore.MAGENTA}{'🚜 Mode Petani 24 Jam Aktif: Refresh berkala setiap 15 menit. Tekan Ctrl+C untuk berhenti.' if CURRENT_LANG == 'ID' else '🚜 24/7 Farmer Daemon Active: Auto-refreshing every 15 mins. Press Ctrl+C to stop.'}{Style.RESET_ALL}")
-            while True:
-                try:
-                    db_target = find_9router_db()
-                    run_harvester(
-                        protocols=["http", "socks5"], 
-                        max_check=300, 
-                        target_alive=20, 
-                        timeout=2.5, 
-                        serve_port=8888,
-                        sync_9router=db_target
-                    )
-                    time.sleep(15 * 60)
-                except KeyboardInterrupt:
-                    print(f"\n{Fore.YELLOW}{'Mode Petani dihentikan.' if CURRENT_LANG == 'ID' else 'Farmer daemon stopped.'}{Style.RESET_ALL}")
-                    break
         elif choice.lower() == "w":
             try:
                 from core.webshare_hunter import run_webshare_hunter
@@ -856,14 +843,14 @@ def show_interactive_menu():
             from core.fast_validator import run_fast_harvester
             db_target = find_9router_db()
             run_fast_harvester(max_latency_ms=1200, target_count=15, sync_db=bool(db_target))
-        elif choice.lower() == "g":
-            print(f"\n{Fore.GREEN}{Style.BRIGHT}{'🛡️ MENJALANKAN 24/7 RESILIENT ROTATING GATEWAY (PORT 8888)...' if CURRENT_LANG == 'ID' else '🛡️ STARTING 24/7 RESILIENT ROTATING GATEWAY (PORT 8888)...'}{Style.RESET_ALL}")
+        elif choice.lower() == "g" or choice == "4":
+            print(f"\n{Fore.GREEN}{Style.BRIGHT}{'🚜 MENJALANKAN MODE PETANI AFK 24/7 (RESILIENT GATEWAY + AUTO-HEALER)...' if CURRENT_LANG == 'ID' else '🚜 STARTING 24/7 AFK FARMER DAEMON (RESILIENT GATEWAY + AUTO-HEALER)...'}{Style.RESET_ALL}")
             from core.server import start_proxy_server
             from core.fast_validator import run_fast_harvester
             db_target = find_9router_db()
             print(f"  {Fore.LIGHTBLACK_EX}• Menyiapkan amunisi awal dari feed cepat...{Style.RESET_ALL}")
             initial = run_fast_harvester(max_latency_ms=1200, target_count=10, sync_db=bool(db_target))
-            print(f"\n{Fore.GREEN}✓ Gateway aktif di http://127.0.0.1:8888 (Health check & auto-refill aktif). Tekan Ctrl+C untuk berhenti.{Style.RESET_ALL}\n")
+            print(f"\n{Fore.GREEN}✓ Gateway aktif di http://127.0.0.1:8888 (Auto-prune & refill aktif non-stop). Tekan Ctrl+C untuk berhenti.{Style.RESET_ALL}\n")
             start_proxy_server(initial, port=8888, background=False, enable_health_check=True, health_check_interval=90, min_healthy_count=5)
         elif choice.lower() in ("s", "saved"):
             view_saved_results()
@@ -872,8 +859,9 @@ def show_interactive_menu():
             print(f"\n{Fore.YELLOW}{goodbye_msg}{Style.RESET_ALL}\n")
             break
         else:
-            invalid_msg = "Pilihan tidak valid. Silakan pilih 1-4, E, T, M, S, L, atau 0." if CURRENT_LANG == "ID" else "Invalid option. Please choose 1-4, E, T, M, S, L, or 0."
+            invalid_msg = "Pilihan tidak valid. Silakan pilih W, C, F, G, 1-3, E, T, U, M, S, L, atau 0." if CURRENT_LANG == "ID" else "Invalid option. Please choose W, C, F, G, 1-3, E, T, U, M, S, L, or 0."
             print(f"{Fore.RED}{invalid_msg}{Style.RESET_ALL}")
+
 
         try:
             pause_msg = "[Tekan Enter untuk kembali ke menu utama...]" if CURRENT_LANG == "ID" else "[Press Enter to return to main menu...]"
@@ -886,7 +874,8 @@ def main():
         show_interactive_menu()
         return
 
-    parser = argparse.ArgumentParser(description="PetaniProxy v1.0 - High-Speed Multi-Protocol Proxy Harvester & Rotating Gateway")
+    parser = argparse.ArgumentParser(description="PetaniProxy v1.1.0 - High-Speed Multi-Protocol Proxy Harvester, Cloudflare WARP & Resilient Gateway")
+
     parser.add_argument("--protocol", "-p", choices=["all", "http", "socks4", "socks5"], default="all", help="Target proxy protocol (default: all)")
     parser.add_argument("--max", "-m", type=int, default=250, help="Maximum candidate proxies to validate (default: 250)")
     parser.add_argument("--target", "-t", type=int, default=15, help="Target number of alive proxies to collect (default: 15)")

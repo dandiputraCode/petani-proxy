@@ -169,7 +169,7 @@ def check_capsolver_balance(api_key: str = None) -> dict:
     key = api_key or os.environ.get("CAPSOLVER_API_KEY", "").strip()
     if not key:
         base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-        for fname in ["config.json", "local_config.json", ".env"]:
+        for fname in [os.path.join("config", "settings.json"), "config.json", "local_config.json", ".env"]:
             fpath = os.path.join(base_dir, fname)
             if os.path.exists(fpath):
                 try:
@@ -193,6 +193,7 @@ def check_capsolver_balance(api_key: str = None) -> dict:
             "balance": 0.0,
             "status": "NOT_CONFIGURED",
             "can_headless": False,
+
             "message": "Key Kosong (Free Audio Solver Aktif)"
         }
 
@@ -410,9 +411,50 @@ def try_solve_audio(page):
         print(f'[Debug Audio] {e}')
     return False
 
+def get_webshare_email_domain() -> str:
+    """
+    Mengambil domain email untuk registrasi Webshare.
+    Prioritas:
+    1. config/settings.json -> custom_email_domain
+    2. Environment variable WEBSHARE_EMAIL_DOMAIN / WEBSHARE_DOMAIN
+    3. config.json / local_config.json
+    4. Fallback default pool terverifikasi (Zero-Config untuk pemula)
+    """
+    # 1. Environment variable
+    env_dom = os.environ.get("WEBSHARE_EMAIL_DOMAIN") or os.environ.get("WEBSHARE_DOMAIN")
+    if env_dom and env_dom.strip():
+        return env_dom.strip().lstrip("@")
+
+    # 2. Config files
+    base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    config_paths = [
+        os.path.join(base_dir, "config", "settings.json"),
+        os.path.join(base_dir, "config.json"),
+        os.path.join(base_dir, "local_config.json")
+    ]
+    for cpath in config_paths:
+        if os.path.exists(cpath):
+            try:
+                with open(cpath, "r", encoding="utf-8") as f:
+                    c = json.load(f)
+                    dom = c.get("custom_email_domain") or c.get("webshare_email_domain") or c.get("email_domain")
+                    if dom and dom.strip():
+                        return dom.strip().lstrip("@")
+            except Exception:
+                pass
+
+    # 3. Fallback default pool (Domain bersih yang diterima Webshare)
+    fallback_pool = [
+        "niceground.shop",
+        "petaniproxy.net",
+        "proxypool.space"
+    ]
+    return random.choice(fallback_pool)
+
 def hunt_single_auto(index, total, headless=False):
     random_str = ''.join(random.choices(string.ascii_lowercase + string.digits, k=10))
-    email = f'ws{random_str}@niceground.shop'
+    domain = get_webshare_email_domain()
+    email = f'ws{random_str}@{domain}'
     special = random.choice('!@#$%')
     rand_mid = ''.join(random.choices(string.ascii_letters + string.digits, k=6))
     password = f'Passw0rd{special}{rand_mid}@#'
@@ -422,6 +464,7 @@ def hunt_single_auto(index, total, headless=False):
     print('='*60)
     print(f'[*] Email yang disiapkan   : {email}')
     print(f'[*] Password yang disiapkan: {password}')
+
 
     co = ChromiumOptions()
     co.auto_port()

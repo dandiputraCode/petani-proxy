@@ -31,25 +31,28 @@ Fungsi mendasar tool ini adalah menyediakan pasokan **IP proxy gratis tanpa bata
 
 ---
 
-## 1. Cara Menjalankan Menu Interaktif
+## 2. Cara Menjalankan Menu Interaktif
 
 Buka terminal di folder proyek:
 ```powershell
-cd D:\FREELANCE\omni-proxy-harvester
+cd D:\FREELANCE\petani-proxy
 python main.py
 ```
-Akan muncul menu bergaya kotak dengan watermark **`@itzluthfi`**. Anda cukup mengetik angka opsi yang diinginkan:
-- `[1]` : Panen Cepat (Bebas input jumlah target, default: 15)
-- `[2]` : Panen khusus SOCKS5
-- `[3]` : Panen khusus HTTP / HTTPS
-- `[4]` : Filter berdasarkan Kode Negara (ID, SG, US, JP, dll)
-- `[5]` : Panen khusus Proxy Elite (100% tanpa bocor IP)
-- `[6]` : Uji tembus ke target website tertentu
-- `[7]` : Jalankan Local Rotating Proxy Server & REST API
-- `[8]` : Auto-Refresh Daemon (Jalan otomatis tiap N menit)
-- `[9]` : Sinkronisasi otomatis ke Database 9Router
-- `[S]` : Lihat hasil panen terakhir
-- `[0]` : Keluar
+Akan muncul menu TUI bergaya kotak dengan watermark **`@itzluthfi`**. Anda cukup mengetik opsi yang diinginkan:
+- `[W]` : 🏢 **Webshare Hunter Gacor (MVP)**: Panen 10-30 IP residential privat tembus Cloudflare Turnstile
+- `[C]` : 🚀 **Cloudflare WARP Local**: Bikin profil WireGuard resmi via REST API (Zero Captcha, Unlimited)
+- `[F]` : ⚡ **aiohttp Fast Harvester**: Saring ratusan proxy super cepat (<350ms dalam 1 detik)
+- `[G]` : 🚜 **Mode Petani AFK 24/7 [AUTO-HEALER]**: Daemon produksi non-stop di port 8888 (Auto-prune & refill)
+- `[1]` : 🐔 **Racikan Ternak Akun**: Filter ketat Elite L1 buat Grok/Qoder, auto-sync 9Router
+- `[2]` : 🕷️ **Racikan Scraper Barbar**: Pool 30+ IP, ganti IP tiap request, anti-block e-commerce
+- `[3]` : ⚡ **Racikan Ngacir Anti-Lag**: Ping <350ms dari node SG, ID, dan US
+- `[E]` : 📥 **Bungkus File Mentah**: Ekspor format TXT, JSON, CSV buat software bot lain
+- `[T]` : 🧪 **Uji Kesaktian Topeng [CEK LIVE]**: Tes live adu IP asli Anda vs IP Gateway (Zero Leak)
+- `[U]` : 🔄 **Cek & Update Versi**: 1-Klik auto-update langsung dari repository GitHub resmi
+- `[M]` : 🛠️ **Oprek Suka-Suka (Bengkel Manual)**: Racik protokol sendiri dan filter ISO negara
+- `[S]` : 📂 **Gudang Amunisi**: Cek stok proxy aktif yang tersimpan di disk
+- `[0]` : 💀 **Keluar**: Menutup aplikasi
+
 
 ---
 
@@ -244,14 +247,20 @@ print(f"Ada {len(proxy_list)} proxy siap pakai!")
 | Perintah | Fungsi |
 | :--- | :--- |
 | `python main.py` | Membuka TUI Menu Interaktif bergaya kotak |
+| `python main.py --warp` | Generate profil Cloudflare WARP WireGuard & Sing-box |
+| `python main.py --fast-harvest 15` | Saring 15 proxy ultra-cepat via aiohttp (<350ms) |
+| `python main.py --daemon-gateway` | Jalankan 24/7 Resilient Gateway & Auto-Healer di port 8888 |
+| `python main.py --webshare 1` | Panen akun Webshare (10 IP Residential Privat) |
 | `python main.py --target 50` | Panen 50 proxy hidup tercepat |
 | `python main.py --protocol socks5 --target 20` | Panen 20 proxy khusus SOCKS5 |
 | `python main.py --country ID --target 10` | Panen 10 proxy khusus lokasi Indonesia |
 | `python main.py --anonymity elite --target 15` | Panen 15 proxy tingkat Elite (Anti Bocor) |
 | `python main.py --target-url https://google.com` | Validasi proxy langsung ke target web |
 | `python main.py --serve 8888 --target 20` | Jalankan Rotating Forward Proxy & REST API di port 8888 |
-| `python main.py --loop 15 --target 30` | Auto-refresh panen otomatis tiap 15 menit |
 | `python main.py --sync-9router auto` | Sinkronisasi proxy otomatis ke 9Router SQLite |
+| `python main.py --check-update` | Cek info rilis, versi terbaru & patch notes |
+| `python main.py --update` | 1-Klik auto-update repository ke versi terbaru |
 
 ---
 *Created & maintained by **@itzluthfi** (https://github.com/itzluthfi)*
+

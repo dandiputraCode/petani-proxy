@@ -1,0 +1,8 @@
+{
+  "custom_email_domain": "",
+  "capsolver_api_key": "",
+  "_panduan": {
+    "custom_email_domain": "Opsional: Masukkan domain pribadi Anda (misal: domainku.com) jika menggunakan Cloudflare Email Routing Catch-all. Kosongkan jika ingin pakai default otomatis.",
+    "capsolver_api_key": "Opsional: Masukkan API key CapSolver jika ingin Webshare Hunter berjalan 100% di background (headless tanpa muncul jendela). Kosongkan untuk pakai AI Audio Captcha Solver gratisan bawaan."
+  }
+}

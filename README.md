@@ -49,6 +49,28 @@ Pernah ga lu lagi asyik scraping web atau jalanin bot akun, baru beberapa menit 
 
 ---
 
+## 🔄 Alur Kerja Sistem (System Workflow)
+
+Gimana cara PetaniProxy bekerja di balik layar dari hulu ke hilir? Ini gambaran arsitektur dan alurnya:
+
+```text
+  [ JALUR 1: 30+ Public Sources ]  ──> [ aiohttp Fast Validator ] ──┐
+  [ JALUR 2: Webshare Residential]  ──> [ AI Audio Captcha Solver ] ──┼──> [ Local Rotating Gateway ] ──> [ Bot Scraper / AI Farm ]
+  [ JALUR 3: Cloudflare WARP Edge] ──> [ Official REST API (UDP) ] ──┘     (http://127.0.0.1:8888)        (9Router DB / Browser)
+                                                                                  │
+                                                                           [ Auto-Healer 24/7 ]
+                                                                           (Prune mati & Refill)
+```
+
+**Alur kerjanya simpel & otomatis:**
+1. **Pemanenan (Harvesting)** ➔ PetaniProxy mengambil proxy dari 3 jalur: ribuan IP publik dari 30+ sumber global, IP Residential Webshare via Speech Recognition gratis, dan tunnel Cloudflare WARP via REST API resmi.
+2. **Penyaringan Kencang (Filtering Engine)** ➔ Calon IP divalidasi asinkron lewat `aiohttp` dalam hitungan detik. Yang lelet (>350ms) atau bocor penyamarannya langsung dibuang.
+3. **Pintu Gerbang Lokal (Local Rotating Gateway)** ➔ Semua proxy hidup dikumpulkan di satu pintu `http://127.0.0.1:8888`. Bot atau browser lu cukup nembak ke 1 alamat ini, IP bakal muter otomatis tiap request + auto-retry 3x kalau ada yang tumbang.
+4. **Auto-Healer 24/7 (Mode AFK)** ➔ Daemon memantau kesehatan pool. Proxy yang mati di tengah jalan otomatis dipangkas dan disuntik amunisi segar baru tanpa perlu restart server.
+5. **Ekosistem & Integrasi** ➔ Amunisi langsung tersinkronisasi otomatis ke SQLite database 9Router (`data.sqlite`) atau siap diekspor ke format TXT/JSON/CSV.
+
+---
+
 ## ⭐ [MVP] Amunisi Sultan: Residential vs Cloudflare WARP
 
 Biar lu ga bingung kapan harus pake **`[C]` WARP** dan kapan pake **`[W]` Webshare**, ini contekan simpelnya:

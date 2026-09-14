@@ -418,19 +418,23 @@ def show_interactive_menu():
         if CURRENT_LANG == "ID":
             menu_box = f"""{Fore.CYAN}┌────────────────────────────────────────────────────────────────────────┐
 │                   {Fore.WHITE}{Style.BRIGHT}🌾 PETANIPROXY v2.0 (PUSAT AMUNISI PROXY){Fore.CYAN}                   │
-│          {Fore.LIGHTBLACK_EX}Pilih Racikan Kebutuhanmu — Sekali Klik, Langsung Gas!{Fore.CYAN}        │
+│          {Fore.LIGHTBLACK_EX}Pusat Amunisi Proxy Bersih, Segar & Berputar Otomatis{Fore.CYAN}         │
 ├────────────────────────────────────────────────────────────────────────┤
-│  {Fore.MAGENTA}RACIKAN SPESIAL (TINGGAL PILIH & GAS):{Fore.CYAN}                                │
-│  {Fore.GREEN}[1]{Fore.WHITE} 🐔 Racikan Ternak Akun    {Fore.LIGHTBLACK_EX}Khusus Grok/Qoder, Elite L1, Auto-BansosRouter{Fore.CYAN} │
-│  {Fore.GREEN}[2]{Fore.WHITE} 🕷️ Racikan Scraper Brutal {Fore.LIGHTBLACK_EX}Pool 30+ IP, Ganti IP Tiap Request, Anti-Block{Fore.CYAN} │
-│  {Fore.GREEN}[3]{Fore.WHITE} ⚡ Racikan Turbo Surfing  {Fore.LIGHTBLACK_EX}Ping <350ms, Node SG/ID/US, Bypass Internet+  {Fore.CYAN} │
-│  {Fore.GREEN}[4]{Fore.WHITE} 🚜 Mode Petani 24 Jam     {Fore.LIGHTBLACK_EX}Auto-Pilot looping panen tiap 15m, Port 8888  {Fore.CYAN} │
-│  {Fore.GREEN}[W]{Fore.WHITE} 🏢 Webshare Hunter        {Fore.LIGHTBLACK_EX}Panen 10-30 Proxy Residensial Lolos Cloudflare {Fore.CYAN} │
-│                                                                        │
-│  {Fore.MAGENTA}EKSPOR & PEMBUKTIAN LANGSUNG:{Fore.CYAN}                                           │
-│  {Fore.CYAN}[E]{Fore.WHITE} 📥 Ekspor File Mentah     {Fore.LIGHTBLACK_EX}Panen & simpan format TXT, JSON, CSV & SOCKS5 {Fore.CYAN} │
-│  {Fore.CYAN}[T]{Fore.WHITE} 🧪 Uji Tembus Identitas   {Fore.LIGHTBLACK_EX}Live Proof: Cek apakah IP asli tertutup aman  {Fore.CYAN} │
-│                                                                        │
+│  {Fore.YELLOW}{Style.BRIGHT}⭐ [MVP] FITUR UNGGULAN RESIDENTIAL (GARANSI TEMBUS CLOUDFLARE):{Fore.CYAN}        │
+│  {Fore.YELLOW}{Style.BRIGHT}[W]{Fore.WHITE}{Style.BRIGHT} 🏢 Webshare Residential Hunter {Fore.YELLOW}(REKOMENDASI UTAMA! ⭐⭐⭐){Fore.CYAN}    │
+│     {Fore.GREEN}└─ Auto-Solve Audio Captcha • IP Perumahan Asli • 10-30 Proxy/Akun {Fore.CYAN} │
+│     {Fore.LIGHTBLACK_EX}└─ Lolos Cloudflare Turnstile, Grok, Qoder & Bot AI Ketat          {Fore.CYAN} │
+├────────────────────────────────────────────────────────────────────────┤
+│  {Fore.MAGENTA}RACIKAN FORWARD GATEWAY (PROXY PUBLIK DI PORT 8888):{Fore.CYAN}                  │
+│  {Fore.GREEN}[1]{Fore.WHITE} 🐔 Racikan Ternak Akun    {Fore.LIGHTBLACK_EX}Khusus Grok/Qoder, Elite L1, Auto-9Router  {Fore.CYAN}│
+│  {Fore.GREEN}[2]{Fore.WHITE} 🕷️ Racikan Scraper Brutal {Fore.LIGHTBLACK_EX}Pool 30+ IP, Ganti IP Tiap Request, Anti-Block{Fore.CYAN}│
+│  {Fore.GREEN}[3]{Fore.WHITE} ⚡ Racikan Turbo Surfing  {Fore.LIGHTBLACK_EX}Ping <350ms, Node SG/ID/US, Bypass Internet+  {Fore.CYAN}│
+│  {Fore.GREEN}[4]{Fore.WHITE} 🚜 Mode Petani 24 Jam     {Fore.LIGHTBLACK_EX}Auto-Pilot looping panen tiap 15m di port 8888{Fore.CYAN}│
+├────────────────────────────────────────────────────────────────────────┤
+│  {Fore.MAGENTA}EKSPOR & PEMBUKTIAN PENYAMARAN:{Fore.CYAN}                                         │
+│  {Fore.CYAN}[E]{Fore.WHITE} 📥 Ekspor File Mentah     {Fore.LIGHTBLACK_EX}Panen & simpan format TXT, JSON, CSV & SOCKS5 {Fore.CYAN}│
+│  {Fore.CYAN}[T]{Fore.WHITE} 🧪 Uji Tembus Identitas   {Fore.LIGHTBLACK_EX}Live Proof: Cek apakah IP asli tertutup aman  {Fore.CYAN}│
+├────────────────────────────────────────────────────────────────────────┤
 │  {Fore.MAGENTA}BENGKEL OPREK & PENGATURAN:{Fore.CYAN}                                             │
 │  {Fore.YELLOW}[M]{Fore.WHITE} 🛠️ Bengkel Oprek Manual   {Fore.LIGHTBLACK_EX}Atur sendiri protokol, ISO negara, & target URL{Fore.CYAN}│
 │  {Fore.YELLOW}[S]{Fore.WHITE} 📂 Gudang Hasil Panen     {Fore.LIGHTBLACK_EX}Buka riwayat proxy aktif yang tersimpan di disk{Fore.CYAN}│
@@ -439,23 +443,27 @@ def show_interactive_menu():
 ├────────────────────────────────────────────────────────────────────────┤
 │  {Fore.LIGHTBLACK_EX}Maintainer: {Fore.YELLOW}@itzluthfi{Fore.LIGHTBLACK_EX}          Repository: {Fore.WHITE}github.com/itzluthfi{Fore.CYAN}       │
 └────────────────────────────────────────────────────────────────────────┘{Style.RESET_ALL}"""
-            prompt_str = f"{Fore.YELLOW}Pilih Racikan [1-4, W, E, T, M, S, L, 0] (Default: 1): {Style.RESET_ALL}"
+            prompt_str = f"{Fore.YELLOW}Pilih Opsi [W (MVP), 1-4, E, T, M, S, L, 0] (Rekomendasi: W): {Style.RESET_ALL}"
         else:
             menu_box = f"""{Fore.CYAN}┌────────────────────────────────────────────────────────────────────────┐
 │                  {Fore.WHITE}{Style.BRIGHT}🌾 PETANIPROXY v2.0 (ROTATING PROXY ARSENAL){Fore.CYAN}                 │
-│             {Fore.LIGHTBLACK_EX}Pick Your Battle Setup — One Click to Dominate!{Fore.CYAN}            │
+│             {Fore.LIGHTBLACK_EX}Clean, Fresh & Auto-Rotating Residential Proxy Weapon{Fore.CYAN}           │
 ├────────────────────────────────────────────────────────────────────────┤
-│  {Fore.MAGENTA}PLUG & PLAY BATTLE PRESETS:{Fore.CYAN}                                              │
-│  {Fore.GREEN}[1]{Fore.WHITE} 🐔 Account Farming Mode   {Fore.LIGHTBLACK_EX}Tuned for Grok/AI bots, Elite L1, BansosRouter{Fore.CYAN}│
+│  {Fore.YELLOW}{Style.BRIGHT}⭐ [MVP] FLAGSHIP RESIDENTIAL FEATURE (CLOUDFLARE BYPASS):{Fore.CYAN}               │
+│  {Fore.YELLOW}{Style.BRIGHT}[W]{Fore.WHITE}{Style.BRIGHT} 🏢 Webshare Residential Hunter {Fore.YELLOW}(TOP PICK! ⭐⭐⭐){Fore.CYAN}            │
+│     {Fore.GREEN}└─ Auto-Solve Audio Captcha • Genuine Residential IPs • 10-30 Nodes{Fore.CYAN} │
+│     {Fore.LIGHTBLACK_EX}└─ Bypass Cloudflare Turnstile, Grok, Qoder & Strict AI Bots    {Fore.CYAN} │
+├────────────────────────────────────────────────────────────────────────┤
+│  {Fore.MAGENTA}ROTATING GATEWAY PRESETS (PUBLIC POOL ON PORT 8888):{Fore.CYAN}                    │
+│  {Fore.GREEN}[1]{Fore.WHITE} 🐔 Account Farming Mode   {Fore.LIGHTBLACK_EX}Tuned for Grok/AI bots, Elite L1, 9Router sync{Fore.CYAN}│
 │  {Fore.GREEN}[2]{Fore.WHITE} 🕷️ Mass Web Scraper       {Fore.LIGHTBLACK_EX}30+ Pool, Auto-Rotate per Request, Anti-Block {Fore.CYAN}│
 │  {Fore.GREEN}[3]{Fore.WHITE} ⚡ Lightning Turbo Surf   {Fore.LIGHTBLACK_EX}Ping <350ms, SG/ID/US, Bypass Geo-Restrictions {Fore.CYAN}│
 │  {Fore.GREEN}[4]{Fore.WHITE} 🚜 24/7 Farmer Daemon     {Fore.LIGHTBLACK_EX}Auto-Pilot loop every 15m, Port 8888 always on{Fore.CYAN} │
-│  {Fore.GREEN}[W]{Fore.WHITE} 🏢 Webshare Hunter        {Fore.LIGHTBLACK_EX}Harvest 10-30 Cloudflare-Bypass Residential IPs{Fore.CYAN} │
-│                                                                        │
-│  {Fore.MAGENTA}EXPORTS & LIVE VERIFICATION:{Fore.CYAN}                                             │
+├────────────────────────────────────────────────────────────────────────┤
+│  {Fore.MAGENTA}EXPORTS & IDENTITY VERIFICATION:{Fore.CYAN}                                        │
 │  {Fore.CYAN}[E]{Fore.WHITE} 📥 Raw File Exporter      {Fore.LIGHTBLACK_EX}Export TXT, JSON, CSV & URLs for external tools{Fore.CYAN}│
 │  {Fore.CYAN}[T]{Fore.WHITE} 🧪 Live Identity Test     {Fore.LIGHTBLACK_EX}Instant Proof: Verify real IP masking on 8888 {Fore.CYAN}│
-│                                                                        │
+├────────────────────────────────────────────────────────────────────────┤
 │  {Fore.MAGENTA}MANUAL TUNING & SETTINGS:{Fore.CYAN}                                               │
 │  {Fore.YELLOW}[M]{Fore.WHITE} 🛠️ Manual Tuning Workshop {Fore.LIGHTBLACK_EX}Custom protocols, ISO filters & target domain {Fore.CYAN}│
 │  {Fore.YELLOW}[S]{Fore.WHITE} 📂 Saved Proxy Vault      {Fore.LIGHTBLACK_EX}Inspect latest active proxies saved on disk   {Fore.CYAN}│
@@ -464,7 +472,7 @@ def show_interactive_menu():
 ├────────────────────────────────────────────────────────────────────────┤
 │  {Fore.LIGHTBLACK_EX}Maintainer: {Fore.YELLOW}@itzluthfi{Fore.LIGHTBLACK_EX}          Repository: {Fore.WHITE}github.com/itzluthfi{Fore.CYAN}       │
 └────────────────────────────────────────────────────────────────────────┘{Style.RESET_ALL}"""
-            prompt_str = f"{Fore.YELLOW}Select Option [1-4, W, E, T, M, S, L, 0] (Default: 1): {Style.RESET_ALL}"
+            prompt_str = f"{Fore.YELLOW}Select Option [W (MVP), 1-4, E, T, M, S, L, 0] (Recommended: W): {Style.RESET_ALL}"
 
         print(menu_box)
         try:
@@ -541,8 +549,16 @@ def show_interactive_menu():
                     print(f"\n{Fore.YELLOW}{'Mode Petani dihentikan.' if CURRENT_LANG == 'ID' else 'Farmer daemon stopped.'}{Style.RESET_ALL}")
                     break
         elif choice.lower() == "w":
-            from core.webshare_hunter import run_webshare_hunter
-            print(f"\n{Fore.GREEN}{'🏢 Membuka Webshare Residential Hunter...' if CURRENT_LANG == 'ID' else '🏢 Launching Webshare Residential Hunter...'}{Style.RESET_ALL}")
+            try:
+                from core.webshare_hunter import run_webshare_hunter
+            except ImportError as e:
+                print(f"\n{Fore.RED}⚠️ Paket dependencies untuk Webshare Hunter belum lengkap: {e}{Style.RESET_ALL}")
+                print(f"{Fore.YELLOW}Silakan pasang dengan menjalankan perintah:{Style.RESET_ALL}")
+                print(f"{Fore.WHITE}pip install DrissionPage SpeechRecognition pydub{Style.RESET_ALL}")
+                continue
+
+            print(f"\n{Fore.YELLOW}{Style.BRIGHT}{'⭐ MEMBUKA WEBSHARE RESIDENTIAL HUNTER (FITUR MVP)...' if CURRENT_LANG == 'ID' else '⭐ LAUNCHING WEBSHARE RESIDENTIAL HUNTER (MVP FEATURE)...'}{Style.RESET_ALL}")
+            print(f"{Fore.LIGHTBLACK_EX}{'💡 Info: 1 Akun Webshare menghasilkan 10 IP Residential asli dengan username:password pribadi.' if CURRENT_LANG == 'ID' else '💡 Info: 1 Webshare account generates 10 genuine Residential IPs with private credentials.'}{Style.RESET_ALL}")
             acc_prompt = f"{Fore.CYAN}{'Berapa akun Webshare yang ingin dipanen? [Default: 1]: ' if CURRENT_LANG == 'ID' else 'How many Webshare accounts to hunt? [Default: 1]: '}{Style.RESET_ALL}"
             a_input = input(acc_prompt).strip()
             total_acc = int(a_input) if a_input.isdigit() and int(a_input) > 0 else 1

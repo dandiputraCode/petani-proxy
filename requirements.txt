@@ -1,7 +1,12 @@
-# Core dependencies for OmniProxy Harvester
+# Core dependencies for PetaniProxy Harvester & Gateway
 httpx>=0.27.0
 requests>=2.31.0
 colorama>=0.4.6
 
-# Optional high-performance libcurl C-bindings for SOCKS4/SOCKS5 & TLS fingerprint evasion
+# High-performance libcurl C-bindings for SOCKS4/SOCKS5 & TLS fingerprint evasion
 curl_cffi>=0.7.0
+
+# MVP Feature: Webshare Residential Hunter (Auto-Captcha & Browser Automation)
+DrissionPage>=4.0.0
+SpeechRecognition>=3.10.0
+pydub>=0.25.1

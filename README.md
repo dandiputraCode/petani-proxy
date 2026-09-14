@@ -44,14 +44,27 @@ Created and maintained with ❤️ by [@itzluthfi](https://github.com/itzluthfi)
 
 ---
 
+## ⭐ [MVP] Fitur Bintang: Webshare Residential Hunter 🏢
+> **Bosan dengan proxy publik gratisan yang cepat mati dan sering diblokir Cloudflare?**  
+> **Webshare Hunter** adalah senjata pamungkas PetaniProxy untuk memanen **IP Perumahan Asli (Genuine Residential Proxies)** secara 100% otomatis dan gratis!
+
+### 🎯 Mengapa Ini Menjadi Fitur MVP (Unggulan Utama)?
+* 🧠 **AI Audio Captcha Solver Bawaan**: Memecahkan Cloudflare / hCaptcha otomatis menggunakan audio voice recognition (SpeechRecognition) tanpa perlu langganan API Captcha berbayar!
+* 🖱️ **Human Mouse Movement (Kurva Bezier)**: Mengemulasikan gerakan mouse melengkung alami manusia saat pengisian form agar lolos sensor bot.
+* 🏠 **IP Residential Rumah (Bukan Datacenter)**: Dikenali sebagai ISP rumahan biasa, sehingga **garansi lolos proteksi ketat** di Grok AI, Qoder, Twitter/X, Shopee, dan Cloudflare Protected Sites.
+* 🔑 **Kredensial Privat**: Lengkap dengan `username:password` pribadi per IP, aman dan stabil tanpa rebutan bandwidth dengan orang lain.
+* 🔄 **Auto-Sync 9Router / BansosRouter**: Hasil panen otomatis disuntikkan ke database SQLite 9Router lokal tanpa perlu input manual.
+
+---
+
 ## 🎯 3 Pilar Arsitektur & Racikan Spesial
 
 ### [Pilar 1] 🚀 Instant Rotating Gateway (`127.0.0.1:8888`)
-* `[1]` 🐔 **Racikan Ternak Akun**: Khusus bot registrasi AI (Grok, Qoder, Sosmed). Filter ketat Elite L1, latency rendah (<2.5s), dan otomatis menyuntikkan IP ke database BansosRouter.
+* `[W]` ⭐ **Webshare Residential Hunter (MVP)**: Panen otomatis 10-30 IP perumahan (Residential IP) gratis dengan AI Audio Captcha Solver untuk menembus Cloudflare Turnstile & registrasi high-security.
+* `[1]` 🐔 **Racikan Ternak Akun**: Khusus bot registrasi AI (Grok, Qoder, Sosmed). Filter ketat Elite L1, latency rendah (<2.5s), dan otomatis menyuntikkan IP ke database 9Router.
 * `[2]` 🕷️ **Racikan Scraper Brutal**: Pool 30+ IP aktif, rotasi IP tiap request, cocok untuk scraping marketplace & anti-block.
 * `[3]` ⚡ **Racikan Turbo Surfing**: Filter khusus node SG/ID/US dengan ping terendah (<350ms) untuk bypass blokir & streaming.
 * `[4]` 🚜 **Mode Petani 24 Jam**: Berjalan di latar belakang, otomatis memanen dan menyegarkan pool setiap 15 menit.
-* `[W]` 🏢 **Webshare Residential Hunter**: Panen otomatis 10-30 IP perumahan (Residential IP) gratis dengan AI Audio Captcha Solver untuk menembus Cloudflare Turnstile & registrasi high-security.
 
 ### [Pilar 2] 📥 Ekspor File Mentah
 Ekspor instan ke berbagai format untuk software pihak ketiga:

@@ -581,21 +581,30 @@ def hunt_single_auto(index, total, headless=False):
         last_attempt_time = 0
 
         while time.time() - start_time < 180:
-            url = page.url or ''
+            try:
+                url = page.url or ''
+            except Exception:
+                time.sleep(1)
+                continue
+
             if 'register' not in url and 'dashboard.webshare.io' in url:
                 logged_in = True
                 print('\n[+] Konfirmasi: Berhasil masuk ke dalam Dashboard!')
                 break
 
-            has_error = page.run_js('''
-                const alert = Array.from(document.querySelectorAll('div, p, span')).find(el => el.innerText && el.innerText.includes('Too many attempts'));
-                return !!alert;
-            ''')
+            try:
+                has_error = page.run_js('''
+                    const alert = Array.from(document.querySelectorAll('div, p, span')).find(el => el.innerText && el.innerText.includes('Too many attempts'));
+                    return !!alert;
+                ''')
+            except Exception:
+                has_error = False
+
             if has_error:
                 print('[!] Webshare mendeteksi "Too many attempts". Cooldown 30 detik...')
                 time.sleep(30)
                 try:
-                    retry_signup = page.ele('text:Sign Up With Email')
+                    retry_signup = page.ele('@data-testid=signup-button', timeout=3) or page.ele('text:Sign Up With Email')
                     if retry_signup:
                         human_click_element(page, retry_signup)
                 except:
@@ -607,9 +616,15 @@ def hunt_single_auto(index, total, headless=False):
                 capsolver_key = os.environ.get("CAPSOLVER_API_KEY", "").strip()
                 solved = False
                 if capsolver_key:
-                    solved = try_solve_capsolver(page, capsolver_key)
+                    try:
+                        solved = try_solve_capsolver(page, capsolver_key)
+                    except Exception:
+                        solved = False
                 if not solved:
-                    try_solve_audio(page)
+                    try:
+                        try_solve_audio(page)
+                    except Exception:
+                        pass
 
             time.sleep(3)
 

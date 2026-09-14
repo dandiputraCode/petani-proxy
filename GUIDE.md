@@ -47,7 +47,8 @@ Akan muncul menu TUI bergaya kotak dengan watermark **`@itzluthfi`**. Anda cukup
 - `[2]` : 🕷️ **Racikan Scraper Barbar**: Pool 30+ IP, ganti IP tiap request, anti-block e-commerce
 - `[3]` : ⚡ **Racikan Ngacir Anti-Lag**: Ping <350ms dari node SG, ID, dan US
 - `[E]` : 📥 **Bungkus File Mentah**: Ekspor format TXT, JSON, CSV buat software bot lain
-- `[T]` : 🧪 **Uji Kesaktian Topeng [CEK LIVE]**: Tes live adu IP asli Anda vs IP Gateway (Zero Leak)
+- `[T]` : 🧪 **Uji Kesaktian Topeng [CEK LIVE]**: Tes live adu IP asli vs IP Gateway (Zero Leak)
+- `[K]` : ⚙️ **Quick Settings (Paste & Go)**: Setup CapSolver key, custom domain Webshare & DB 9Router
 - `[U]` : 🔄 **Cek & Update Versi**: 1-Klik auto-update langsung dari repository GitHub resmi
 - `[M]` : 🛠️ **Oprek Suka-Suka (Bengkel Manual)**: Racik protokol sendiri dan filter ISO negara
 - `[S]` : 📂 **Gudang Amunisi**: Cek stok proxy aktif yang tersimpan di disk
@@ -94,7 +95,7 @@ Fitur ini membuat komputer Anda menjadi **Proxy Gateway Lokal & Server API**. An
 ```powershell
 python main.py --serve 8888 --target 20
 ```
-*Atau lewat menu interaktif `python main.py` lalu pilih opsi `[7]`.*
+*Atau lewat menu interaktif `python main.py` lalu pilih opsi `[G]`.*
 
 Saat dijalankan, terminal akan memanen 20 proxy hidup terlebih dahulu, lalu otomatis menampilkan pesan:
 ```text
@@ -112,7 +113,7 @@ Jika Anda membuka link tersebut di browser (Chrome / Edge / Firefox), akan muncu
 ```json
 {
   "service": "PetaniProxy Gateway & REST API",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "maintainer": "@itzluthfi (github.com/itzluthfi)",
   "stats": {
     "uptime_seconds": 24.5,

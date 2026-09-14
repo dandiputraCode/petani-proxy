@@ -49,24 +49,34 @@ Pernah ga lu lagi asyik scraping web atau jalanin bot akun, baru beberapa menit 
 
 ---
 
-## ⭐ [MVP] Amunisi Sultan: Residential & Cloudflare WARP
+## ⭐ [MVP] Amunisi Sultan: Residential vs Cloudflare WARP
 
-### 1. 🏢 Webshare Residential Hunter `[W]`
-Kalau target scraping lu diproteksi Cloudflare Turnstile atau bot detector ketat, proxy publik biasa pasti langsung mental. Fitur ini dibuat buat dapetin **IP Residential (Perumahan)** dari Webshare secara otomatis:
+Biar lu ga bingung kapan harus pake **`[C]` WARP** dan kapan pake **`[W]` Webshare**, ini contekan simpelnya:
+
+| Kebutuhan Lu | Pilih Menu | Keunggulan Utama |
+| :--- | :---: | :--- |
+| **Bypass Internet Positif / Wi-Fi Kantor & Kampus diblokir** | **`[C]` WARP** | 🚀 **Speed Monster**, ping <50ms, unlimited bandwidth, 100% tembus sensor ISP via UDP tunnel. |
+| **Internetan Harian, Streaming 4K & Gaming** | **`[C]` WARP** | Jalur pipa langsung ke backbone global Cloudflare (anti-ngelag). |
+| **Scraping Web Ketat, Bikin Akun & Anti-Bot AI** | **`[W]` Webshare** | 🏢 **IP Residential Asli** (AT&T, Comcast), lolos deteksi anti-VPN & Cloudflare Turnstile. |
+| **Rotasi Ribuan IP Massal Buat Fuzzing/Brute** | **`[G]` Gateway** | 🚜 Ribuan proxy publik global yang otomatis muter tiap request. |
+
+<br>
+
+### 1. 🚀 Cloudflare WARP Generator `[C]` — *Sang Raja Kecepatan & Anti-Sensor*
+- **100% Anti-Blokir ISP (Indihome, Telkomsel, FirstMedia, Wi-Fi Kampus/Kantor)**: Menggunakan protokol **WireGuard (UDP terenkripsi)** langsung ke edge network Anycast Cloudflare. ISP lokal buta total terhadap website apa yang lu buka (Reddit, Grok, OpenAI, dsb)—bebas blokir tanpa drama!
+- **Zero Captcha saat Registrasi**: Pendaftaran profil dilakukan via REST API resmi Cloudflare dalam 1 detik. Tanpa captcha, tanpa isi email, tanpa limit kuota!
+- **Didukung Cloudflare Privacy Pass**: Karena terhubung langsung ke ekosistem Cloudflare, frekuensi munculnya verifikasi "Verify you are human" saat berselancar di web bertameng Cloudflare berkurang drastis dibanding VPN gratisan abal-abal.
+- **Output Lengkap + 1-Click Action**: Otomatis diekspor ke standard WireGuard (`output/warp/warp.conf`) dan Sing-box (`output/warp/warp_singbox.json`). Begitu beres, langsung ada tombol 1-klik buat buka folder Explorer atau download installer WireGuard!
+
+### 2. 🏢 Webshare Residential Hunter `[W]` — *Penembus Anti-Bot & Filter Ketat*
+- **IP Residential Murni**: Dikenali sebagai ISP perumahan asli (bukan datacenter). Senjata wajib buat peternak bot AI (Grok, Qoder), Twitter/X, Shopee, Tokopedia, dan web yang alergi VPN.
 - **100% Gratis (Audio Captcha Solver Bawaan)**: Menggunakan speech recognition (`SpeechRecognition` + `pydub`) buat mecahin captcha suara Google/reCAPTCHA secara otomatis tanpa perlu beli saldo solver.
-- **Bisa Pakai CapSolver (Opsional)**: Buat yang punya saldo di [CapSolver](https://www.capsolver.com), tinggal isi di `config/settings.json` atau env `CAPSOLVER_API_KEY` buat mode headless super ngebut. Default-nya tetap 100% gratis tanpa modal token.
-- **IP Residential Asli**: Dikenali sebagai ISP rumahan biasa, tahan banting buat Grok AI, Twitter/X, Qoder, Shopee, Tokopedia, dll.
-- **Kredensial Privat**: Format yang didapat `http://user:pass@ip:port`, jadi bandwidth dan sesi ga bakal tabrakan sama orang lain.
-
-### 2. 🚀 Cloudflare WARP Generator `[C]`
-- **Registrasi Resmi Cloudflare REST API**: Menghasilkan private key & peer WireGuard resmi langsung dari edge network Cloudflare.
-- **Zero Captcha & Unlimited Bandwidth**: Tanpa batas kuota, latency <100ms, cocok buat tunneling, bypass throttling ISP, atau routing multi-hop.
-- **Output Lengkap**: Otomatis diekspor ke format WireGuard standard (`output/warp_wireguard.conf`) dan Sing-box Outbound JSON (`output/warp_singbox.json`), plus auto-sync ke 9Router.
+- **Bisa Pakai CapSolver (Opsional)**: Buat yang punya saldo di [CapSolver](https://www.capsolver.com), tinggal paste di menu `[K]` buat mode headless super ngebut. Default-nya tetap 100% gratis tanpa modal token.
+- **Kredensial Privat**: Format yang didapat `http://user:pass@ip:port`, anti-rebutan dan sesi stabil.
 
 ### 3. ⚡ aiohttp Ultra-Fast Harvester `[F]`
 - **Asynchronous Concurrent Validator**: Memvalidasi ratusan proxy publik secara paralel dalam hitungan detik.
 - **Filter Latency Ketat**: Menyaring proxy dengan ping <350ms (maksimal toleransi 1200ms) untuk memastikan amunisi yang masuk ke pool benar-benar ngacir.
-
 
 ---
 
@@ -89,14 +99,8 @@ Webshare Hunter membutuhkan alamat email untuk registrasi akun gratis (10 IP res
 3. Di tab **Routing Rules**, aktifkan fitur **Catch-all address**:
    - **Action**: *Send to an email*
    - **Destination**: Pilih email utama Anda (`anda@gmail.com`).
-4. Buka folder PetaniProxy, copy file `config/settings.example.json` menjadi `config/settings.json`:
-   ```json
-   {
-     "custom_email_domain": "domainanda.com",
-     "capsolver_api_key": ""
-   }
-   ```
-5. Selesai! Mulai saat ini, setiap kali Anda menjalankan `[W]`, PetaniProxy akan membuat email berformat `ws[random]@domainanda.com` dan semua emailnya akan otomatis masuk ke Gmail Anda.
+4. Buka PetaniProxy, pilih menu **`[K]` Quick Settings**, lalu paste nama domain Anda (misal: `domainanda.com`). Sistem akan langsung menyimpannya otomatis!
+5. Selesai! Setiap kali Anda menjalankan `[W]`, PetaniProxy akan membuat email berformat `ws[random]@domainanda.com` dan semua emailnya akan otomatis masuk ke Gmail Anda.
 
 ---
 
@@ -109,7 +113,7 @@ python main.py
 ```
 Pilihan menu yang tersedia:
 - `[W]` 🏢 **Webshare Hunter (MVP)**: Panen 10-30 IP residential privat tembus Cloudflare Turnstile & filter bot AI ketat.
-- `[C]` 🚀 **Cloudflare WARP Local**: Generator akun WireGuard resmi (Zero Captcha, Unlimited Bandwidth).
+- `[C]` 🚀 **Cloudflare WARP Local**: Generator WireGuard resmi (Anti-blokir ISP, Speed Monster, Zero Captcha).
 - `[F]` ⚡ **aiohttp Fast Harvester**: Sedot & saring ratusan proxy super cepat (<350ms dalam 1 detik).
 - `[G]` 🚜 **Mode Petani AFK 24/7 (Auto-Healer)**: Mode server produksi non-stop di `127.0.0.1:8888` (Auto-prune node mati & auto-refill).
 - `[1]` 🐔 **Racikan Ternak Akun**: Khusus peternak bot AI (Grok, Qoder, dll) — Elite L1, langsung sync 9Router + Port 8888.
@@ -117,13 +121,16 @@ Pilihan menu yang tersedia:
 - `[3]` ⚡ **Racikan Ngacir Anti-Lag**: Filter ping terendah (<350ms) dari node SG, ID, dan US.
 - `[E]` 📥 **Bungkus File Mentah**: Ekspor TXT, JSON, CSV buat software bot lain.
 - `[T]` 🧪 **Uji Kesaktian Topeng [CEK LIVE]**: Tes live adu IP asli Anda vs IP Gateway (pembuktian zero leak).
+- `[K]` ⚙️ **Quick Settings (Paste & Go)**: Setup CapSolver key, custom domain Webshare, dan path DB 9Router langsung di terminal.
 - `[U]` 🔄 **Cek & Update Versi**: 1-Klik auto-update langsung dari repository GitHub resmi.
 - `[M]` 🛠️ **Oprek Suka-Suka**: Bengkel manual untuk pilih filter ISO negara dan custom protokol.
+
+> 💡 **Fitur 1-Click Post-Action:** Setiap kali selesai panen atau generate profil, PetaniProxy menyajikan menu praktis: langsung buka file di Notepad `[1]`, buka folder di File Explorer `[2]`, copy snippet kode bot `[3]`, atau buka link download WireGuard resmi tanpa perlu ngetik path manual!
 
 ### 2. Ekspor File Mentah
 Kalau lu butuh file mentahan buat disuntik ke software bot lain (Proxifier, OpenBullet, script custom):
 - `output/webshare_residential.txt` (Daftar IP Residential privat)
-- `output/warp_wireguard.conf` & `output/warp_singbox.json` (Profil resmi Cloudflare WARP)
+- `output/warp/warp.conf` & `output/warp/warp_singbox.json` (Profil resmi Cloudflare WARP)
 - `output/fast_elite.txt` (Daftar proxy ultra-cepat hasil aiohttp harvester)
 - `output/live_all.txt` & `output/live_urls.txt` (IP:Port & format URL Scheme)
 - `output/live_elite.txt` (Khusus IP yang lolos uji penyamaran High Anonymity)

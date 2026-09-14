@@ -479,38 +479,30 @@ def hunt_single_auto(index, total, headless=False):
             print('[!] stealth.min.js tidak ditemukan — jalankan git pull untuk update.')
 
         print('[*] Meluncurkan browser Chrome...')
-        print('[*] Menghubungkan ke pendaftaran Webshare (Gateway URL)...')
+        print('[*] Menghubungkan ke pendaftaran Webshare...')
         try:
-            page.get('https://proxy.webshare.io/register', timeout=15)
+            page.get('https://dashboard.webshare.io/register/', timeout=5)
         except Exception:
-            try:
-                page.get('https://dashboard.webshare.io/register/', timeout=15)
-            except Exception:
-                pass
-        time.sleep(3)
-
-        # Deteksi jika Webshare mengembalikan halaman error (mis. "Unexpected Error Occurred")
-        # dan coba reload otomatis hingga 3x
-        for retry_i in range(3):
-            try:
-                page_body = page.run_js('return document.body ? document.body.innerText : "";') or ''
-            except Exception:
-                time.sleep(4)
-                try:
-                    page_body = page.run_js('return document.body ? document.body.innerText : "";') or ''
-                except Exception:
-                    page_body = ''
-            if 'Unexpected Error' in page_body or 'reload the page' in page_body.lower():
-                print(f'[!] Webshare halaman error (percobaan {retry_i+1}/3). Reload dalam 4 detik...')
-                try:
-                    page.refresh()
-                    time.sleep(4)
-                except Exception:
-                    time.sleep(4)
-            else:
-                break
+            pass
 
         print('[*] Menunggu elemen form siap...')
+        email_box = None
+        start_wait = time.time()
+        while time.time() - start_wait < 25:
+            try:
+                body_text = page.run_js('return document.body ? document.body.innerText : "";') or ''
+                if 'Unexpected Error' in body_text or 'reload the page' in body_text.lower():
+                    print('[!] Halaman error Webshare terdeteksi. Me-refresh...')
+                    page.refresh()
+                    time.sleep(3)
+                    continue
+
+                email_box = page.ele('css:[data-testid="email-input"]', timeout=1) or page.ele('@type=email', timeout=1)
+                if email_box:
+                    break
+            except Exception:
+                pass
+            time.sleep(0.5)
         try:
             # 1. Isi Email
             email_box = page.ele('@data-testid=email-input', timeout=10) or page.ele('@id=email-input', timeout=5) or page.ele('@type=email', timeout=5)

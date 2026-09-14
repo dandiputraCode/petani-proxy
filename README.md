@@ -37,10 +37,13 @@ Created and maintained with ❤️ by [@itzluthfi](https://github.com/itzluthfi)
 | :--- | :---: | :---: | :---: |
 | **Biaya** | Gratis (manual & ribet) | Rp 1,5 Juta – 7 Juta/bulan | **100% Gratis & Bebas Batas** |
 | **Bentuk Akses** | File teks `ip:port` mentah | Forward Gateway & REST API | **Local Rotating Gateway (Port 8888)** |
+| **Tipe IP (Tembus Cloudflare)** | ❌ Datacenter Publik (Sering 403) | ✅ Residential ($$$ Mahal) | ✅ **IP Residential Asli (Webshare Hunter)** |
+| **Kredensial IP** | ❌ Publik Rebutan (Cepat Mati) | ✅ Privat `user:pass` | ✅ **Privat `user:pass` per Akun (Stabil)** |
+| **Auto-Solve Captcha** | ❌ Tidak Ada | ❌ Bayar API Solver Tambahan | ✅ **Built-in AI Audio Solver (100% Gratis)** |
 | **Rotasi IP Otomatis** | ❌ Manual ganti IP | ✅ Otomatis | ✅ **Auto-Rotate Setiap Request** |
 | **Uji Anonimitas (Zero Leak)**| ❌ Jarang ada | ✅ Ada | ✅ **Built-in Elite L1 Detection** |
 | **Live Proof Masking [T]** | ❌ Tidak ada | ❌ Tidak ada | ✅ **1-Click Test Perbandingan IP Asli** |
-| **Integrasi AI Router** | ❌ Bikin script sendiri | ❌ Tidak ada | ✅ **Auto-Inject BansosRouter & 9Router** |
+| **Integrasi AI Router** | ❌ Bikin script sendiri | ❌ Tidak ada | ✅ **Auto-Inject 9Router & BansosRouter** |
 
 ---
 

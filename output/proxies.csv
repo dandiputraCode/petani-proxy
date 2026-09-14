@@ -1,15 +1,28 @@
 protocol,ip,port,proxy,anonymity,latency_ms,country_code,country,city,isp,egress_ip
-http,8.219.97.248,80,8.219.97.248:80,Elite,647,SG,Singapore,Singapore,Alibaba Cloud (Singapore) Private Limited,8.219.64.236
-http,213.163.196.45,80,213.163.196.45:80,Elite,746,SG,Singapore,Singapore,UpCloud Ltd,213.163.196.45
-http,103.151.107.134,80,103.151.107.134:80,Elite,911,IN,India,Noida,Techtreno Solutions Private Limited,103.151.107.134
-http,163.181.207.167,9999,163.181.207.167:9999,Elite,943,VN,Vietnam,Hanoi,"Zhejiang Taobao Network Co., Ltd",163.181.207.167
-http,103.237.102.191,11111,103.237.102.191:11111,Elite,959,DE,Germany,Frankfurt am Main,Zenlayer Inc,103.237.102.191
-http,163.181.207.213,9999,163.181.207.213:9999,Elite,1031,VN,Vietnam,Hanoi,"Zhejiang Taobao Network Co., Ltd",163.181.207.213
-http,58.187.104.62,2113,58.187.104.62:2113,Elite,1082,VN,Vietnam,Ho Chi Minh City,FPT Telecom Company,116.101.76.67
-http,34.43.46.91,443,34.43.46.91:443,Elite,1869,??,Unknown,-,-,34.143.51.195
-http,34.43.46.91,80,34.43.46.91:80,Elite,1982,US,United States,Mountain View,Google LLC,35.235.153.76
-http,210.211.113.37,80,210.211.113.37:80,Elite,2044,VN,Vietnam,Ho Chi Minh City,VTDC,210.211.113.37
-http,190.97.236.129,999,190.97.236.129:999,Elite,2045,VE,Venezuela,San Carlos del Zulia,Viginet C.A,153.51.201.35
-http,190.97.236.128,999,190.97.236.128:999,Elite,2053,VE,Venezuela,Maporal,Viginet C.A,153.51.201.35
-http,111.119.162.248,10932,111.119.162.248:10932,Elite,2188,PK,Pakistan,Tando Adam,Connect Communication,47.236.210.224
-http,108.181.246.55,9898,108.181.246.55:9898,Elite,2192,US,United States,Dallas,Psychz Networks,192.42.116.142
+http,43.153.123.79,80,43.153.123.79:80,Elite,282,US,United States,Santa Clara,Shenzhen Tencent Computer Systems Company Limited,43.153.123.79
+http,73.162.86.230,443,73.162.86.230:443,Elite,483,??,Unknown,-,-,73.162.86.230
+http,165.154.162.73,8888,165.154.162.73:8888,Elite,504,US,United States,Los Angeles,UCLOUD INFORMATION TECHNOLOGY (HK) LIMITED,165.154.162.73
+http,38.51.207.104,8080,38.51.207.104:8080,Elite,517,VE,Venezuela,Maracaibo,Tecnoven Services C.A,38.51.207.111
+http,190.97.236.128,999,190.97.236.128:999,Elite,586,VE,Venezuela,Maporal,Viginet C.A,153.51.201.35
+http,73.162.86.230,8195,73.162.86.230:8195,Elite,618,US,United States,San Jose,Comcast Cable Communications,73.162.86.230
+http,190.97.236.129,999,190.97.236.129:999,Elite,651,VE,Venezuela,San Carlos del Zulia,Viginet C.A,153.51.201.35
+http,2.27.63.250,8888,2.27.63.250:8888,Elite,679,DE,Germany,Frankfurt am Main,Kyonix Networks Limited,2.27.63.250
+http,95.3.69.222,8080,95.3.69.222:8080,Elite,856,TR,Türkiye,Istanbul,Turk Telekomunikasyon Anonim Sirketi,95.3.69.222
+http,167.86.104.220,80,167.86.104.220:80,Elite,890,FR,France,Lauterbourg,Contabo GmbH,167.86.104.220
+http,37.59.125.131,8888,37.59.125.131:8888,Elite,987,FR,France,Roubaix,OVH SAS,82.66.253.58
+http,103.237.102.191,11111,103.237.102.191:11111,Elite,1069,DE,Germany,Frankfurt am Main,Zenlayer Inc,103.237.102.191
+http,24.55.20.6,3030,24.55.20.6:3030,Elite,1118,US,United States,Austin,Charter Communications Inc,24.55.20.6
+http,194.87.208.22,443,194.87.208.22:443,Elite,1155,NL,The Netherlands,Amsterdam,"Timeweb, LLP",194.87.208.22
+http,8.215.25.3,2080,8.215.25.3:2080,Elite,1197,ID,Indonesia,Jakarta,"Alibaba (US) Technology Co., Ltd.",8.215.25.3
+http,124.156.194.52,8080,124.156.194.52:8080,Elite,1282,SG,Singapore,Singapore,Tencent Cloud Computing (Beijing) Co,124.156.194.52
+http,14.251.13.20,8080,14.251.13.20:8080,Elite,1302,VN,Vietnam,Hanoi,VNPT,14.251.13.20
+http,37.187.109.70,10111,37.187.109.70:10111,Elite,1321,FR,France,Roubaix,OVH SAS,37.187.109.70
+http,171.239.152.230,8080,171.239.152.230:8080,Elite,1335,VN,Vietnam,Ho Chi Minh City,Viettel Corporation,171.239.152.230
+http,84.8.216.230,2001,84.8.216.230:2001,Elite,1654,MA,Morocco,Casablanca,Oracle Corporation,84.8.216.230
+http,210.211.113.35,80,210.211.113.35:80,Elite,1704,VN,Vietnam,Ho Chi Minh City,VTDC,210.211.113.35
+http,186.33.45.220,999,186.33.45.220:999,Elite,1945,EC,Ecuador,Latacunga,Ufinet Panama S.A.,186.33.45.220
+http,172.104.56.95,8888,172.104.56.95:8888,Elite,1978,SG,Singapore,Singapore,Akamai Technologies,172.104.56.95
+http,210.211.113.33,80,210.211.113.33:80,Elite,2078,VN,Vietnam,Ho Chi Minh City,VTDC,210.211.113.33
+http,187.188.169.140,999,187.188.169.140:999,Elite,2138,MX,Mexico,Oaxaca City,Total Play Telecomunicaciones SA De CV,187.188.169.140
+http,43.250.182.250,8080,43.250.182.250:8080,Elite,2266,ID,Indonesia,Ketanggungan,PT Aris Media Globalindo,43.250.182.250
+http,210.211.113.37,80,210.211.113.37:80,Elite,2386,VN,Vietnam,Ho Chi Minh City,VTDC,210.211.113.37

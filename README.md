@@ -150,7 +150,7 @@ Kalo PetaniProxy ngebantu lu ngurangin pengeluaran sewa proxy atau bikin project
 
 <br>
 
-<img src="assets/qris.png" width="260" alt="QRIS Donasi PetaniProxy" onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=250x250&data=https%3A%2F%2Fgithub.com%2Fitzluthfi%2Fpetani-proxy';">
+<img src="assets/qris.png" width="260" alt="QRIS Donasi PetaniProxy">
 
 <br><br>
 <b>Bisa scan via BCA, GoPay, OVO, DANA, ShopeePay, LinkAja, atau Mobile Banking apa aja.</b>

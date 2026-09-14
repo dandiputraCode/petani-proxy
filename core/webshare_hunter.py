@@ -434,24 +434,44 @@ def hunt_single_auto(index, total, headless=False):
     co.auto_port()
     co.set_load_mode('eager')
     co.set_timeouts(page_load=12)
+    # Set user-agent realistis untuk semua mode (bukan hanya headless)
+    co.set_user_agent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36')
     if headless:
         co.headless(True)
         co.set_argument('--window-size=1920,1080')
-        co.set_user_agent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36')
     else:
         co.set_argument('--start-maximized')
-    co.set_argument('--disable-blink-features=AutomationControlled')
-    # CATATAN: --no-sandbox DIHAPUS — tidak perlu di Windows dan memunculkan banner peringatan
-    # yang bisa terdeteksi bot detector Webshare
-    co.set_argument('--disable-infobars')               # hilangkan info bar "Chrome is being controlled"
+    # HAPUS --disable-blink-features=AutomationControlled — flag ini sendiri memunculkan banner
+    # "You are using an unsupported command-line flag" yang bisa dibaca Webshare
+    # Sebagai gantinya kita inject stealth.min.js via CDP (lebih stealth)
+    co.set_argument('--disable-infobars')
     co.set_argument('--disable-dev-shm-usage')
     co.set_argument('--disable-extensions')
     co.set_argument('--no-first-run')
     co.set_argument('--no-default-browser-check')
+    co.set_argument('--lang=en-US,en')
 
     browser = Chromium(co)
     try:
         page = browser.latest_tab
+
+        # Inject stealth.min.js via CDP sebelum navigasi
+        # Ini patch: navigator.webdriver, window.chrome, plugins, permissions, WebGL, dll
+        stealth_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'core', 'stealth.min.js')
+        # Fallback ke directory script jika tidak ditemukan
+        if not os.path.exists(stealth_path):
+            stealth_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'stealth.min.js')
+        if os.path.exists(stealth_path):
+            with open(stealth_path, 'r', encoding='utf-8') as sf:
+                stealth_js = sf.read()
+            try:
+                page.run_cdp('Page.addScriptToEvaluateOnNewDocument', {'source': stealth_js})
+                print('[*] Stealth mode aktif — bot fingerprint diminimalkan.')
+            except Exception as se:
+                print(f'[!] Stealth inject gagal (lanjut tanpa stealth): {se}')
+        else:
+            print('[!] stealth.min.js tidak ditemukan — jalankan git pull untuk update.')
+
         print('[*] Meluncurkan browser Chrome...')
         print('[*] Menghubungkan ke pendaftaran Webshare (Direct URL)...')
         try:

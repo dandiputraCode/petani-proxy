@@ -32,29 +32,30 @@
 
 Pernah ga lu lagi asyik scraping web atau jalanin bot akun, baru beberapa menit tau-tau kena **HTTP 403 Forbidden** atau **429 Too Many Requests**? Mau langganan proxy residential komersial harganya sering ga masuk akal buat project sampingan.
 
-| Fitur | Proxy Gratisan Biasa | Proxy Berbayar ($$$) | 🌾 PetaniProxy v1.0 |
+| Fitur / Kemampuan | Proxy Gratisan Biasa | Proxy Berbayar ($$$) | 🌾 PetaniProxy v1.0 |
 | :--- | :---: | :---: | :---: |
-| **Biaya** | Gratis tapi 90% mati | Ratusan ribu s/d jutaan / bulan | **100% Gratis** |
-| **Cara Pakai** | File text `ip:port` manual | Forward Gateway & REST API | **Tinggal colok ke `127.0.0.1:8888`** |
-| **Tipe IP (Tembus Cloudflare)** | Datacenter Publik (gampang kena 403) | Residential Asli | **Residential Asli (Webshare Hunter)** |
-| **Kredensial IP** | Rebutan banyak orang | Privat `user:pass` | **Privat `user:pass` per akun** |
-| **Bypass Captcha** | Manual pusing sendiri | Kudu bayar saldo solver | **Audio Solver Bawaan (Gratis)** |
-| **Rotasi IP** | Manual gonta-ganti di script | Otomatis | **Auto-rotate tiap request + retry 3x** |
-| **Anonimitas** | Sering bocor IP asli | Tergantung paket | **Deteksi Elite L1 (Zero Leak)** |
-| **Integrasi 9Router** | Harus bikin script sendiri | Tidak ada | **Auto-inject ke `data.sqlite`** |
+| **Biaya Bulanan** | ❌ Gratis (tapi 90% mati) | ❌ Ratusan ribu – jutaan / bulan | ✅ **100% GRATIS & Unlimited** |
+| **Bentuk Akses** | ❌ File text `ip:port` mentah | ✅ Forward Gateway & REST API | ✅ **Local Rotating Gateway (`127.0.0.1:8888`)** |
+| **Tipe IP (Tembus Cloudflare)** | ❌ Datacenter Publik (Sering 403) | ✅ Residential ($$$ Mahal) | ✅ **IP Residential Asli (Webshare Hunter)** |
+| **Kredensial IP** | ❌ Rebutan publik (Cepat mati) | ✅ Privat `user:pass` | ✅ **Privat `user:pass` per Akun (Stabil)** |
+| **Auto-Solve Captcha** | ❌ Manual pusing sendiri | ❌ Kudu bayar saldo solver | ✅ **Built-in Audio Solver (100% Gratis)** |
+| **Rotasi IP Otomatis** | ❌ Manual gonta-ganti di script | ✅ Otomatis | ✅ **Auto-Rotate Setiap Request + Retry 3x** |
+| **Uji Anonimitas (Zero Leak)**| ❌ Jarang ada, IP asli bocor | ✅ Ada | ✅ **Built-in Elite L1 Detection** |
+| **Live Proof Masking [T]** | ❌ Ga ada pembuktian | ❌ Ga ada | ✅ **1-Click Test Perbandingan IP Asli** |
+| **Integrasi AI Router** | ❌ Kudu ngoding script sendiri | ❌ Ga ada | ✅ **Auto-Inject langsung ke 9Router DB** |
 
 ---
 
-## ⭐ [MVP] Fitur Utama: Webshare Residential Hunter
+## ⭐ [MVP] Fitur Utama: Webshare Residential Hunter 🏢
 
 Kalau target scraping lu diproteksi Cloudflare Turnstile atau bot detector ketat, proxy publik biasa pasti langsung mental. Fitur ini dibuat buat dapetin **IP Residential (Perumahan)** dari Webshare secara otomatis:
 
-- **100% Gratis (Audio Captcha Solver Bawaan)**: Menggunakan speech recognition (`SpeechRecognition` + `pydub`) buat mecahin captcha suara Google/hCaptcha secara otomatis. Lu ga perlu beli saldo API key solver pihak ketiga.
+- **100% Gratis (Audio Captcha Solver Bawaan)**: Menggunakan speech recognition (`SpeechRecognition` + `pydub`) buat mecahin captcha suara Google/hCaptcha secara otomatis tanpa perlu beli saldo API key solver pihak ketiga.
 - **Bisa Pakai CapSolver (Opsional)**: Buat yang punya saldo di [CapSolver](https://www.capsolver.com), tinggal set environment variable `CAPSOLVER_API_KEY` buat mode headless yang lebih ngebut. Tapi default-nya tetap gratis tanpa biaya token.
 - **Human-like Bezier Cursor**: Gerakan kursor pas daftar akun niru pergerakan tangan manusia biar lolos deteksi bot browser.
-- **IP Residential Asli**: Dikenali sebagai ISP rumahan biasa, lebih tahan terhadap filter ketat di Grok AI, Twitter/X, Qoder, e-commerce, dsb.
+- **IP Residential Asli**: Dikenali sebagai ISP rumahan biasa, lebih tahan terhadap filter ketat di Grok AI, Twitter/X, Qoder, Shopee, Tokopedia, dll.
 - **Kredensial Privat**: Format yang didapat `http://user:pass@ip:port`, jadi bandwidth dan sesi ga bakal tabrakan sama user lain.
-- **Auto-Sync ke 9Router**: Hasil panen langsung masuk ke database SQLite 9Router lokal (`data.sqlite`).
+- **Auto-Sync ke 9Router**: Sekali panen kelar, proxy langsung nongol di database 9Router lokal (`data.sqlite`).
 
 ---
 
@@ -62,21 +63,21 @@ Kalau target scraping lu diproteksi Cloudflare Turnstile atau bot detector ketat
 
 ### 1. Local Rotating Gateway (`127.0.0.1:8888`)
 Lu ga perlu ngotak-ngatik ribuan baris IP di script lu. Cukup arahin script bot/scraper lu ke satu port:
-- `[W]` ⭐ **Webshare Hunter (MVP)**: Panen 10-30 IP residential privat buat nembus proteksi tinggi.
-- `[1]` **Racikan Ternak Akun**: Khusus bot AI (Grok, Qoder, dll). Filter ketat Elite L1, latency rendah, langsung sync ke 9Router.
-- `[2]` **Racikan Scraper Barbar**: Pool 30+ IP aktif, rotasi ganti IP tiap request, cocok buat scraping e-commerce skala besar.
-- `[3]` **Racikan Kencang Anti-Lag**: Filter ping terendah (<350ms) dari node SG, ID, dan US.
-- `[4]` **Mode AFK 24 Jam**: Script jalan terus di background buat auto-refresh pool proxy tiap 15 menit.
+- `[W]` 🏢 **Webshare Hunter (MVP)**: Panen 10-30 IP residential privat tembus Cloudflare Turnstile & filter bot AI ketat.
+- `[1]` 🐔 **Racikan Ternak Akun**: Khusus peternak bot AI (Grok, Qoder, dll). Filter ketat Elite L1 (Zero Leak), latency kencang, langsung auto-sync ke 9Router.
+- `[2]` 🕷️ **Racikan Scraper Barbar**: Amunisi pool 30+ IP aktif, rotasi ganti IP tiap request, anti-block e-commerce.
+- `[3]` ⚡ **Racikan Ngacir Anti-Lag**: Filter ping terendah (<350ms) dari node SG, ID, dan US.
+- `[4]` 🚜 **Mode Petani AFK 24 Jam**: Tinggal tidur atau ngopi, script auto-pilot panen & refresh pool tiap 15 menit.
 
 ### 2. Ekspor File Mentah
-Kalau lu butuh file mentahan buat disuntik ke software lain (Proxifier, OpenBullet, script manual):
+Kalau lu butuh file mentahan buat disuntik ke software bot lain (Proxifier, OpenBullet, script custom):
 - `output/webshare_residential.txt` (Daftar IP Residential privat)
 - `output/live_all.txt` & `output/live_urls.txt` (IP:Port & format URL Scheme)
 - `output/live_elite.txt` (Khusus IP yang lolos uji penyamaran High Anonymity)
 - `output/proxies.json` & `output/proxies.csv` (Lengkap dengan data negara, kota, ISP, dan latency)
 
 ### 3. Tes Penyamaran IP [T]
-- `[T]` **Live Proof Masking**: Fitur di menu buat ngetes langsung apakah IP asli lu beneran ketutup atau masih bocor lewat port 8888.
+- `[T]` 🎭 **Live Proof Masking**: Buktiin langsung apakah IP asli lu beneran ketutup rapat lewat Gateway 8888 sebelum dipakai tempur.
 
 ---
 

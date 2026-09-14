@@ -78,6 +78,8 @@ def check_for_updates(timeout: float = 2.5) -> Dict[str, Any]:
         "announcement": local_info.get("announcement", ""),
         "release_date": local_info.get("release_date", "-"),
         "changelog": local_info.get("changelog", []),
+        "auto_run_commands": local_info.get("auto_run_commands", []),
+        "actions_required": local_info.get("actions_required", []),
         "error": None
     }
 
@@ -94,6 +96,8 @@ def check_for_updates(timeout: float = 2.5) -> Dict[str, Any]:
             result["announcement"] = remote_data.get("announcement", "")
             result["release_date"] = remote_data.get("release_date", "-")
             result["changelog"] = remote_data.get("changelog", [])
+            result["auto_run_commands"] = remote_data.get("auto_run_commands", [])
+            result["actions_required"] = remote_data.get("actions_required", [])
 
             if remote_tuple > local_tuple:
                 result["has_update"] = True
@@ -182,6 +186,7 @@ def show_full_announcement(info: Dict[str, Any], lang: str = "ID"):
     title = info.get("title", f"PetaniProxy v{ver}")
     ann = info.get("announcement", "")
     changelog = info.get("changelog", [])
+    actions = info.get("actions_required", [])
 
     print(f"\n{Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Style.RESET_ALL}")
     print(f"{Fore.WHITE}{Style.BRIGHT}📢 INFORMASI RILIS & PENGUMUMAN UPDATE (PETANIPROXY v{ver}){Style.RESET_ALL}")
@@ -189,14 +194,22 @@ def show_full_announcement(info: Dict[str, Any], lang: str = "ID"):
     print(f"  • Judul Rilis   : {Fore.GREEN}{title}{Style.RESET_ALL}")
     if ann:
         print(f"  • Highlight     : {Fore.CYAN}{ann}{Style.RESET_ALL}")
-    print(f"\n{Fore.MAGENTA}DAFTAR LENGKAP FITUR BARU & PATCH NOTES:{Style.RESET_ALL}")
-    for idx, item in enumerate(changelog, 1):
-        print(f"  {Fore.YELLOW}{idx:>2}.{Fore.WHITE} {item}{Style.RESET_ALL}")
+
+    if changelog:
+        print(f"\n{Fore.MAGENTA}DAFTAR LENGKAP FITUR BARU & PATCH NOTES:{Style.RESET_ALL}")
+        for idx, item in enumerate(changelog, 1):
+            print(f"  {Fore.YELLOW}{idx:>2}.{Fore.WHITE} {item}{Style.RESET_ALL}")
+
+    if actions:
+        print(f"\n{Fore.YELLOW}⚠️  CATATAN KHUSUS / TINDAKAN DIPERLUKAN:{Style.RESET_ALL}")
+        for a in actions:
+            print(f"  {Fore.GREEN}✓{Fore.WHITE} {a}{Style.RESET_ALL}")
+
     print(f"{Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Style.RESET_ALL}\n")
 
 def perform_update(restart: bool = True, lang: str = "ID") -> bool:
     """
-    Execute git pull origin master, display announcement, and update dependencies.
+    Execute git pull origin master, run dynamic commands, and display announcement.
     """
     base_dir = get_base_dir()
     print(f"\n{Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Style.RESET_ALL}")
@@ -218,22 +231,23 @@ def perform_update(restart: bool = True, lang: str = "ID") -> bool:
         print(f"       {Fore.RED}❌ Gagal menjalankan git: {e}{Style.RESET_ALL}")
         return False
 
-    # Step 2: Install / Update requirements
-    print(f"\n  {Fore.YELLOW}[2/3]{Fore.WHITE} {'Memeriksa pembaruan dependensi paket (requirements.txt)...' if lang == 'ID' else 'Checking dependency updates (requirements.txt)...'}{Style.RESET_ALL}")
-    req_file = os.path.join(base_dir, "requirements.txt")
-    if os.path.exists(req_file):
-        try:
-            pip_res = subprocess.run([sys.executable, "-m", "pip", "install", "-r", "requirements.txt", "--quiet"], cwd=base_dir)
-            if pip_res.returncode == 0:
-                print(f"       {Fore.GREEN}✓ Semua dependensi up-to-date!{Style.RESET_ALL}")
-            else:
-                print(f"       {Fore.YELLOW}⚠️ Pip install selesai dengan catatan.{Style.RESET_ALL}")
-        except Exception as e:
-            print(f"       {Fore.RED}⚠️ Gagal mengupdate dependensi: {e}{Style.RESET_ALL}")
+    # Step 2: Run dynamic auto_run_commands from updated version.json
+    new_info = get_local_version_info()
+    auto_cmds = new_info.get("auto_run_commands", ["python -m pip install -r requirements.txt"])
+    print(f"\n  {Fore.YELLOW}[2/3]{Fore.WHITE} {'Menjalankan instruksi pembaruan versi baru...' if lang == 'ID' else 'Executing version update commands...'}{Style.RESET_ALL}")
+    for cmd in auto_cmds:
+        print(f"       {Fore.CYAN}⚙️ Menjalankan:{Style.RESET_ALL} {cmd}")
+        # Normalize python / pip binary to current sys.executable
+        real_cmd = cmd
+        if cmd.startswith("python "):
+            real_cmd = f'"{sys.executable}" {cmd[7:]}'
+        elif cmd.startswith("pip "):
+            real_cmd = f'"{sys.executable}" -m pip {cmd[4:]}'
+        subprocess.run(real_cmd, cwd=base_dir, shell=True)
+    print(f"       {Fore.GREEN}✓ Semua instruksi pembaruan sukses diselesaikan!{Style.RESET_ALL}")
 
     # Step 3: Show new version & announcement
     print(f"\n  {Fore.YELLOW}[3/3]{Fore.WHITE} {'Membaca pengumuman & rincian versi baru...' if lang == 'ID' else 'Reading updated version announcement...'}{Style.RESET_ALL}")
-    new_info = get_local_version_info()
     new_ver = new_info.get("version", "1.0.0")
 
     show_full_announcement(new_info, lang=lang)

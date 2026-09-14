@@ -11,5 +11,11 @@
     "🌍 Dukungan filter 150+ kode negara ISO (ID, SG, US, JP, DE, GB, dll)",
     "🧪 Fitur Live Proof Masking [T] untuk uji kebocoran IP asli (Zero Leak)",
     "🔄 Sistem Auto-Updater [U] untuk notifikasi dan pembaruan patch 1-klik"
+  ],
+  "auto_run_commands": [
+    "python -m pip install -r requirements.txt"
+  ],
+  "actions_required": [
+    "Semua dependensi terpasang otomatis saat update. Siap tempur tanpa konfigurasi manual tambahan!"
   ]
 }

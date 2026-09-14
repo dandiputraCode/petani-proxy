@@ -68,6 +68,55 @@ def find_9router_db() -> Optional[str]:
             return path
     return None
 
+def install_dependencies(quiet: bool = False) -> bool:
+    """Auto-install or repair project dependencies using requirements.txt."""
+    import subprocess
+    print(f"\n{Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Style.RESET_ALL}")
+    print(f"{Fore.GREEN}{Style.BRIGHT}📦 MEMASANG DEPENDENSI PETANIPROXY...{Style.RESET_ALL}")
+    print(f"{Fore.LIGHTBLACK_EX}Menjalankan: {sys.executable} -m pip install -r requirements.txt{Style.RESET_ALL}\n")
+    req_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "requirements.txt")
+    cmd = [sys.executable, "-m", "pip", "install", "-r", req_file]
+    if quiet:
+        cmd.append("--quiet")
+    res = subprocess.run(cmd)
+    if res.returncode == 0:
+        print(f"\n{Fore.GREEN}✓ Semua dependensi berhasil dipasang! Siap tempur! 🌾🚜{Style.RESET_ALL}")
+        print(f"{Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Style.RESET_ALL}\n")
+        return True
+    else:
+        print(f"\n{Fore.RED}⚠️ Pemasangan paket selesai dengan beberapa catatan/peringatan.{Style.RESET_ALL}")
+        print(f"{Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Style.RESET_ALL}\n")
+        return False
+
+def check_initial_dependencies() -> bool:
+    """Smart check on first startup to ensure user has essential packages."""
+    missing = []
+    checks = [
+        ("httpx", "httpx"),
+        ("requests", "requests"),
+        ("colorama", "colorama"),
+        ("DrissionPage", "DrissionPage"),
+        ("speech_recognition", "SpeechRecognition"),
+        ("pydub", "pydub")
+    ]
+    for mod, pkg in checks:
+        try:
+            __import__(mod)
+        except ImportError:
+            missing.append(pkg)
+
+    if missing:
+        print(f"\n{Fore.YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Style.RESET_ALL}")
+        print(f"  {Fore.WHITE}{Style.BRIGHT}📦 SETUP AWAL PETANIPROXY: Dependensi Belum Lengkap{Style.RESET_ALL}")
+        print(f"  {Fore.LIGHTBLACK_EX}Terdeteksi beberapa paket yang belum terpasang di sistem Python kamu:{Style.RESET_ALL}")
+        for m in missing:
+            print(f"   {Fore.RED}•{Fore.WHITE} {m}{Style.RESET_ALL}")
+        print(f"{Fore.YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Style.RESET_ALL}")
+        ans = input(f"\n{Fore.CYAN}👉 Pasang semua dependensi otomatis sekarang (1-Klik via pip)? [Y/n]: {Style.RESET_ALL}").strip().lower()
+        if ans in ("", "y", "yes"):
+            return install_dependencies()
+    return True
+
 def find_grok_python() -> str:
     """Detect python executable for Grok Farm / Webshare Hunter."""
     candidates = [
@@ -331,10 +380,11 @@ def show_manual_menu():
   {Fore.GREEN}[6]{Fore.WHITE} 🎯 Tembak Target URL      {Fore.LIGHTBLACK_EX}Uji tembus domain incaran (contoh: x.ai)
   {Fore.GREEN}[7]{Fore.WHITE} 🏠 Nyalakan Gateway 8888  {Fore.LIGHTBLACK_EX}Host forward proxy & REST API lokal
   {Fore.GREEN}[8]{Fore.WHITE} 🔌 Setor ke BansosRouter  {Fore.LIGHTBLACK_EX}Inject proxy langsung ke database SQLite
+  {Fore.GREEN}[9]{Fore.WHITE} 📦 Perbaiki Dependensi   {Fore.LIGHTBLACK_EX}Self-healing pip install requirements.txt
   {Fore.RED}[0]{Fore.WHITE} 🔙 Balik ke Menu Racikan  {Fore.LIGHTBLACK_EX}Kembali ke beranda utama
 
 {Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Style.RESET_ALL}"""
-            prompt_str = f"{Fore.YELLOW}Pilih opsi Bengkel [1-8, 0=Kembali]: {Style.RESET_ALL}"
+            prompt_str = f"{Fore.YELLOW}Pilih opsi Bengkel [1-9, 0=Kembali]: {Style.RESET_ALL}"
         else:
             m_box = f"""{Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
   {Fore.WHITE}{Style.BRIGHT}🛠️  MANUAL TUNING WORKSHOP (PETANIPROXY)
@@ -349,10 +399,11 @@ def show_manual_menu():
   {Fore.GREEN}[6]{Fore.WHITE} 🎯 Target-Specific Snipe  {Fore.LIGHTBLACK_EX}Probe directly against custom website/API
   {Fore.GREEN}[7]{Fore.WHITE} 🏠 Launch Local Gateway   {Fore.LIGHTBLACK_EX}Start rotating forward proxy on port 8888
   {Fore.GREEN}[8]{Fore.WHITE} 🔌 Sync BansosRouter DB   {Fore.LIGHTBLACK_EX}Feed live proxies into SQLite database pool
+  {Fore.GREEN}[9]{Fore.WHITE} 📦 Repair Dependencies    {Fore.LIGHTBLACK_EX}Self-healing pip install requirements.txt
   {Fore.RED}[0]{Fore.WHITE} 🔙 Back to Presets Menu   {Fore.LIGHTBLACK_EX}Return to primary launcher
 
 {Fore.CYAN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━{Style.RESET_ALL}"""
-            prompt_str = f"{Fore.YELLOW}Select workshop option [1-8, 0=Back]: {Style.RESET_ALL}"
+            prompt_str = f"{Fore.YELLOW}Select workshop option [1-9, 0=Back]: {Style.RESET_ALL}"
 
         print(m_box)
         try:
@@ -413,6 +464,8 @@ def show_manual_menu():
                 run_harvester(protocols=["http", "socks4", "socks5"], max_check=250, target_alive=15, sync_9router=db_target)
             else:
                 print(f"{Fore.RED}{'Database tidak ditemukan. Pastikan path benar.' if CURRENT_LANG == 'ID' else 'Database not found. Please verify path.'}{Style.RESET_ALL}")
+        elif choice == "9":
+            install_dependencies()
         else:
             print(f"{Fore.RED}{'Pilihan tidak valid.' if CURRENT_LANG == 'ID' else 'Invalid option.'}{Style.RESET_ALL}")
 
@@ -424,6 +477,7 @@ def show_manual_menu():
 
 def show_interactive_menu():
     global CURRENT_LANG
+    check_initial_dependencies()
     update_checked = False
     cached_update_info = None
 
@@ -610,10 +664,19 @@ def show_interactive_menu():
             try:
                 from core.webshare_hunter import run_webshare_hunter
             except ImportError as e:
-                print(f"\n{Fore.RED}⚠️ Paket dependencies untuk Webshare Hunter belum lengkap: {e}{Style.RESET_ALL}")
-                print(f"{Fore.YELLOW}Silakan pasang dengan menjalankan perintah:{Style.RESET_ALL}")
-                print(f"{Fore.WHITE}pip install DrissionPage SpeechRecognition pydub{Style.RESET_ALL}")
-                continue
+                print(f"\n{Fore.RED}⚠️ Dependensi Webshare Hunter belum lengkap: {e}{Style.RESET_ALL}")
+                ask_inst = input(f"{Fore.YELLOW}{'👉 Pasang otomatis sekarang (1-Klik via pip)? [Y/n]: ' if CURRENT_LANG == 'ID' else '👉 Auto-install dependencies now (1-Click via pip)? [Y/n]: '}{Style.RESET_ALL}").strip().lower()
+                if ask_inst in ("", "y", "yes"):
+                    if install_dependencies():
+                        try:
+                            from core.webshare_hunter import run_webshare_hunter
+                        except ImportError:
+                            print(f"{Fore.RED}{'Gagal memuat Webshare Hunter setelah instalasi.' if CURRENT_LANG == 'ID' else 'Failed to load Webshare Hunter after installation.'}{Style.RESET_ALL}")
+                            continue
+                    else:
+                        continue
+                else:
+                    continue
 
             print(f"\n{Fore.YELLOW}{Style.BRIGHT}{'⭐ MEMBUKA WEBSHARE RESIDENTIAL HUNTER (FITUR MVP)...' if CURRENT_LANG == 'ID' else '⭐ LAUNCHING WEBSHARE RESIDENTIAL HUNTER (MVP FEATURE)...'}{Style.RESET_ALL}")
             print(f"{Fore.LIGHTBLACK_EX}{'💡 Info: 1 Akun Webshare menghasilkan 10 IP Residential asli dengan username:password pribadi.' if CURRENT_LANG == 'ID' else '💡 Info: 1 Webshare account generates 10 genuine Residential IPs with private credentials.'}{Style.RESET_ALL}")
@@ -665,6 +728,7 @@ def main():
     parser.add_argument("--headless", action="store_true", help="Run Webshare Hunter in headless mode")
     parser.add_argument("--update", action="store_true", help="Perform 1-click update via git pull and exit")
     parser.add_argument("--check-update", action="store_true", help="Check for available updates on GitHub and display patch notes")
+    parser.add_argument("--install-deps", action="store_true", help="Auto-install all dependencies from requirements.txt")
     parser.add_argument("--version", "-v", action="store_true", help="Show current version, announcement and exit")
 
     args = parser.parse_args()
@@ -673,6 +737,11 @@ def main():
         v_info = get_local_version_info()
         print(BANNER)
         show_full_announcement(v_info)
+        return
+
+    if args.install_deps:
+        print(BANNER)
+        install_dependencies()
         return
 
     if args.check_update:
@@ -699,7 +768,12 @@ def main():
         router_db = find_9router_db()
 
     if args.webshare is not None:
-        from core.webshare_hunter import run_webshare_hunter
+        try:
+            from core.webshare_hunter import run_webshare_hunter
+        except ImportError as e:
+            print(f"{Fore.RED}⚠️ Dependensi Webshare Hunter belum lengkap: {e}{Style.RESET_ALL}")
+            print(f"{Fore.YELLOW}Silakan jalankan: python main.py --install-deps{Style.RESET_ALL}\n")
+            sys.exit(1)
         run_webshare_hunter(total=args.webshare, headless=args.headless, sync_9router_db=router_db, output_dir=args.output)
         return
 

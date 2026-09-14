@@ -1,0 +1,40 @@
+# Git
+.git
+.gitignore
+.github
+
+# Docker files sendiri (tidak perlu di-copy ke image)
+Dockerfile
+docker-compose.yml
+.dockerignore
+
+# Output dan config lokal (di-mount sebagai volume, tidak perlu masuk image)
+output/
+config/settings.json
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Windows junk
+Thumbs.db
+Desktop.ini
+
+# OS junk
+.DS_Store
+
+# Assets besar (tidak dibutuhkan di runtime)
+assets/

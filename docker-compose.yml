@@ -1,0 +1,66 @@
+# ============================================================
+# PetaniProxy - Docker Compose
+# Jalankan: docker compose up -d
+# Stop:     docker compose down
+# Logs:     docker compose logs -f petani-proxy
+# ============================================================
+
+services:
+  petani-proxy:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: petani-proxy:latest
+    container_name: petani-proxy
+    restart: unless-stopped
+
+    ports:
+      # Gateway port: akses dari luar server via http://10.254.200.211:8888
+      - "8888:8888"
+
+    volumes:
+      # Output proxy (TXT, JSON, CSV) — persist di host
+      - ./output:/app/output
+
+      # Config (settings.json) — persist di host
+      - ./config:/app/config
+
+      # ----------------------------------------------------------------
+      # INTEGRASI 9ROUTER: Mount folder database SQLite 9Router ke container
+      #
+      # Sesuaikan path kiri (:) dengan lokasi data.sqlite 9Router di server.
+      # Contoh jika 9Router ada di /home/user/9router/data/db/:
+      #   - /home/user/9router/data/db:/data/9router-db
+      #
+      # Lalu aktifkan juga env NINEROUTER_DB di bawah.
+      # ----------------------------------------------------------------
+      # - /path/ke/9router/data/db:/data/9router-db
+
+    environment:
+      # Bind gateway ke semua interface agar bisa diakses dari luar container
+      - PETANI_GATEWAY_HOST=0.0.0.0
+
+      # ----------------------------------------------------------------
+      # NINEROUTER_DB: Path ke data.sqlite 9Router DI DALAM container.
+      # Aktifkan baris ini jika sudah mount volume 9Router di atas.
+      # ----------------------------------------------------------------
+      # - NINEROUTER_DB=/data/9router-db/data.sqlite
+
+      # Opsional: CapSolver API key (untuk Webshare Hunter, skip jika tidak dipakai)
+      # - CAPSOLVER_API_KEY=your_key_here
+
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+    # Jika 9Router juga dijalankan via Docker Compose di server yang sama,
+    # uncomment network di bawah agar keduanya satu jaringan internal:
+    # networks:
+    #   - router-net
+
+# networks:
+#   router-net:
+#     external: true
+#     name: nama_network_9router

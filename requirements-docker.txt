@@ -1,0 +1,29 @@
+# ============================================================
+# PetaniProxy - Docker / Server Headless Dependencies
+# Tanpa DrissionPage, SpeechRecognition, pydub karena
+# fitur Webshare Hunter (GUI browser + audio captcha)
+# tidak praktis dijalankan di server headless.
+#
+# Fitur yang tersedia di Docker:
+#   ✅ Fast Harvester (aiohttp)
+#   ✅ Local Rotating Gateway (port 8888)
+#   ✅ 9Router SQLite Sync
+#   ✅ Cloudflare WARP Generator
+#   ✅ Auto-Healer 24/7 Daemon
+#   ❌ Webshare Residential Hunter (butuh GUI)
+# ============================================================
+
+# Core HTTP client
+httpx>=0.27.0
+requests>=2.31.0
+colorama>=0.4.6
+
+# High-performance libcurl C-bindings (TLS fingerprint evasion)
+curl_cffi>=0.7.0
+
+# Fast async harvester & SOCKS support
+aiohttp>=3.9.0
+aiohttp-socks>=0.8.4
+
+# Cloudflare WARP key generation
+cryptography>=41.0.0

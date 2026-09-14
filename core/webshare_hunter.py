@@ -433,17 +433,21 @@ def hunt_single_auto(index, total, headless=False):
     co = ChromiumOptions()
     co.auto_port()
     co.set_load_mode('eager')
-    co.set_timeouts(page_load=8)
+    co.set_timeouts(page_load=12)
     if headless:
         co.headless(True)
         co.set_argument('--window-size=1920,1080')
-        # Di mode headless wajib set user-agent nyata agar reCAPTCHA tidak membatasi audio challenge
         co.set_user_agent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36')
     else:
         co.set_argument('--start-maximized')
     co.set_argument('--disable-blink-features=AutomationControlled')
-    co.set_argument('--no-sandbox')
+    # CATATAN: --no-sandbox DIHAPUS — tidak perlu di Windows dan memunculkan banner peringatan
+    # yang bisa terdeteksi bot detector Webshare
+    co.set_argument('--disable-infobars')               # hilangkan info bar "Chrome is being controlled"
     co.set_argument('--disable-dev-shm-usage')
+    co.set_argument('--disable-extensions')
+    co.set_argument('--no-first-run')
+    co.set_argument('--no-default-browser-check')
 
     browser = Chromium(co)
     try:
@@ -451,10 +455,10 @@ def hunt_single_auto(index, total, headless=False):
         print('[*] Meluncurkan browser Chrome...')
         print('[*] Menghubungkan ke pendaftaran Webshare (Direct URL)...')
         try:
-            page.get('https://dashboard.webshare.io/register/', timeout=8)
+            page.get('https://dashboard.webshare.io/register/', timeout=12)
         except Exception:
             pass
-        time.sleep(2)
+        time.sleep(3)
 
         # Deteksi jika Webshare mengembalikan halaman error (mis. "Unexpected Error Occurred")
         # dan coba reload otomatis hingga 3x
@@ -462,14 +466,19 @@ def hunt_single_auto(index, total, headless=False):
             try:
                 page_body = page.run_js('return document.body ? document.body.innerText : "";') or ''
             except Exception:
-                page_body = ''
+                # ContextLostError atau page belum siap — tunggu dulu lalu coba lagi
+                time.sleep(4)
+                try:
+                    page_body = page.run_js('return document.body ? document.body.innerText : "";') or ''
+                except Exception:
+                    page_body = ''
             if 'Unexpected Error' in page_body or 'reload the page' in page_body.lower():
-                print(f'[!] Webshare menampilkan halaman error (percobaan {retry_i+1}/3). Reload...')
+                print(f'[!] Webshare halaman error (percobaan {retry_i+1}/3). Reload dalam 4 detik...')
                 try:
                     page.refresh()
-                    time.sleep(3)
+                    time.sleep(4)  # tunggu lebih lama setelah refresh supaya tidak ContextLostError
                 except Exception:
-                    pass
+                    time.sleep(4)
             else:
                 break  # Halaman normal, lanjut
 

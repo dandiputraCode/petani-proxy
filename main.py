@@ -519,8 +519,8 @@ def get_features_readiness(lang: str = "ID") -> dict:
         status["capsolver_desc"] = f"Saldo ${cs_info['balance']:.3f} (Headless Off, Gunakan Free Audio)" if lang == "ID" else f"Balance ${cs_info['balance']:.3f} (Use Free Audio)"
         score += 10
     else:
-        status["capsolver_badge"] = f"{Fore.LIGHTBLACK_EX}[STANDBY ○]{Style.RESET_ALL}"
-        status["capsolver_desc"] = "Key Kosong (Menggunakan Audio Solver Gratisan)" if lang == "ID" else "No Key (Using Free Audio Solver)"
+        status["capsolver_badge"] = f"{Fore.LIGHTBLACK_EX}[TIDAK DIAKTIFKAN]{Style.RESET_ALL}" if lang == "ID" else f"{Fore.LIGHTBLACK_EX}[DISABLED]{Style.RESET_ALL}"
+        status["capsolver_desc"] = "Key Kosong (Audio Solver Gratisan Tetap Aktif)" if lang == "ID" else "No Key (Free Audio Solver Remains Active)"
         score += 15
 
     # 4. 9Router DB sync
@@ -546,7 +546,7 @@ def get_features_readiness(lang: str = "ID") -> dict:
     if gw_active:
         status["gateway"] = f"{Fore.GREEN}[PORT 8888 AKTIF]{Style.RESET_ALL}" if lang == "ID" else f"{Fore.GREEN}[PORT 8888 ONLINE]{Style.RESET_ALL}"
     else:
-        status["gateway"] = f"{Fore.LIGHTBLACK_EX}[STANDBY]{Style.RESET_ALL}"
+        status["gateway"] = f"{Fore.RED}[BELUM AKTIF]{Style.RESET_ALL}" if lang == "ID" else f"{Fore.RED}[OFFLINE]{Style.RESET_ALL}"
 
     # 6. Storage count
     base_dir = os.path.dirname(os.path.abspath(__file__))
